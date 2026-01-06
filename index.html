@@ -200,7 +200,7 @@
             </div>
 
             <div class="form-group">
-                <label>الآيدي الخاص بك</label>
+                <label>الرقم العسكري (Mention ID)</label>
                 <input type="text" id="militaryID" placeholder="مثال: 0000">
             </div>
 
@@ -213,7 +213,6 @@
         let currentMode = '';
         const fixedUnits = "الامــن الــعـام + امـن الـطـرق + المهام والواجبات الخاصه";
         
-        // قوائم الرتب
         const supervisionRanks = ["عميد ركن", "عقيد ركن", "مقدم ركن", "رائد", "نقيب", "ملازم اول", "ملازم"];
         const zoneRanks = ["رئيس رقباء", "رقيب اول", "رقيب"];
         const allRanks = ["عميد ركن", "عقيد ركن", "مقدم ركن", "رائد", "نقيب", "ملازم اول", "ملازم", "رئيس رقباء", "رقيب اول", "رقيب", "وكيل رقيب", "عريف"];
@@ -250,14 +249,11 @@
 
         function handleCourseChange() {
             const selectedCourse = document.getElementById('courseName').value;
-            
-            // تحديث الرتب بناءً على الدورة
             if (selectedCourse === "الشؤون الإدارية") {
                 updateRankOptions(adminRanks);
             } else {
                 updateRankOptions(allRanks);
             }
-            
             autoCompleteLocation();
         }
 
@@ -266,31 +262,37 @@
             const locInput = document.getElementById('location');
             const selectedCourse = document.getElementById('courseName').value;
 
-            if (currentMode === 'supervision') {
-                const gl = ["ساهر 1", "ساهر 2", "امان 1", "امان 2"];
-                const ayn = ["ساهر 3", "ساهر 4", "امان 3", "امان 4"];
-                const glayn = ["سيف 1", "سيف 2", "سيف 3", "سيف 4", "رصد 1", "رصد 2", "رصد 3", "رصد 4"];
-
-                if (gl.some(k => task.includes(k))) locInput.value = "جيم + لام";
-                else if (ayn.some(k => task.includes(k))) locInput.value = "عين";
-                else if (glayn.some(k => task.includes(k))) locInput.value = "جيم + لام + عين";
-            } 
-            else if (currentMode === 'courses') {
-                // تصفير الموقع عند تغيير الدورات المبرمجة
-                if (selectedCourse !== "شرطة عسكرية" && selectedCourse !== "الشؤون الإدارية") {
-                    if (locInput.value === "ساندي + بوليتو" || locInput.value === "مركز بوليتو") {
-                        locInput.value = "";
-                    }
+            // --- منطق تقارير الإشراف وضابط المنطقة ---
+            if (currentMode === 'supervision' || currentMode === 'zone') {
+                if (task.includes("جنوب")) locInput.value = "ساندي";
+                else if (task.includes("غرب")) locInput.value = "بوليتو";
+                else if (task.includes("سهم") || task.includes("درع")) locInput.value = "ساندي + بوليتو";
+                
+                // حالات جيم + لام
+                else if (["ساهر 1", "ساهر 2", "امان 1", "امان 2"].some(k => task.includes(k))) {
+                    locInput.value = "جيم + لام";
                 }
-
-                if (selectedCourse === "شرطة عسكرية") locInput.value = "ساندي + بوليتو";
-                else if (selectedCourse === "الشؤون الإدارية") locInput.value = "مركز بوليتو";
-
-                // شروط التوجيه
+                // حالات عين
+                else if (["ساهر 3", "ساهر 4", "امان 3", "امان 4"].some(k => task.includes(k))) {
+                    locInput.value = "عين";
+                }
+                // حالات جيم + لام + عين
+                else if (["سيف 1", "سيف 2", "سيف 3", "سيف 4", "رصد 1", "رصد 2", "رصد 3", "رصد 4"].some(k => task.includes(k))) {
+                    locInput.value = "جيم + لام + عين";
+                }
+            } 
+            
+            // --- منطق تقارير الدورات ---
+            else if (currentMode === 'courses') {
+                // شروط التوجيه الخاصة بالدورات
                 if (task.includes("شهاب 1")) locInput.value = "جيم + لام";
                 else if (task.includes("شهاب 2")) locInput.value = "عين";
                 else if (["رعد 1", "رعد 3", "رعد 5"].some(k => task.includes(k))) locInput.value = "ساندي";
                 else if (["رعد 2", "رعد 4", "رعد 6"].some(k => task.includes(k))) locInput.value = "بوليتو";
+                
+                // الحالات الافتراضية للدورات إذا لم يكتب توجيه محدد
+                else if (selectedCourse === "شرطة عسكرية") locInput.value = "ساندي + بوليتو";
+                else if (selectedCourse === "الشؤون الإدارية") locInput.value = "مركز بوليتو";
             }
         }
 
