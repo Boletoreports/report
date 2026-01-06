@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام التقارير العسكرية - بوليتو</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+        :root {
+            --primary-blue: #00d4ff;
+            --dark-bg: #0a0a0a;
+            --card-bg: rgba(20, 20, 20, 0.8);
+            --border-color: rgba(0, 212, 255, 0.2);
+            --text-gray: #b0b0b0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* اللوجوهات في الخلفية */
+        .bg-logos-wrapper {
+            position: fixed;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .bg-logo {
+            width: 280px;
+            opacity: 0.15;
+            filter: drop-shadow(0 0 10px var(--primary-blue));
+            animation: pulse 4s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.15; }
+            50% { transform: scale(1.05); opacity: 0.2; }
+        }
+
+        .container {
+            width: 90%;
+            max-width: 450px;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--primary-blue);
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+            text-align: center;
+        }
+
+        .main-menu { display: grid; gap: 15px; }
+
+        .menu-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-card:hover {
+            background: rgba(0, 212, 255, 0.08);
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .menu-card i {
+            font-size: 22px;
+            color: var(--primary-blue);
+        }
+
+        .menu-card strong { font-size: 16px; color: #fff; }
+
+        .form-group { text-align: right; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-size: 14px; color: var(--text-gray); font-weight: 600; }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Cairo';
+            font-size: 14px;
+            transition: 0.3s;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-blue);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
+        }
+
+        select option { background: #1a1a1a; color: #fff; }
+
+        .time-input-group {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 10px; border-radius: 10px; direction: ltr;
+        }
+
+        .btn-copy {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00829d 0%, #00d4ff 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-family: 'Cairo';
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2);
+            transition: 0.3s;
+        }
+
+        .btn-copy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
+            filter: brightness(1.1);
+        }
+
+        #form-section { display: none; }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: var(--text-gray);
+            text-align: center;
+            text-decoration: none;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .back-link:hover { color: #fff; }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-logos-wrapper">
+        <img src="./logo1.gif" class="bg-logo left" alt="Logo 1">
+        <img src="./logo2.gif" class="bg-logo right" alt="Logo 2">
+    </div>
+
+    <div class="container">
+        <div id="menu-section">
+            <h2><i class="fas fa-shield-alt"></i> بوليتو - التقارير</h2>
+            <div class="main-menu">
+                <div class="menu-card" onclick="openForm('supervision')">
+                    <i class="fas fa-user-shield"></i>
+                    <div><strong>تقارير الإشراف</strong></div>
+                </div>
+                <div class="menu-card" onclick="openForm('zone')">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div><strong>تقارير ضابط منطقة</strong></div>
+                </div>
+                <div class="menu-card" onclick="openForm('courses')">
+                    <i class="fas fa-graduation-cap"></i>
+                    <div><strong>تقارير الدورات</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="form-section">
+            <h2 id="title-text">تقديم التقرير</h2>
+
+            <div class="form-group" id="course-dropdown" style="display: none;">
+                <label>اسم الدورة</label>
+                <select id="courseName">
+                    <option value="" disabled selected>--- اختر الدورة ---</option>
+                    <option value="الشؤون الإدارية">دورة الشؤون الإدارية</option>
+                    <option value="نقل سجون">دورة نقل سجون</option>
+                    <option value="S.W.A.T">S.W.A.T</option>
+                    <option value="البحث الجنائي">دورة البحث الجنائي</option>
+                    <option value="المهام والواجبات الخاصة">دورة المهام والواجبات الخاصة</option>
+                    <option value="مكافحة المخدرات">دورة مكافحة المخدرات</option>
+                    <option value="الدعم الجوي">دورة الدعم الجوي</option>
+                    <option value="شعبة المرور">دورة شعبة المرور</option>
+                    <option value="خدمات الطرق">دورة خدمات الطرق</option>
+                    <option value="خــفــر الســواحل">دورة خــفــر الســواحل</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>التوجيه</label>
+                <input type="text" id="taskName" placeholder="مثال: استلام استلام بـ">
+            </div>
+
+            <div class="form-group">
+                <label>وقت المباشرة</label>
+                <div class="time-input-group">
+                    <select id="pFrom"><option>م</option><option>ص</option></select>
+                    <select id="mFrom"></select> : <select id="hFrom"></select>
+                    <span> من</span>
+                </div>
+                <div class="time-input-group" style="margin-top:8px;">
+                    <select id="pTo"><option>م</option><option>ص</option></select>
+                    <select id="mTo"></select> : <select id="hTo"></select>
+                    <span> إلى</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>الموقع</label>
+                <input type="text" id="location" placeholder="حدد الموقع...">
+            </div>
+
+            <div class="form-group">
+                <label>الرتبة</label>
+                <select id="rank"></select>
+            </div>
+
+            <div class="form-group" id="unit-group">
+                <label>الوحدات التابعة لك</label>
+                <textarea id="unit" rows="3" placeholder="أدخل الوحدات..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>الآيدي الخاص بك</label>
+                <input type="text" id="militaryID" placeholder="مثال: 0000">
+            </div>
+
+            <button class="btn-copy" onclick="copyReport()">نسخ التقرير النهائي</button>
+            <div class="back-link" onclick="goBack()">إلغاء والعودة للقائمة</div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = '';
+        const allRanks = ["عميد ركن", "عقيد ركن", "مقدم ركن", "رائد", "نقيب", "ملازم اول", "ملازم", "رئيس رقباء", "رقيب اول", "رقيب", "وكيل رقيب", "عريف"];
+
+        function initTimeSelects() {
+            const h = document.getElementById('hFrom'), h2 = document.getElementById('hTo');
+            const m = document.getElementById('mFrom'), m2 = document.getElementById('mTo');
+            h.innerHTML = ''; h2.innerHTML = ''; m.innerHTML = ''; m2.innerHTML = '';
+            for(let i=1; i<=12; i++) {
+                let val = i < 10 ? '0'+i : i;
+                h.innerHTML += `<option value="${val}">${val}</option>`; h2.innerHTML += `<option value="${val}">${val}</option>`;
+            }
+            for(let i=0; i<60; i+=5) {
+                let val = i < 10 ? '0'+i : i;
+                m.innerHTML += `<option value="${val}">${val}</option>`; m2.innerHTML += `<option value="${val}">${val}</option>`;
+            }
+        }
+
+        function openForm(type) {
+            currentMode = type;
+            document.getElementById('menu-section').style.display = 'none';
+            document.getElementById('form-section').style.display = 'block';
+            initTimeSelects();
+            const rSelect = document.getElementById('rank');
+            rSelect.innerHTML = '<option value="" disabled selected>اختر الرتبة</option>';
+            
+            if(type === 'courses') {
+                document.getElementById('title-text').innerText = 'تقرير الدورات';
+                document.getElementById('course-dropdown').style.display = 'block';
+                document.getElementById('unit-group').style.display = 'none';
+                allRanks.forEach(r => rSelect.innerHTML += `<option value="${r}">${r}</option>`);
+            } else {
+                document.getElementById('course-dropdown').style.display = 'none';
+                document.getElementById('unit-group').style.display = 'block';
+                if(type === 'zone') {
+                    document.getElementById('title-text').innerText = 'تقرير ضابط منطقة';
+                    ["رئيس رقباء", "رقيب اول", "رقيب"].forEach(r => rSelect.innerHTML += `<option value="${r}">${r}</option>`);
+                } else {
+                    document.getElementById('title-text').innerText = 'تقرير الإشراف';
+                    allRanks.forEach(r => rSelect.innerHTML += `<option value="${r}">${r}</option>`);
+                }
+            }
+        }
+
+        function goBack() {
+            document.getElementById('menu-section').style.display = 'block';
+            document.getElementById('form-section').style.display = 'none';
+        }
+
+        function copyReport() {
+            const task = document.getElementById('taskName').value || "...";
+            const timeFrom = `${document.getElementById('hFrom').value}:${document.getElementById('mFrom').value} ${document.getElementById('pFrom').value}`;
+            const timeTo = `${document.getElementById('hTo').value}:${document.getElementById('mTo').value} ${document.getElementById('pTo').value}`;
+            const loc = document.getElementById('location').value || "...";
+            const rank = document.getElementById('rank').value || "...";
+            const id = document.getElementById('militaryID').value || "0000";
+
+            let report = `** \`تـم اسـتـلام مـهـام ( ${task} )  مـن السـاعـة ${timeFrom} اٍلـى الـساعـة ${timeTo}\` **\n\n`;
+            report += `** \`الموقع : ${loc} \` **\n\n`;
+            
+            if(currentMode === 'courses') {
+                const cName = document.getElementById('courseName').value || "...";
+                report += `** \`اسم الدورة : ( ${cName} )\` **\n\n`;
+            } else {
+                const uVal = document.getElementById('unit').value || "...";
+                report += `** \`الـوحـدات الـتـابـعـة لـك : \` **\n\n\`${uVal}\` \n\n`;
+            }
+            report += `** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) : \` ** <@${id}>`;
+
+            navigator.clipboard.writeText(report).then(() => {
+                const btn = document.querySelector('.btn-copy');
+                btn.innerText = "تم النسخ بنجاح ✅";
+                setTimeout(() => btn.innerText = "نسخ التقرير النهائي", 2000);
+            });
+        }
+    </script>
+</body>
+</html>
