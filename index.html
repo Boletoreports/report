@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام التقارير العسكرية - بوليتو</title>
+    <title>نظام التقارير العسكرية الذكي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
@@ -167,7 +167,7 @@
 
             <div class="form-group">
                 <label>التوجيه</label>
-                <input type="text" id="taskName" oninput="autoCompleteLocation()" placeholder="مثال: سهم، درع، جنوب...">
+                <input type="text" id="taskName" oninput="autoCompleteLocation()" placeholder="ادخل التوجيه هنا...">
             </div>
 
             <div class="form-group">
@@ -186,7 +186,7 @@
 
             <div class="form-group">
                 <label>الموقع</label>
-                <input type="text" id="location" placeholder="حدد الموقع...">
+                <input type="text" id="location" placeholder="يتم التحديد تلقائياً أو اكتب يدوياً...">
             </div>
 
             <div class="form-group">
@@ -211,7 +211,7 @@
 
     <script>
         let currentMode = '';
-        const fixedUnits = "الامــن الــعـام + امـن الـطـرق + المهام والواجبات الخاصه";
+        const fixedUnits = "الامــن الــعـام + امـن الـط_رق + المهام والواجبات الخاصه";
         const supervisionRanks = ["عميد ركن", "عقيد ركن", "مقدم ركن", "رائد", "نقيب", "ملازم اول", "ملازم"];
         const zoneRanks = ["رئيس رقباء", "رقيب اول", "رقيب"];
         const allRanks = ["عميد ركن", "عقيد ركن", "مقدم ركن", "رائد", "نقيب", "ملازم اول", "ملازم", "رئيس رقباء", "رقيب اول", "رقيب", "وكيل رقيب", "عريف"];
@@ -230,7 +230,6 @@
             }
         }
 
-        // وظيفة تصفير كافة الحقول
         function resetFormFields() {
             document.getElementById('taskName').value = "";
             document.getElementById('location').value = "";
@@ -241,16 +240,25 @@
         }
 
         function autoCompleteLocation() {
-            if (currentMode !== 'supervision') return;
-            const taskValue = document.getElementById('taskName').value;
+            const task = document.getElementById('taskName').value;
             const locInput = document.getElementById('location');
-            const dualKeywords = ["سهم", "درع", "رصد", "سيف"];
-            if (dualKeywords.some(key => taskValue.includes(key))) {
-                locInput.value = "ساندي + بوليتو";
-            } else if (taskValue.includes("جنوب")) {
-                locInput.value = "ساندي";
-            } else if (taskValue.includes("غرب")) {
-                locInput.value = "بوليتو";
+
+            if (currentMode === 'supervision') {
+                // مجموعات الإشراف
+                const gl = ["ساهر 1", "ساهر 2", "امان 1", "امان 2"];
+                const ayn = ["ساهر 3", "ساهر 4", "امان 3", "امان 4"];
+                const glayn = ["سيف 1", "سيف 2", "سيف 3", "سيف 4", "رصد 1", "رصد 2", "رصد 3", "رصد 4"];
+
+                if (gl.some(k => task.includes(k))) locInput.value = "جيم + لام";
+                else if (ayn.some(k => task.includes(k))) locInput.value = "عين";
+                else if (glayn.some(k => task.includes(k))) locInput.value = "جيم + لام + عين";
+            } 
+            else if (currentMode === 'courses') {
+                // مجموعات الدورات
+                if (task.includes("شهاب 1")) locInput.value = "جيم + لام";
+                else if (task.includes("شهاب 2")) locInput.value = "عين";
+                else if (["رعد 1", "رعد 3", "رعد 5"].some(k => task.includes(k))) locInput.value = "ساندي";
+                else if (["رعد 2", "رعد 4", "رعد 6"].some(k => task.includes(k))) locInput.value = "بوليتو";
             }
         }
 
@@ -258,8 +266,7 @@
             currentMode = type;
             document.getElementById('menu-section').style.display = 'none';
             document.getElementById('form-section').style.display = 'block';
-            
-            resetFormFields(); // تصفير الحقول عند كل فتح جديد
+            resetFormFields();
 
             const rSelect = document.getElementById('rank');
             const unitText = document.getElementById('unit');
@@ -271,8 +278,7 @@
                 document.getElementById('course-dropdown').style.display = 'none';
                 document.getElementById('unit-group').style.display = 'block';
                 supervisionRanks.forEach(r => rSelect.innerHTML += `<option value="${r}">${r}</option>`);
-                unitText.value = fixedUnits; 
-                unitText.readOnly = true;
+                unitText.value = fixedUnits; unitText.readOnly = true;
             } else if(type === 'zone') {
                 document.getElementById('title-text').innerText = 'تقرير ضابط منطقة';
                 document.getElementById('course-dropdown').style.display = 'none';
