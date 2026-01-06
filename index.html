@@ -149,7 +149,7 @@
 
             <div class="form-group" id="course-dropdown" style="display: none;">
                 <label>اسم الدورة</label>
-                <select id="courseName">
+                <select id="courseName" onchange="autoCompleteLocation()">
                     <option value="" disabled selected>--- اختر الدورة ---</option>
                     <option value="شرطة عسكرية">شرطة عسكرية</option>
                     <option value="الشؤون الإدارية">دورة الشؤون الإدارية</option>
@@ -211,7 +211,7 @@
 
     <script>
         let currentMode = '';
-        const fixedUnits = "الامــن الــعـام + امـن الـط_رق + المهام والواجبات الخاصه";
+        const fixedUnits = "الامــن الــعـام + امـن الـطـرق + المهام والواجبات الخاصه";
         const supervisionRanks = ["عميد ركن", "عقيد ركن", "مقدم ركن", "رائد", "نقيب", "ملازم اول", "ملازم"];
         const zoneRanks = ["رئيس رقباء", "رقيب اول", "رقيب"];
         const allRanks = ["عميد ركن", "عقيد ركن", "مقدم ركن", "رائد", "نقيب", "ملازم اول", "ملازم", "رئيس رقباء", "رقيب اول", "رقيب", "وكيل رقيب", "عريف"];
@@ -242,9 +242,9 @@
         function autoCompleteLocation() {
             const task = document.getElementById('taskName').value;
             const locInput = document.getElementById('location');
+            const selectedCourse = document.getElementById('courseName').value;
 
             if (currentMode === 'supervision') {
-                // مجموعات الإشراف
                 const gl = ["ساهر 1", "ساهر 2", "امان 1", "امان 2"];
                 const ayn = ["ساهر 3", "ساهر 4", "امان 3", "امان 4"];
                 const glayn = ["سيف 1", "سيف 2", "سيف 3", "سيف 4", "رصد 1", "رصد 2", "رصد 3", "رصد 4"];
@@ -254,7 +254,11 @@
                 else if (glayn.some(k => task.includes(k))) locInput.value = "جيم + لام + عين";
             } 
             else if (currentMode === 'courses') {
-                // مجموعات الدورات
+                // شرط الشرطة العسكرية (بالاعتماد على اختيار القائمة)
+                if (selectedCourse === "شرطة عسكرية") {
+                    locInput.value = "ساندي + بوليتو";
+                }
+                // بقية شروط التوجيه للدورات
                 if (task.includes("شهاب 1")) locInput.value = "جيم + لام";
                 else if (task.includes("شهاب 2")) locInput.value = "عين";
                 else if (["رعد 1", "رعد 3", "رعد 5"].some(k => task.includes(k))) locInput.value = "ساندي";
