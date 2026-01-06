@@ -254,13 +254,18 @@
                 else if (glayn.some(k => task.includes(k))) locInput.value = "جيم + لام + عين";
             } 
             else if (currentMode === 'courses') {
-                // تصفير الموقع إذا تم تغيير الاختيار من شرطة عسكرية لأي شيء آخر
-                if (selectedCourse !== "شرطة عسكرية" && locInput.value === "ساندي + بوليتو") {
-                    locInput.value = "";
+                // تصفير الموقع إذا تم تغيير الاختيار من الدورات التلقائية
+                if (selectedCourse !== "شرطة عسكرية" && selectedCourse !== "الشؤون الإدارية") {
+                    // إذا كان الموقع الحالي هو أحد المواقع التلقائية للدورات، نقوم بمسحه
+                    if (locInput.value === "ساندي + بوليتو" || locInput.value === "مركز بوليتو") {
+                        locInput.value = "";
+                    }
                 }
 
                 if (selectedCourse === "شرطة عسكرية") {
                     locInput.value = "ساندي + بوليتو";
+                } else if (selectedCourse === "الشؤون الإدارية") {
+                    locInput.value = "مركز بوليتو";
                 }
 
                 // منطق كلمات التوجيه
