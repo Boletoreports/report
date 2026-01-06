@@ -254,11 +254,16 @@
                 else if (glayn.some(k => task.includes(k))) locInput.value = "جيم + لام + عين";
             } 
             else if (currentMode === 'courses') {
-                // شرط الشرطة العسكرية (بالاعتماد على اختيار القائمة)
+                // تصفير الموقع إذا تم تغيير الاختيار من شرطة عسكرية لأي شيء آخر
+                if (selectedCourse !== "شرطة عسكرية" && locInput.value === "ساندي + بوليتو") {
+                    locInput.value = "";
+                }
+
                 if (selectedCourse === "شرطة عسكرية") {
                     locInput.value = "ساندي + بوليتو";
                 }
-                // بقية شروط التوجيه للدورات
+
+                // منطق كلمات التوجيه
                 if (task.includes("شهاب 1")) locInput.value = "جيم + لام";
                 else if (task.includes("شهاب 2")) locInput.value = "عين";
                 else if (["رعد 1", "رعد 3", "رعد 5"].some(k => task.includes(k))) locInput.value = "ساندي";
