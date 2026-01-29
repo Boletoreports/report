@@ -24,7 +24,7 @@ body {
   background: radial-gradient(circle,#1a1a1a,#050505);
   color: #fff;
   min-height: 100vh;
-  overflow-y: auto; /* السماح بالتمرير */
+  overflow-y: auto;
   padding: 20px 0;
 }
 
@@ -64,16 +64,16 @@ body::after {
 
 .container {
   width: 90%;
-  max-width: 450px;
+  max-width: 500px;
   background: var(--card-bg);
   backdrop-filter: blur(15px);
   border: 1px solid var(--border-color);
   border-radius: 20px;
   padding: 35px;
   box-shadow: 0 20px 50px rgba(0,0,0,.5);
-  margin: 0 auto; /* للتمركز */
+  margin: 0 auto;
   position: relative;
-  z-index: 1; /* فوق الخلفية */
+  z-index: 1;
 }
 
 h2 {
@@ -134,7 +134,7 @@ input, select, textarea {
 }
 
 select {
-  color: black !important; /* لون نص الرتبة أسود */
+  color: black !important;
 }
 
 .time-input-group {
@@ -204,35 +204,9 @@ footer {
   <div id="form-section">
     <h2 id="title-text">تقديم التقرير</h2>
 
-    <div class="form-group" id="course-dropdown" style="display:none">
-      <label>اسم الدورة</label>
-      <select id="courseName" onchange="handleCourseChange()">
-        <option disabled selected>اختر الدورة</option>
-        <option>شرطة عسكرية</option>
-        <option>الشؤون الإدارية</option>
-        <option>دورة نقل سجون</option>
-        <option>S.W.A.T</option>
-      </select>
-    </div>
-
     <div class="form-group">
       <label>التوجيه</label>
       <input type="text" id="taskName" oninput="handleTaskInput()" autocomplete="off" />
-    </div>
-
-    <div class="form-group">
-      <label>وقت المباشرة</label>
-      <div class="time-input-group">
-        <select id="pFrom"><option>م</option><option>ص</option></select>
-        <select id="hFrom"></select> :
-        <select id="mFrom"></select>
-      </div>
-
-      <div class="time-input-group" style="margin-top:8px">
-        <select id="pTo"><option>م</option><option>ص</option></select>
-        <select id="hTo"></select> :
-        <select id="mTo"></select>
-      </div>
     </div>
 
     <div class="form-group">
@@ -246,13 +220,30 @@ footer {
     </div>
 
     <div class="form-group" id="unit-group">
-      <label id="unit-label">الوحدات التابعة لك</label>
-      <textarea id="unit" rows="3"></textarea>
+      <label id="unit-label">الـجــهــات الامــنـيــة المـــتــواجــده</label>
+      <textarea id="unit" rows="3" readonly></textarea>
     </div>
 
     <div class="form-group">
       <label>الكوبي ايدي</label>
       <input type="text" id="militaryID" />
+    </div>
+
+    <div class="form-group">
+      <label>هل التقرير بدري؟</label>
+      <select id="earlyReport" onchange="toggleReason()">
+        <option value="no" selected>لا</option>
+        <option value="yes">نعم</option>
+      </select>
+    </div>
+
+    <div class="form-group" id="reason-group" style="display:none">
+      <label>سبب التبكير</label>
+      <select id="earlyReason">
+        <option value="ريستارت">ريستارت</option>
+        <option value="صيانة">صيانة</option>
+        <option value="اعادة اصطفاف">إعادة اصطفاف</option>
+      </select>
     </div>
 
     <button class="btn-copy" onclick="copyReport()">نسخ التقرير النهائي</button>
@@ -268,86 +259,14 @@ footer {
 </footer>
 
 <script>
-// تسهيل الوصول لعناصر DOM
 const el = (id) => document.getElementById(id);
 
 let currentMode = "";
 const fixedUnits = "الامــن الــعـام + امـن الـطـرق + المهام والواجبات الخاصه";
 
 const supervisionRanks = ["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
-const zoneRanks = ["رئيس رقباء","رقيب اول","رقيب"];
-const allRanks = [...supervisionRanks, ...zoneRanks];
 
-// تعيين خيارات الوقت (الساعات والدقائق)
-function initTime() {
-  ["hFrom","hTo"].forEach(id => {
-    const elSelect = el(id);
-    elSelect.innerHTML = "";
-    for(let i = 1; i <= 12; i++) {
-      const val = i < 10 ? "0" + i : i;
-      elSelect.innerHTML += `<option>${val}</option>`;
-    }
-  });
-
-  ["mFrom","mTo"].forEach(id => {
-    const elSelect = el(id);
-    elSelect.innerHTML = "";
-    for(let i = 0; i < 60; i += 5) {
-      const val = i < 10 ? "0" + i : i;
-      elSelect.innerHTML += `<option>${val}</option>`;
-    }
-  });
-}
-
-// تحديث قائمة الرتب
-function updateRankOptions(ranks) {
-  const rankSelect = el("rank");
-  rankSelect.innerHTML = "<option disabled selected>اختر الرتبة</option>";
-  ranks.forEach(r => {
-    rankSelect.innerHTML += `<option>${r}</option>`;
-  });
-}
-
-// فتح الفورم حسب النوع
-function openForm(type) {
-  currentMode = type;
-  el("menu-section").style.display = "none";
-  el("form-section").style.display = "block";
-  initTime();
-
-  const unit = el("unit");
-  unit.readOnly = false;
-  unit.value = "";
-
-  if(type === "supervision") {
-    el("title-text").innerText = "تقرير الإشراف";
-    el("course-dropdown").style.display = "none";
-    el("unit-group").style.display = "block";
-    el("unit-label").innerText = "الـجــهــات الامـلـنـيــة المـــتــواجــده";
-    updateRankOptions(supervisionRanks);
-    unit.value = fixedUnits;
-    unit.readOnly = true;
-  } else if(type === "zone") {
-    el("title-text").innerText = "تقرير ضابط منطقة";
-    el("course-dropdown").style.display = "none";
-    el("unit-group").style.display = "block";
-    el("unit-label").innerText = "الوحدات التابعة لك";
-    updateRankOptions(zoneRanks);
-  } else if(type === "courses") {
-    el("title-text").innerText = "تقرير الدورات";
-    el("course-dropdown").style.display = "block";
-    el("unit-group").style.display = "none";
-    updateRankOptions(allRanks);
-  }
-}
-
-// العودة للقائمة الرئيسية
-function goBack() {
-  el("menu-section").style.display = "block";
-  el("form-section").style.display = "none";
-}
-
-// الخريطة الخاصة بالتوجيهات والمواقع
+// التوجيهات والمواقع
 const taskMap = {
   "سهم 1": "ساندي + بوليتو",
   "سهم 2": "ساندي + بوليتو",
@@ -366,110 +285,110 @@ const taskMap = {
   "غرب 1": "بوليتو",
   "غرب 2": "بوليتو",
   "غرب 3": "بوليتو",
-  "غرب 4": "بوليتو"
+  "غرب 4": "بوليتو",
+  "ساهر 1": "جيم + لام",
+  "ساهر 2": "جيم + لام",
+  "ساهر 3": "دال",
+  "ساهر 4": "دال",
+  "رصد": "جيم + لام + دال",
+  "سيف": "جيم + لام + دال"
 };
 
-// تحديث الموقع تلقائيًا حسب التوجيه مع إضافة النص وليس استبداله
+// فتح الفورم
+function openForm(type) {
+  currentMode = type;
+  el("menu-section").style.display = "none";
+  el("form-section").style.display = "block";
+  updateRankOptions(supervisionRanks);
+  el("unit").value = fixedUnits;
+}
+
+// العودة للقائمة
+function goBack() {
+  el("menu-section").style.display = "block";
+  el("form-section").style.display = "none";
+}
+
+// تحديث الرتب
+function updateRankOptions(ranks) {
+  const rankSelect = el("rank");
+  rankSelect.innerHTML = "<option disabled selected>اختر الرتبة</option>";
+  ranks.forEach(r => { rankSelect.innerHTML += `<option>${r}</option>`; });
+}
+
+// تحديث الموقع تلقائيًا حسب التوجيه
 function handleTaskInput() {
-  if(currentMode === "supervision") {
-    const taskInput = el("taskName").value.trim();
-    let matchedLocations = [];
-
-    for(const key in taskMap) {
-      if(taskInput.includes(key)) {
-        matchedLocations.push(taskMap[key]);
+  const taskInput = el("taskName").value.trim();
+  let matchedLocations = [];
+  for(const key in taskMap) {
+    if(taskInput.includes(key)) matchedLocations.push(taskMap[key]);
+  }
+  if(matchedLocations.length > 0) {
+    let currentLocation = el("location").value;
+    matchedLocations.forEach(locText => {
+      if(!currentLocation.includes(locText)) {
+        if(currentLocation.length>0 && !currentLocation.endsWith(" + ")) currentLocation += " + ";
+        currentLocation += locText;
       }
-    }
-
-    if(matchedLocations.length > 0) {
-      let currentLocation = el("location").value;
-      matchedLocations.forEach(locText => {
-        if(!currentLocation.includes(locText)) {
-          if(currentLocation.length > 0 && !currentLocation.endsWith(" + ")) {
-            currentLocation += " + ";
-          }
-          currentLocation += locText;
-        }
-      });
-      el("location").value = currentLocation;
-    }
+    });
+    el("location").value = currentLocation;
   }
 }
 
-// تحويل الوقت 12 ساعة إلى رقم 24 لتسهيل الحساب
-function to24Hour(h, p) {
-  let hour = parseInt(h, 10);
-  if(p === "م" && hour !== 12) hour += 12;
-  if(p === "ص" && hour === 12) hour = 0;
-  return hour;
+// إظهار سبب التبكير
+function toggleReason() {
+  const early = el("earlyReport").value;
+  el("reason-group").style.display = early === "yes" ? "block" : "none";
 }
 
-// تحويل رقم 24 إلى 12 ساعة مع AM/PM
-function to12Hour(hour) {
-  let p = "ص";
-  let h = hour;
-  if(hour === 0) {
-    h = 12;
-  } else if(hour >= 12) {
-    p = "م";
-    if(hour > 12) h = hour - 12;
-  }
-  return {h: h < 10 ? "0"+h : h.toString(), p};
+// الحصول على الوقت بتوقيت السعودية مع خصم ساعة
+function getSaudiTimeMinusHour() {
+  let now = new Date();
+  // تحويل التوقيت إلى السعودية (UTC+3)
+  let utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  let saudiTime = new Date(utc + 3*3600000);
+  // خصم ساعة
+  saudiTime.setHours(saudiTime.getHours() -1);
+  return saudiTime;
 }
 
-// نسخ التقرير مع حساب الوقت تلقائيًا بمدة ساعة
+// تحويل وقت 24 ساعة إلى 12 ساعة
+function to12Hour(date) {
+  let h = date.getHours();
+  let m = date.getMinutes();
+  let p = h >= 12 ? "م" : "ص";
+  if(h === 0) h = 12;
+  if(h > 12) h -=12;
+  return {h:h<10?"0"+h:h.toString(), m:m<10?"0"+m:m.toString(), p};
+}
+
+// نسخ التقرير النهائي
 function copyReport() {
   const task = el("taskName").value.trim() || "...";
-
-  // نحصل على وقت البداية من الفورم (12 ساعة)
-  let hFrom = el("hFrom").value;
-  let mFrom = el("mFrom").value;
-  let pFrom = el("pFrom").value;
-
-  // نحول البداية إلى 24 ساعة
-  let startHour24 = to24Hour(hFrom, pFrom);
-  let startMinute = parseInt(mFrom, 10);
-
-  // نحسب نهاية التقرير بعد ساعة
-  let endHour24 = startHour24 + 1;
-  let endMinute = startMinute;
-
-  if(endHour24 >= 24) endHour24 -= 24; // ضبط الوقت لو تعدى 24
-
-  // نحول الوقت إلى 12 ساعة لعرضه
-  let startTime = to12Hour(startHour24);
-  let endTime = to12Hour(endHour24);
-
-  // الموقع
   const loc = el("location").value.trim() || "...";
-
-  // الرتبة
   const rank = el("rank").value || "...";
-
-  // الكوبي ايدي
   const id = el("militaryID").value || "0000";
+  const unitText = fixedUnits;
 
-  // الوحدات (لنوع التقارير)
-  let unitText = "";
-  if(currentMode === "courses") {
-    unitText = "";
-  } else if(currentMode === "supervision") {
-    unitText = fixedUnits;
-  } else {
-    unitText = el("unit").value.trim() || "";
+  // الوقت
+  let startDate = getSaudiTimeMinusHour();
+  let endDate = new Date(startDate.getTime() + 60*60000); // ساعة
+  const start = to12Hour(startDate);
+  const end = to12Hour(endDate);
+
+  // سبب التبكير
+  let early = el("earlyReport").value;
+  let reasonText = "";
+  if(early === "yes") {
+    reasonText = `\n\n** \` سبب التبكير : ${el("earlyReason").value} \`**`;
   }
 
-  // صيغة التقرير المطلوبة:
-  let report = `** \`تـم اسـتـلام مـهـام ( ${task} )  من السـاعة ${startTime.h}:${mFrom} ${startTime.p} اٍلـى الـساعة ${endTime.h}:${mFrom} ${endTime.p}\`**\n\n`;
+  let report = `** \`تـم اسـتـلام مـهـام ( ${task} )  من السـاعة ${start.h}:${start.m} ${start.p} اٍلـى الـساعة ${end.h}:${end.m} ${end.p} \`**\n\n`;
   report += `** \`الـمـنـطـقـة : ${loc} \`** \n\n`;
-  if(currentMode === "supervision") {
-    report += `** \`الـجــهــات الامــنـيــة المـــتــواجــده : \`** \n\n`;
-    report += `** \`${unitText}\`** \n\n`;
-  } else if(currentMode !== "courses") {
-    report += `** \`الوحدات التابعة لك : \`** \n\n`;
-    report += `** \`${unitText}\`** \n\n`;
-  }
-  report += `** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\`** @${id}`;
+  report += `** \`الـجــهــات الامــنـيــة المـــتــواجــده : \`** \n\n`;
+  report += `** \`${unitText}\`** \n\n`;
+  report += `** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\`** <@${id}>`;
+  report += reasonText;
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
