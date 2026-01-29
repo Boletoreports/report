@@ -228,7 +228,7 @@ zone:["رئيس رقباء","رقيب اول","رقيب"],
 courses:["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب"]
 };
 
-const fixedUnits="الامن العام + امن الطرق + المهام الخاصة";
+const fixedUnits="الامــن الــعـام + امـن الـطـرق + الـمـهـام و الـواجـبـات الـخـاصـة";
 const el=id=>document.getElementById(id);
 
 function openForm(type){
@@ -247,7 +247,7 @@ type==="supervision"?"تقرير الإشراف":
 type==="zone"?"تقرير ضابط منطقة":"تقرير الدورات";
 
 el("unitLabel").innerText=
-type==="supervision"?"الجهات الأمنية المتواجدة":"الوحدات التابعة لك";
+type==="supervision"?"الـجــهــات الامــنـيــة المـــتــواجــده":"الوحدات التابعة لك";
 
 updateRanks(ranks[type]);
 }
@@ -257,10 +257,20 @@ el("rank").innerHTML="<option disabled selected>اختر الرتبة</option>";
 arr.forEach(r=>el("rank").innerHTML+=`<option>${r}</option>`);
 }
 
-// تغيير الموقع تلقائي للتوجيهات في تقارير الإشراف
+// إضافة الموقع تلقائياً بدون مسح الموجود
 el("taskName").addEventListener("input",()=>{
 if(currentMode==="supervision"){
-el("location").value=taskMap[el("taskName").value.trim()]||"";
+  const task = el("taskName").value.trim();
+  const locationText = taskMap[task];
+  if(locationText){
+    let current = el("location").value;
+    // لو الموقع غير موجود بالفعل ضيفه
+    if(current.indexOf(locationText) === -1){
+      if(current.length>0) current += " + ";
+      current += locationText;
+      el("location").value = current;
+    }
+  }
 }
 });
 
@@ -279,16 +289,23 @@ function fmt(t){
   return `${h}:${m} ${p}`;
 }
 
-// نسخ التقرير
+// نسخ التقرير بالفورمات الجديد
 function copyReport(){
 const now=saudiTime();
 const before=new Date(now-3600000); // ساعة قبل
 
-const report=
-`تم استلام مهام (${el("taskName").value||"..."}) من ${fmt(before)} إلى ${fmt(now)}\n\n`+
-`الموقع : ${el("location").value||"..."}\n\n`+
-(currentMode!=="courses"?`${el("unitLabel").innerText} :\n${el("unit").value}\n\n`:"")+
-`تم رفع التقرير من قبل (${el("rank").value||"..."}) : <@${el("copyID").value||"0000"}>`;
+const taskText = el("taskName").value||"...";
+const locationText = el("location").value||"...";
+const unitText = el("unit").value||"...";
+const rankText = el("rank").value||"...";
+const copyID = el("copyID").value||"0000";
+
+let report = 
+`** \`تـم اسـتـلام مـهـام ( ${taskText} )  من السـاعة ${fmt(before)} اٍلـى الـساعة ${fmt(now)}\` **\n\n`+
+`** \`الـمـنـطـقـة : ${locationText} \` **\n\n`+
+(currentMode==="supervision"?`** \`الـجــهــات الامــنـيــة المـــتــواجــده : \` **\n\n`+
+`** \`${unitText}\` **\n\n`:"")+
+`** \`تم رفـــع التـقـريـر من قبــل ( ${rankText} ) :\` ** @${copyID}`;
 
 navigator.clipboard.writeText(report);
 alert("تم نسخ التقرير ✅");
