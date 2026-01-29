@@ -20,13 +20,17 @@
 body{
   margin:0;
   font-family:'Cairo',sans-serif;
-  background:radial-gradient(circle,#1a1a1a,#050505);
+  background:#0a0a0a;
   color:#fff;
   min-height:100vh;
   overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding-top:5vh;
 }
 
-/* خلفية اللوجو */
+/* خلفية اللوجو محسّنة */
 .bg-logos{
   position:fixed;
   inset:0;
@@ -34,53 +38,50 @@ body{
   z-index:0;
   overflow:hidden;
 }
-.bg-logos img{
+.bg-logos div{
   position:absolute;
-  width:220px;
+  width:150px;
+  height:150px;
+  background-size:contain;
+  background-repeat:no-repeat;
   opacity:.12;
-  will-change: transform;
+  animation-timing-function:ease-in-out;
+  animation-iteration-count:infinite;
 }
-.logo1{
-  top:10%;
-  left:5%;
-  animation:float1 25s ease-in-out infinite;
-}
-.logo2{
-  bottom:10%;
-  right:5%;
-  animation:float2 30s ease-in-out infinite;
-}
+.logo1{top:5%; left:5%; background-image:url('logo1.gif'); animation:float1 25s infinite;}
+.logo2{bottom:5%; right:5%; background-image:url('logo2.gif'); animation:float2 30s infinite;}
 
 @keyframes float1{
   0%{transform:translateY(0) rotate(0deg);}
-  25%{transform:translateY(-30px) rotate(10deg);}
+  25%{transform:translateY(-25px) rotate(10deg);}
   50%{transform:translateY(0) rotate(0deg);}
-  75%{transform:translateY(30px) rotate(-10deg);}
+  75%{transform:translateY(25px) rotate(-10deg);}
   100%{transform:translateY(0) rotate(0deg);}
 }
 
 @keyframes float2{
   0%{transform:translateY(0) rotate(0deg);}
-  20%{transform:translateY(25px) rotate(-10deg);}
-  40%{transform:translateY(-20px) rotate(5deg);}
-  60%{transform:translateY(15px) rotate(-5deg);}
+  20%{transform:translateY(20px) rotate(-10deg);}
+  40%{transform:translateY(-15px) rotate(5deg);}
+  60%{transform:translateY(10px) rotate(-5deg);}
   80%{transform:translateY(-10px) rotate(10deg);}
   100%{transform:translateY(0) rotate(0deg);}
 }
 
+/* Container */
 .container{
   position:relative;
   z-index:1;
   width:90%;
   max-width:450px;
-  margin:5vh auto;
   background:var(--card-bg);
-  backdrop-filter:blur(15px);
+  backdrop-filter:blur(5px);
   border:1px solid var(--border-color);
   border-radius:20px;
-  padding:35px;
+  padding:25px;
 }
 
+/* Layout */
 h2{text-align:center;color:var(--primary-blue)}
 
 .menu-card{
@@ -89,27 +90,26 @@ h2{text-align:center;color:var(--primary-blue)}
   padding:18px;
   border-radius:15px;
   cursor:pointer;
-  margin-bottom:15px;
+  margin-bottom:12px;
 }
 
-.form-group{margin-bottom:18px}
+.form-group{margin-bottom:15px}
 label{color:var(--text-gray);font-size:14px}
 
 input,textarea{
   width:100%;
-  padding:12px;
+  padding:10px;
   background:rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.1);
-  border-radius:10px;
+  border-radius:8px;
   color:#fff;
   font-family:'Cairo';
 }
 
-/* قائمة الرتبة واضحة */
 select{
   width:100%;
-  padding:12px;
-  border-radius:10px;
+  padding:10px;
+  border-radius:8px;
   border:1px solid rgba(255,255,255,.2);
   background:#ffffff;
   color:#000000;
@@ -122,7 +122,7 @@ select option{
 
 .btn-copy{
   width:100%;
-  padding:15px;
+  padding:14px;
   background:linear-gradient(135deg,#00829d,#00d4ff);
   border:none;
   border-radius:10px;
@@ -130,10 +130,11 @@ select option{
   font-size:16px;
   font-weight:700;
   cursor:pointer;
+  margin-top:10px;
 }
 
 .back-link{
-  margin-top:15px;
+  margin-top:10px;
   text-align:center;
   cursor:pointer;
   color:var(--text-gray);
@@ -144,7 +145,7 @@ select option{
 /* Footer */
 .footer{
   text-align:center;
-  margin-top:20px;
+  margin-top:15px;
   font-size:12px;
   color:rgba(255,255,255,0.5);
 }
@@ -154,8 +155,8 @@ select option{
 <body>
 
 <div class="bg-logos">
-  <img src="logo1.gif" class="logo1">
-  <img src="logo2.gif" class="logo2">
+  <div class="logo1"></div>
+  <div class="logo2"></div>
 </div>
 
 <div class="container">
@@ -210,16 +211,10 @@ select option{
 let currentMode="";
 
 const taskMap={
-"سهم":"ساندي + بوليتو",
-"درع":"ساندي + بوليتو",
-"جنوب":"ساندي",
-"غرب":"بوليتو",
-"ساهر 1":"جيم + لام",
-"ساهر 2":"جيم + لام",
-"ساهر 3":"دال",
-"ساهر 4":"دال",
-"رصد":"جيم + لام + دال",
-"سيف":"جيم + لام + دال"
+  "سهم 1":"ساندي + بوليتو","سهم 2":"ساندي + بوليتو","سهم 3":"ساندي + بوليتو","سهم 4":"ساندي + بوليتو","سهم 5":"ساندي + بوليتو",
+  "درع 1":"ساندي + بوليتو","درع 2":"ساندي + بوليتو","درع 3":"ساندي + بوليتو","درع 4":"ساندي + بوليتو","درع 5":"ساندي + بوليتو",
+  "جنوب 1":"ساندي","جنوب 2":"ساندي","جنوب 3":"ساندي","جنوب 4":"ساندي",
+  "غرب 1":"بوليتو","غرب 2":"بوليتو","غرب 3":"بوليتو","غرب 4":"بوليتو"
 };
 
 const ranks={
@@ -264,8 +259,7 @@ if(currentMode==="supervision"){
   const locationText = taskMap[task];
   if(locationText){
     let current = el("location").value;
-    // لو الموقع غير موجود بالفعل ضيفه
-    if(current.indexOf(locationText) === -1){
+    if(!current.includes(locationText)){
       if(current.length>0) current += " + ";
       current += locationText;
       el("location").value = current;
@@ -280,14 +274,8 @@ el("form-section").style.display="none";
 }
 
 // الوقت بتوقيت السعودية
-function saudiTime(){
-  return new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Riyadh"}));
-}
-function fmt(t){
-  let h=t.getHours(),m=String(t.getMinutes()).padStart(2,"0");
-  let p=h>=12?"م":"ص"; h=h%12||12;
-  return `${h}:${m} ${p}`;
-}
+function saudiTime(){ return new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Riyadh"})); }
+function fmt(t){ let h=t.getHours(),m=String(t.getMinutes()).padStart(2,"0"); let p=h>=12?"م":"ص"; h=h%12||12; return `${h}:${m} ${p}`; }
 
 // نسخ التقرير بالفورمات الجديد
 function copyReport(){
@@ -303,8 +291,7 @@ const copyID = el("copyID").value||"0000";
 let report = 
 `** \`تـم اسـتـلام مـهـام ( ${taskText} )  من السـاعة ${fmt(before)} اٍلـى الـساعة ${fmt(now)}\` **\n\n`+
 `** \`الـمـنـطـقـة : ${locationText} \` **\n\n`+
-(currentMode==="supervision"?`** \`الـجــهــات الامــنـيــة المـــتــواجــده : \` **\n\n`+
-`** \`${unitText}\` **\n\n`:"")+
+(currentMode==="supervision"?`** \`الـجــهــات الامــنـيــة المـــتــواجــده : \` **\n\n** \`${unitText}\` **\n\n`:"")+
 `** \`تم رفـــع التـقـريـر من قبــل ( ${rankText} ) :\` ** @${copyID}`;
 
 navigator.clipboard.writeText(report);
