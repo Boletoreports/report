@@ -1,302 +1,320 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>نظام التقارير العسكرية الذكي</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
 
-:root{
-  --primary-blue:#00d4ff;
-  --card-bg:rgba(20,20,20,.85);
-  --border-color:rgba(0,212,255,.2);
-  --text-gray:#b0b0b0;
+:root {
+  --primary-blue: #00d4ff;
+  --card-bg: rgba(20, 20, 20, 0.85);
+  --border-color: rgba(0, 212, 255, 0.2);
+  --text-gray: #b0b0b0;
 }
 
-::selection{background:#00d4ff;color:#0a0a0a}
-
-body{
-  margin:0;
-  font-family:'Cairo',sans-serif;
-  background:#0a0a0a;
-  color:#fff;
-  min-height:100vh;
-  overflow:hidden;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  padding-top:5vh;
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Cairo', sans-serif;
+  background: #0a0a0a;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 100vh;
 }
 
-/* خلفية اللوجو محسّنة */
-.bg-logos{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
-  overflow:hidden;
-}
-.bg-logos div{
-  position:absolute;
-  width:120px;
-  height:120px;
-  background-size:contain;
-  background-repeat:no-repeat;
-  opacity:.15;
-  animation-timing-function:ease-in-out;
-  animation-iteration-count:infinite;
-}
-.logo1{top:5%; left:5%; background-image:url('logo1.gif'); animation:float1 25s infinite;}
-.logo2{bottom:5%; right:5%; background-image:url('logo2.gif'); animation:float2 30s infinite;}
-
-@keyframes float1{
-  0%{transform:translateY(0) rotate(0deg);}
-  25%{transform:translateY(-20px) rotate(10deg);}
-  50%{transform:translateY(0) rotate(0deg);}
-  75%{transform:translateY(20px) rotate(-10deg);}
-  100%{transform:translateY(0) rotate(0deg);}
+.container {
+  margin-top: 5vh;
+  width: 90%;
+  max-width: 450px;
+  background: var(--card-bg);
+  backdrop-filter: blur(5px);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 25px;
+  z-index: 1;
 }
 
-@keyframes float2{
-  0%{transform:translateY(0) rotate(0deg);}
-  20%{transform:translateY(20px) rotate(-10deg);}
-  40%{transform:translateY(-15px) rotate(5deg);}
-  60%{transform:translateY(10px) rotate(-5deg);}
-  80%{transform:translateY(-10px) rotate(10deg);}
-  100%{transform:translateY(0) rotate(0deg);}
+h2 {
+  text-align: center;
+  color: var(--primary-blue);
+  margin-bottom: 20px;
 }
 
-/* Container */
-.container{
-  position:relative;
-  z-index:1;
-  width:90%;
-  max-width:450px;
-  background:var(--card-bg);
-  backdrop-filter:blur(5px);
-  border:1px solid var(--border-color);
-  border-radius:20px;
-  padding:25px;
+.menu-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 18px;
+  border-radius: 15px;
+  cursor: pointer;
+  margin-bottom: 12px;
 }
 
-/* Layout */
-h2{text-align:center;color:var(--primary-blue); margin-bottom:20px;}
-
-.menu-card{
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.05);
-  padding:18px;
-  border-radius:15px;
-  cursor:pointer;
-  margin-bottom:12px;
+.form-group {
+  margin-bottom: 15px;
 }
 
-.form-group{margin-bottom:15px}
-label{color:var(--text-gray);font-size:14px}
-
-input,textarea{
-  width:100%;
-  padding:10px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:8px;
-  color:#fff;
-  font-family:'Cairo';
+label {
+  color: var(--text-gray);
+  font-size: 14px;
 }
 
-select{
-  width:100%;
-  padding:10px;
-  border-radius:8px;
-  border:1px solid rgba(255,255,255,.2);
-  background:#ffffff;
-  color:#000000;
-  font-family:'Cairo';
-}
-select option{
-  color:#000000;
-  background:#ffffff;
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Cairo';
 }
 
-.btn-copy{
-  width:100%;
-  padding:14px;
-  background:linear-gradient(135deg,#00829d,#00d4ff);
-  border:none;
-  border-radius:10px;
-  color:#fff;
-  font-size:16px;
-  font-weight:700;
-  cursor:pointer;
-  margin-top:10px;
+select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #fff;
+  color: #000;
+  font-family: 'Cairo';
 }
 
-.back-link{
-  margin-top:10px;
-  text-align:center;
-  cursor:pointer;
-  color:var(--text-gray);
+select option {
+  color: #000;
+  background: #fff;
 }
 
-#form-section{display:none}
+.btn-copy {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #00829d, #00d4ff);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+}
 
-/* Footer */
-.footer{
-  text-align:center;
-  margin-top:15px;
-  font-size:12px;
-  color:rgba(255,255,255,0.5);
+.back-link {
+  margin-top: 10px;
+  text-align: center;
+  cursor: pointer;
+  color: var(--text-gray);
+}
+
+#form-section {
+  display: none;
+}
+
+/* Footer مثبت أسفل الصفحة */
+.footer {
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 15px 0;
+  position: fixed;
+  bottom: 0;
+  background: #0a0a0a;
+  border-top: 1px solid rgba(0, 212, 255, 0.2);
+  font-family: 'Cairo', sans-serif;
+  z-index: 10;
 }
 </style>
 </head>
 
 <body>
 
-<div class="bg-logos">
-  <div class="logo1"></div>
-  <div class="logo2"></div>
-</div>
-
 <div class="container">
 
-<div id="menu-section">
-<h2>بوليتو - التقارير</h2>
-<div class="menu-card" onclick="openForm('supervision')">تقارير الإشراف</div>
-<div class="menu-card" onclick="openForm('zone')">تقارير ضابط منطقة</div>
-<div class="menu-card" onclick="openForm('courses')">تقارير الدورات</div>
+  <div id="menu-section">
+    <h2>بوليتو - التقارير</h2>
+    <div class="menu-card" onclick="openForm('supervision')">تقارير الإشراف</div>
+    <div class="menu-card" onclick="openForm('zone')">تقارير ضابط منطقة</div>
+    <div class="menu-card" onclick="openForm('courses')">تقارير الدورات</div>
+  </div>
+
+  <div id="form-section">
+    <h2 id="titleText"></h2>
+
+    <div class="form-group">
+      <label>التوجيه</label>
+      <input id="taskName" />
+    </div>
+
+    <div class="form-group">
+      <label>الموقع</label>
+      <input id="location" />
+    </div>
+
+    <div class="form-group">
+      <label>الرتبة</label>
+      <select id="rank"></select>
+    </div>
+
+    <div class="form-group" id="unitGroup">
+      <label id="unitLabel"></label>
+      <textarea id="unit"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>الكوبي ايدي</label>
+      <input id="copyID" placeholder="1234567890" />
+    </div>
+
+    <button class="btn-copy" onclick="copyReport()">نسخ التقرير</button>
+    <div class="back-link" onclick="goBack()">رجوع</div>
+  </div>
+
 </div>
 
-<div id="form-section">
-<h2 id="titleText"></h2>
-
-<div class="form-group">
-<label>التوجيه</label>
-<input id="taskName">
-</div>
-
-<div class="form-group">
-<label>الموقع</label>
-<input id="location">
-</div>
-
-<div class="form-group">
-<label>الرتبة</label>
-<select id="rank"></select>
-</div>
-
-<div class="form-group" id="unitGroup">
-<label id="unitLabel"></label>
-<textarea id="unit"></textarea>
-</div>
-
-<div class="form-group">
-<label>الكوبي ايدي</label>
-<input id="copyID" placeholder="1234567890">
-</div>
-
-<button class="btn-copy" onclick="copyReport()">نسخ التقرير</button>
-<div class="back-link" onclick="goBack()">رجوع</div>
-</div>
-
-</div> <!-- نهاية container -->
-
-<!-- Footer -->
 <div class="footer">
-حقوق الملكية &copy; قطاع الأمن العام بمقاطعة بوليتو
+  حقوق الملكية &copy; قطاع الأمن العام بمقاطعة بوليتو
 </div>
 
 <script>
-let currentMode="";
+  let currentMode = "";
 
-const taskMap={
-  "سهم 1":"ساندي + بوليتو","سهم 2":"ساندي + بوليتو","سهم 3":"ساندي + بوليتو","سهم 4":"ساندي + بوليتو","سهم 5":"ساندي + بوليتو",
-  "درع 1":"ساندي + بوليتو","درع 2":"ساندي + بوليتو","درع 3":"ساندي + بوليتو","درع 4":"ساندي + بوليتو","درع 5":"ساندي + بوليتو",
-  "جنوب 1":"ساندي","جنوب 2":"ساندي","جنوب 3":"ساندي","جنوب 4":"ساندي",
-  "غرب 1":"بوليتو","غرب 2":"بوليتو","غرب 3":"بوليتو","غرب 4":"بوليتو"
-};
+  const taskMap = {
+    "سهم 1": "ساندي + بوليتو",
+    "سهم 2": "ساندي + بوليتو",
+    "سهم 3": "ساندي + بوليتو",
+    "سهم 4": "ساندي + بوليتو",
+    "سهم 5": "ساندي + بوليتو",
+    "درع 1": "ساندي + بوليتو",
+    "درع 2": "ساندي + بوليتو",
+    "درع 3": "ساندي + بوليتو",
+    "درع 4": "ساندي + بوليتو",
+    "درع 5": "ساندي + بوليتو",
+    "جنوب 1": "ساندي",
+    "جنوب 2": "ساندي",
+    "جنوب 3": "ساندي",
+    "جنوب 4": "ساندي",
+    "غرب 1": "بوليتو",
+    "غرب 2": "بوليتو",
+    "غرب 3": "بوليتو",
+    "غرب 4": "بوليتو",
+  };
 
-const ranks={
-supervision:["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"],
-zone:["رئيس رقباء","رقيب اول","رقيب"],
-courses:["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب"]
-};
+  const ranks = {
+    supervision: [
+      "عميد ركن",
+      "عقيد ركن",
+      "مقدم ركن",
+      "رائد",
+      "نقيب",
+      "ملازم اول",
+      "ملازم",
+    ],
+    zone: ["رئيس رقباء", "رقيب اول", "رقيب"],
+    courses: [
+      "عميد ركن",
+      "عقيد ركن",
+      "مقدم ركن",
+      "رائد",
+      "نقيب",
+      "ملازم اول",
+      "ملازم",
+      "رئيس رقباء",
+      "رقيب اول",
+      "رقيب",
+    ],
+  };
 
-const fixedUnits="الامــن الــعـام + امـن الـطـرق + الـمـهـام و الـواجـبـات الـخـاصـة";
-const el=id=>document.getElementById(id);
+  const fixedUnits = "الامــن الــعـام + امـن الـطـرق + الـمـهـام و الـواجـبـات الـخـاصـة";
+  const el = (id) => document.getElementById(id);
 
-function openForm(type){
-currentMode=type;
-el("menu-section").style.display="none";
-el("form-section").style.display="block";
-el("taskName").value="";
-el("location").value="";
+  function openForm(type) {
+    currentMode = type;
+    el("menu-section").style.display = "none";
+    el("form-section").style.display = "block";
+    el("taskName").value = "";
+    el("location").value = "";
 
-el("unitGroup").style.display= type==="courses" ? "none" : "block";
-el("unit").readOnly= type==="supervision";
-el("unit").value= type==="supervision" ? fixedUnits : "";
+    el("unitGroup").style.display = type === "courses" ? "none" : "block";
+    el("unit").readOnly = type === "supervision";
+    el("unit").value = type === "supervision" ? fixedUnits : "";
 
-el("titleText").innerText=
-type==="supervision"?"تقرير الإشراف":
-type==="zone"?"تقرير ضابط منطقة":"تقرير الدورات";
+    el("titleText").innerText =
+      type === "supervision"
+        ? "تقرير الإشراف"
+        : type === "zone"
+        ? "تقرير ضابط منطقة"
+        : "تقرير الدورات";
 
-el("unitLabel").innerText=
-type==="supervision"?"الـجــهــات الامــنـيــة المـــتــواجــده":"الوحدات التابعة لك";
+    el("unitLabel").innerText =
+      type === "supervision" ? "الـجــهــات الامــنـيــة المـــتــواجــده" : "الوحدات التابعة لك";
 
-updateRanks(ranks[type]);
-}
-
-function updateRanks(arr){
-el("rank").innerHTML="<option disabled selected>اختر الرتبة</option>";
-arr.forEach(r=>el("rank").innerHTML+=`<option>${r}</option>`);
-}
-
-// إضافة الموقع تلقائياً بدون مسح الموجود
-el("taskName").addEventListener("input",()=>{
-if(currentMode==="supervision"){
-  const task = el("taskName").value.trim();
-  const locationText = taskMap[task];
-  if(locationText){
-    let current = el("location").value;
-    if(!current.includes(locationText)){
-      if(current.length>0) current += " + ";
-      current += locationText;
-      el("location").value = current;
-    }
+    updateRanks(ranks[type]);
   }
-}
-});
 
-function goBack(){
-el("menu-section").style.display="block";
-el("form-section").style.display="none";
-}
+  function updateRanks(arr) {
+    el("rank").innerHTML = "<option disabled selected>اختر الرتبة</option>";
+    arr.forEach((r) => (el("rank").innerHTML += `<option>${r}</option>`));
+  }
 
-// الوقت بتوقيت السعودية
-function saudiTime(){ return new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Riyadh"})); }
-function fmt(t){ let h=t.getHours(),m=String(t.getMinutes()).padStart(2,"0"); let p=h>=12?"م":"ص"; h=h%12||12; return `${h}:${m} ${p}`; }
+  // إضافة الموقع تلقائياً بدون مسح الموجود
+  el("taskName").addEventListener("input", () => {
+    if (currentMode === "supervision") {
+      const task = el("taskName").value.trim();
+      const locationText = taskMap[task];
+      if (locationText) {
+        let current = el("location").value;
+        if (!current.includes(locationText)) {
+          if (current.length > 0) current += " + ";
+          current += locationText;
+          el("location").value = current;
+        }
+      }
+    }
+  });
 
-// نسخ التقرير بالفورمات الجديد
-function copyReport(){
-const now=saudiTime();
-const before=new Date(now-3600000); // ساعة قبل
+  function goBack() {
+    el("menu-section").style.display = "block";
+    el("form-section").style.display = "none";
+  }
 
-const taskText = el("taskName").value||"...";
-const locationText = el("location").value||"...";
-const unitText = el("unit").value||"...";
-const rankText = el("rank").value||"...";
-const copyID = el("copyID").value||"0000";
+  // الوقت بتوقيت السعودية
+  function saudiTime() {
+    return new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Riyadh" }));
+  }
+  function fmt(t) {
+    let h = t.getHours(),
+      m = String(t.getMinutes()).padStart(2, "0");
+    let p = h >= 12 ? "م" : "ص";
+    h = h % 12 || 12;
+    return `${h}:${m} ${p}`;
+  }
 
-let report = 
-`** \`تـم اسـتـلام مـهـام ( ${taskText} )  من السـاعة ${fmt(before)} اٍلـى الـساعة ${fmt(now)}\` **\n\n`+
-`** \`الـمـنـطـقـة : ${locationText} \` **\n\n`+
-(currentMode==="supervision"?`** \`الـجــهــات الامــنـيــة المـــتــواجــده : \` **\n\n** \`${unitText}\` **\n\n`:"")+
-`** \`تم رفـــع التـقـريـر من قبــل ( ${rankText} ) :\` ** @${copyID}`;
+  // نسخ التقرير بالفورمات الجديد
+  function copyReport() {
+    const now = saudiTime();
+    const before = new Date(now - 3600000); // ساعة قبل
 
-navigator.clipboard.writeText(report);
-alert("تم نسخ التقرير ✅");
-}
+    const taskText = el("taskName").value || "...";
+    const locationText = el("location").value || "...";
+    const unitText = el("unit").value || "...";
+    const rankText = el("rank").value || "...";
+    const copyID = el("copyID").value || "0000";
+
+    let report =
+      `** \`تـم اسـتـلام مـهـام ( ${taskText} )  من السـاعة ${fmt(before)} اٍلـى الـساعة ${fmt(now)}\` **\n\n` +
+      `** \`الـمـنـطـقـة : ${locationText} \` **\n\n` +
+      (currentMode === "supervision"
+        ? `** \`الـجــهــات الامــنـيــة المـــتــواجــده : \` **\n\n** \`${unitText}\` **\n\n`
+        : "") +
+      `** \`تم رفـــع التـقـريـر من قبــل ( ${rankText} ) :\` ** @${copyID}`;
+
+    navigator.clipboard.writeText(report);
+    alert("تم نسخ التقرير ✅");
+  }
 </script>
 
 </body>
