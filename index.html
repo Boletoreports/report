@@ -179,11 +179,9 @@ select { color:#000; }
 <h2 id="title-text">تقديم التقرير</h2>
 
 <!-- التوجيه -->
-<div class="form-group">
-<label>التوجيه</label>
-<select id="taskName" onchange="handleTaskInput()">
-  <option disabled selected>اختر التوجيه</option>
-</select>
+<div class="form-group" id="taskGroup">
+<label>التوجيه (اكتب يدوي)</label>
+<input type="text" id="taskName" placeholder="اكتب التوجيه">
 </div>
 
 <!-- الموقع -->
@@ -305,7 +303,7 @@ const supervisionTasks = {
   "سيف": "جيم + لام + دال"
 };
 
-// الدورات - قائمة
+// الدورات - الموقع ثابت حسب الدورة
 const courseTasks = {
   "شرطة عسكرية": "ساندي + بوليتو + لوس",
   "الشؤون الادارية": "ساندي + بوليتو + لوس",
@@ -332,16 +330,6 @@ function initRankOptions(ranks){
   ranks.forEach(x=> r.innerHTML+=`<option>${x}</option>`);
 }
 
-function populateTasks(){
-  const taskSelect = el("taskName");
-  taskSelect.innerHTML="<option disabled selected>اختر التوجيه</option>";
-  let tasks = [];
-  if(currentMode==="supervision") tasks = Object.keys(supervisionTasks);
-  else if(currentMode==="zone") tasks = Object.keys(zoneTasks);
-  else if(currentMode==="courses") tasks = Object.keys(courseTasks);
-  tasks.forEach(t=> taskSelect.innerHTML+=`<option value="${t}">${t}</option>`);
-}
-
 function openForm(type){
   currentMode=type;
   el("menu-section").style.display="none";
@@ -354,19 +342,14 @@ function openForm(type){
   initRankOptions(currentMode==="supervision"?supervisionRanks:(currentMode==="zone"?zoneRanks:allRanks));
   el("earlySelect").value="no";
   toggleEarlyReason();
-  populateTasks();
   el("unitGroup").style.display = (currentMode==="zone") ? "block" : "none";
   el("courseGroup").style.display = (currentMode==="courses") ? "block" : "none";
-}
-
-function handleTaskInput(){
-  const taskInput = el("taskName").value||"";
-  if(currentMode==="supervision"){
-    el("location").value = supervisionTasks[taskInput] || "";
-  }else if(currentMode==="zone"){
-    el("location").value = zoneTasks[taskInput] || "";
-  }else if(currentMode==="courses"){
-    el("location").value = courseTasks[taskInput] || "";
+  if(currentMode==="courses"){
+    // اضبط الموقع تلقائياً عند اختيار الدورة
+    el("courseName").onchange = function(){
+      const val = el("courseName").value;
+      el("location").value = courseTasks[val] || "";
+    };
   }
 }
 
