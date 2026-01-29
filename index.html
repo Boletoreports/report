@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>نظام التقارير العسكرية الذكي</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
 
@@ -31,14 +29,14 @@ overflow:hidden;
 .bg-logos{
 position:fixed;
 inset:0;
-z-index:0;
 pointer-events:none;
+z-index:0;
 }
 .bg-logos img{
 position:absolute;
 width:220px;
 opacity:.12;
-animation:float 24s ease-in-out infinite;
+animation:float 25s ease-in-out infinite;
 }
 .logo1{top:8%;left:5%}
 .logo2{bottom:8%;right:5%}
@@ -67,16 +65,13 @@ h2{text-align:center;color:var(--primary-blue)}
 .menu-card{
 background:rgba(255,255,255,.03);
 border:1px solid rgba(255,255,255,.05);
-padding:20px;
+padding:18px;
 border-radius:15px;
 cursor:pointer;
-display:flex;
-gap:15px;
-align-items:center;
 margin-bottom:15px;
 }
 
-.form-group{margin-bottom:20px}
+.form-group{margin-bottom:18px}
 label{color:var(--text-gray);font-size:14px}
 
 input,select,textarea{
@@ -101,7 +96,12 @@ font-weight:700;
 cursor:pointer;
 }
 
-.back-link{text-align:center;margin-top:15px;color:var(--text-gray);cursor:pointer}
+.back-link{
+margin-top:15px;
+text-align:center;
+cursor:pointer;
+color:var(--text-gray);
+}
 
 #form-section{display:none}
 </style>
@@ -118,14 +118,13 @@ cursor:pointer;
 
 <div id="menu-section">
 <h2>بوليتو - التقارير</h2>
-
 <div class="menu-card" onclick="openForm('supervision')">تقارير الإشراف</div>
 <div class="menu-card" onclick="openForm('zone')">تقارير ضابط منطقة</div>
 <div class="menu-card" onclick="openForm('courses')">تقارير الدورات</div>
 </div>
 
 <div id="form-section">
-<h2 id="title-text"></h2>
+<h2 id="titleText"></h2>
 
 <div class="form-group">
 <label>التوجيه</label>
@@ -142,8 +141,8 @@ cursor:pointer;
 <select id="rank"></select>
 </div>
 
-<div class="form-group" id="unit-group">
-<label id="unit-label"></label>
+<div class="form-group" id="unitGroup">
+<label id="unitLabel"></label>
 <textarea id="unit"></textarea>
 </div>
 
@@ -160,69 +159,86 @@ cursor:pointer;
 
 <script>
 let currentMode="";
-const fixedUnits="الامــن الــعـام + امـن الـطـرق + المهام والواجبات الخاصه";
 
-const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
-const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
-const allRanks=[...supervisionRanks,...zoneRanks];
+const taskMap={
+"سهم":"ساندي + بوليتو",
+"درع":"ساندي + بوليتو",
+"جنوب":"ساندي",
+"غرب":"بوليتو",
+"ساهر 1":"جيم + لام",
+"ساهر 2":"جيم + لام",
+"ساهر 3":"دال",
+"ساهر 4":"دال",
+"رصد":"جيم + لام + دال",
+"سيف":"جيم + لام + دال"
+};
 
-function updateRankOptions(ranks){
-rank.innerHTML="<option disabled selected>اختر الرتبة</option>";
-ranks.forEach(r=>rank.innerHTML+=`<option>${r}</option>`);
-}
+const ranks={
+supervision:["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"],
+zone:["رئيس رقباء","رقيب اول","رقيب"],
+courses:["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب"]
+};
+
+const fixedUnits="الامن العام + امن الطرق + المهام الخاصة";
+
+const el=id=>document.getElementById(id);
 
 function openForm(type){
 currentMode=type;
-menu-section.style.display="none";
-form-section.style.display="block";
+el("menu-section").style.display="none";
+el("form-section").style.display="block";
+el("taskName").value="";
+el("location").value="";
 
-if(type==="supervision"){
-title-text.innerText="تقرير الإشراف";
-unit-label.innerText="الجهات الأمنية المتواجدة";
-unit.value=fixedUnits;
-unit.readOnly=true;
-updateRankOptions(supervisionRanks);
+el("unitGroup").style.display= type==="courses" ? "none" : "block";
+el("unit").readOnly= type==="supervision";
+el("unit").value= type==="supervision" ? fixedUnits : "";
+
+el("titleText").innerText=
+type==="supervision"?"تقرير الإشراف":
+type==="zone"?"تقرير ضابط منطقة":"تقرير الدورات";
+
+el("unitLabel").innerText=
+type==="supervision"?"الجهات الأمنية المتواجدة":"الوحدات التابعة لك";
+
+updateRanks(ranks[type]);
 }
-else if(type==="zone"){
-title-text.innerText="تقرير ضابط منطقة";
-unit-label.innerText="الوحدات التابعة لك";
-unit.readOnly=false;
-updateRankOptions(zoneRanks);
+
+function updateRanks(arr){
+el("rank").innerHTML="<option disabled selected>اختر الرتبة</option>";
+arr.forEach(r=>el("rank").innerHTML+=`<option>${r}</option>`);
 }
-else{
-title-text.innerText="تقرير الدورات";
-unit-group.style.display="none";
-updateRankOptions(allRanks);
+
+el("taskName").addEventListener("input",()=>{
+if(currentMode==="supervision"){
+el("location").value=taskMap[el("taskName").value.trim()]||"";
 }
-}
+});
 
 function goBack(){
-menu-section.style.display="block";
-form-section.style.display="none";
+el("menu-section").style.display="block";
+el("form-section").style.display="none";
 }
 
-/* 🔥 AUTO SAUDI TIME + 1 HOUR DURATION */
-function getSaudiTime(){
+function saudiTime(){
 return new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Riyadh"}));
 }
 
-function formatTime(d){
-let h=d.getHours();
-let m=d.getMinutes().toString().padStart(2,"0");
-let p=h>=12?"م":"ص";
-h=h%12||12;
+function fmt(t){
+let h=t.getHours(),m=String(t.getMinutes()).padStart(2,"0");
+let p=h>=12?"م":"ص"; h=h%12||12;
 return `${h}:${m} ${p}`;
 }
 
 function copyReport(){
-const now=getSaudiTime();
-const before=new Date(now.getTime()-60*60*1000);
+const now=saudiTime();
+const before=new Date(now-3600000);
 
 const report=
-`** تم استلام مهام (${taskName.value||"..."}) من ${formatTime(before)} إلى ${formatTime(now)} **\n\n`+
-`** الموقع : ${location.value||"..."} **\n\n`+
-(currentMode!=="courses"?`** ${unit-label.innerText} : **\n${unit.value}\n\n`:"")+
-`** تم رفع التقرير من قبل (${rank.value||"..."}) : ** <@${militaryID.value||"0000"}>`;
+`تم استلام مهام (${el("taskName").value||"..."}) من ${fmt(before)} إلى ${fmt(now)}\n\n`+
+`الموقع : ${el("location").value||"..."}\n\n`+
+(currentMode!=="courses"?`${el("unitLabel").innerText} :\n${el("unit").value}\n\n`:"")+
+`تم رفع التقرير من قبل (${el("rank").value||"..."}) : <@${el("militaryID").value||"0000"}>`;
 
 navigator.clipboard.writeText(report);
 alert("تم نسخ التقرير ✅");
