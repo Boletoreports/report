@@ -1,270 +1,244 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>نظام التقارير العسكرية الذكي</title>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
 
-:root {
-  --primary-blue: #00d4ff;
-  --dark-bg: #0a0a0a;
-  --card-bg: rgba(20,20,20,.8);
-  --border-color: rgba(0,212,255,.2);
-  --text-gray: #b0b0b0;
+:root{
+  --primary-blue:#00d4ff;
+  --dark-bg:#0a0a0a;
+  --card-bg:rgba(20,20,20,.8);
+  --border-color:rgba(0,212,255,.2);
+  --text-gray:#b0b0b0;
 }
 
-body {
-  margin: 0;
-  font-family: 'Cairo', sans-serif;
-  background: radial-gradient(circle,#1a1a1a,#050505);
-  color: #fff;
-  min-height: 100vh;
-  overflow-y: auto;
-  padding: 20px 0;
+body{
+  margin:0;
+  font-family:'Cairo',sans-serif;
+  background:radial-gradient(circle,#1a1a1a,#050505);
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  min-height:100vh;
+  padding-bottom:50px;
+  overflow-x:hidden;
 }
 
-/* خلفية متحركة لشعارين */
+/* لوجوهات متحركة */
 body::before, body::after {
-  content: "";
-  position: fixed;
-  background-repeat: no-repeat;
-  background-size: contain;
-  opacity: 0.15;
-  pointer-events: none;
-  z-index: 0;
-  animation: floatAnim 15s ease-in-out infinite alternate;
+  content:'';
+  position:fixed;
+  width:200px;
+  height:200px;
+  background-size:contain;
+  background-repeat:no-repeat;
+  z-index:-1;
+}
+body::before { background-image:url('logo1.gif'); top:20px; left:20px; animation:move1 20s linear infinite; }
+body::after  { background-image:url('logo2.gif'); bottom:20px; right:20px; animation:move2 25s linear infinite; }
+
+@keyframes move1 { 0%{transform:translate(0,0)} 50%{transform:translate(50px,50px)} 100%{transform:translate(0,0)} }
+@keyframes move2 { 0%{transform:translate(0,0)} 50%{transform:translate(-50px,-50px)} 100%{transform:translate(0,0)} }
+
+.container{
+  width:90%;
+  max-width:450px;
+  background:var(--card-bg);
+  backdrop-filter:blur(15px);
+  border:1px solid var(--border-color);
+  border-radius:20px;
+  padding:35px;
+  box-shadow:0 20px 50px rgba(0,0,0,.5);
+  margin-top:20px;
 }
 
-body::before {
-  top: 10px;
-  left: 10px;
-  width: 100px;
-  height: 100px;
-  background-image: url('logo1.gif');
+h2{
+  text-align:center;
+  color:var(--primary-blue);
+  margin-bottom:30px;
 }
 
-body::after {
-  bottom: 10px;
-  right: 10px;
-  width: 120px;
-  height: 120px;
-  background-image: url('logo2.gif');
-  animation-delay: 7.5s;
+.main-menu{
+  display:grid;
+  gap:15px;
 }
 
-@keyframes floatAnim {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(15px); }
+.menu-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.05);
+  padding:20px;
+  border-radius:15px;
+  cursor:pointer;
+  display:flex;
+  gap:15px;
+  align-items:center;
+  transition:.3s;
 }
 
-.container {
-  width: 90%;
-  max-width: 500px;
-  background: var(--card-bg);
-  backdrop-filter: blur(15px);
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 35px;
-  box-shadow: 0 20px 50px rgba(0,0,0,.5);
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
+.menu-card:hover{
+  background:rgba(0,212,255,.08);
+  border-color:var(--primary-blue);
+  transform:translateX(-5px);
 }
 
-h2 {
-  text-align: center;
-  color: var(--primary-blue);
-  margin-bottom: 30px;
+.menu-card i{color:var(--primary-blue);font-size:22px}
+
+.form-group{
+  margin-bottom:20px;
 }
 
-.main-menu {
-  display: grid;
-  gap: 15px;
+label{
+  display:block;
+  margin-bottom:8px;
+  font-size:14px;
+  color:var(--text-gray);
+  font-weight:600;
 }
 
-.menu-card {
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.05);
-  padding: 20px;
-  border-radius: 15px;
-  cursor: pointer;
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  transition: .3s;
-  color: #fff;
+input,select,textarea{
+  width:100%;
+  padding:12px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;
+  color:#fff;
+  font-family:'Cairo';
 }
 
-.menu-card:hover {
-  background: rgba(0,212,255,.08);
-  border-color: var(--primary-blue);
-  transform: translateX(-5px);
+select { color:#000; } /* الرتبة باللون الأسود */
+
+.time-input-group{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  direction:ltr;
 }
 
-.menu-card i {
-  color: var(--primary-blue);
-  font-size: 22px;
+.btn-copy{
+  width:100%;
+  padding:15px;
+  background:linear-gradient(135deg,#00829d,#00d4ff);
+  border:none;
+  border-radius:10px;
+  color:#fff;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  margin-top:20px;
 }
 
-.form-group {
-  margin-bottom: 20px;
+.back-link{
+  margin-top:15px;
+  text-align:center;
+  font-size:13px;
+  cursor:pointer;
+  color:var(--text-gray);
 }
 
-label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: var(--text-gray);
-  font-weight: 600;
-}
-
-input, select, textarea {
-  width: 100%;
-  padding: 12px;
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 10px;
-  color: #fff;
-  font-family: 'Cairo';
-}
-
-select {
-  color: black !important;
-}
-
-.time-input-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  direction: ltr;
-}
-
-.btn-copy {
-  width: 100%;
-  padding: 15px;
-  background: linear-gradient(135deg,#00829d,#00d4ff);
-  border: none;
-  border-radius: 10px;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-.back-link {
-  margin-top: 30px;
-  text-align: center;
-  font-size: 14px;
-  cursor: pointer;
-  color: var(--text-gray);
-}
-
-#form-section { display: none; }
-
-footer {
-  margin-top: 30px;
-  text-align: center;
-  font-size: 12px;
-  color: var(--text-gray);
-  position: relative;
-  z-index: 1;
-  padding-bottom: 10px;
+#form-section{display:none}
+.footer{
+  text-align:center;
+  margin-top:20px;
+  font-size:12px;
+  color:var(--text-gray);
 }
 </style>
 </head>
-
 <body>
 
 <div class="container">
 
-  <div id="menu-section">
-    <h2><i class="fas fa-shield-alt"></i> بوليتو - التقارير</h2>
-    <div class="main-menu">
-      <div class="menu-card" onclick="openForm('supervision')">
-        <i class="fas fa-user-shield"></i>
-        <strong>تقارير الإشراف</strong>
-      </div>
-      <div class="menu-card" onclick="openForm('zone')">
-        <i class="fas fa-map-marker-alt"></i>
-        <strong>تقارير ضابط منطقة</strong>
-      </div>
-      <div class="menu-card" onclick="openForm('courses')">
-        <i class="fas fa-graduation-cap"></i>
-        <strong>تقارير الدورات</strong>
-      </div>
-    </div>
-  </div>
+<div id="menu-section">
+<h2><i class="fas fa-shield-alt"></i> بوليتو - التقارير</h2>
+<div class="main-menu">
+<div class="menu-card" onclick="openForm('supervision')">
+<i class="fas fa-user-shield"></i>
+<strong>تقارير الإشراف</strong>
+</div>
 
-  <div id="form-section">
-    <h2 id="title-text">تقديم التقرير</h2>
+<div class="menu-card" onclick="openForm('zone')">
+<i class="fas fa-map-marker-alt"></i>
+<strong>تقارير ضابط منطقة</strong>
+</div>
 
-    <div class="form-group">
-      <label>التوجيه</label>
-      <input type="text" id="taskName" oninput="handleTaskInput()" autocomplete="off" />
-    </div>
+<div class="menu-card" onclick="openForm('courses')">
+<i class="fas fa-graduation-cap"></i>
+<strong>تقارير الدورات</strong>
+</div>
+</div>
+</div>
 
-    <div class="form-group">
-      <label>الموقع</label>
-      <input type="text" id="location" />
-    </div>
+<div id="form-section">
+<h2 id="title-text">تقديم التقرير</h2>
 
-    <div class="form-group">
-      <label>الرتبة</label>
-      <select id="rank"></select>
-    </div>
+<div class="form-group" id="course-dropdown" style="display:none">
+<label>اسم الدورة</label>
+<select id="courseName" onchange="handleCourseChange()">
+<option disabled selected>اختر الدورة</option>
+<option>شرطة عسكرية</option>
+<option>الشؤون الإدارية</option>
+<option>دورة نقل سجون</option>
+<option>S.W.A.T</option>
+</select>
+</div>
 
-    <div class="form-group" id="unit-group">
-      <label id="unit-label">الـجــهــات الامــنـيــة المـــتــواجــده</label>
-      <textarea id="unit" rows="3" readonly></textarea>
-    </div>
+<div class="form-group">
+<label>التوجيه</label>
+<input type="text" id="taskName" oninput="handleTaskInput()">
+</div>
 
-    <div class="form-group">
-      <label>الكوبي ايدي</label>
-      <input type="text" id="militaryID" />
-    </div>
+<div class="form-group">
+<label>الموقع</label>
+<input type="text" id="location" readonly>
+</div>
 
-    <div class="form-group">
-      <label>هل التقرير بدري؟</label>
-      <select id="earlyReport" onchange="toggleReason()">
-        <option value="no" selected>لا</option>
-        <option value="yes">نعم</option>
-      </select>
-    </div>
+<div class="form-group">
+<label>اختر الرتبة</label>
+<select id="rank"></select>
+</div>
 
-    <div class="form-group" id="reason-group" style="display:none">
-      <label>سبب التبكير</label>
-      <select id="earlyReason">
-        <option value="ريستارت">ريستارت</option>
-        <option value="صيانة">صيانة</option>
-        <option value="اعادة اصطفاف">إعادة اصطفاف</option>
-      </select>
-    </div>
+<div class="form-group">
+<label>التقرير نازل بدري؟</label>
+<select id="earlySelect" onchange="toggleEarlyReason()">
+  <option value="no" selected>لا</option>
+  <option value="yes">نعم</option>
+</select>
+</div>
 
-    <button class="btn-copy" onclick="copyReport()">نسخ التقرير النهائي</button>
+<div class="form-group" id="earlyReasonGroup" style="display:none">
+<label>سبب التبكير</label>
+<select id="earlyReason">
+  <option value="ريستارت">ريستارت</option>
+  <option value="صيانه">صيانه</option>
+  <option value="إعادة اصطفاف">إعادة اصطفاف</option>
+</select>
+</div>
 
-    <div class="back-link" onclick="goBack()">الرجوع إلى القائمة الرئيسية</div>
+<button class="btn-copy" onclick="copyReport()">نسخ التقرير النهائي</button>
+<div class="back-link" onclick="goBack()">رجوع</div>
+</div>
 
-  </div>
+<div class="footer">
+حقوق الملكية © قطاع الأمن العام بمقاطعة بوليتو
+</div>
 
 </div>
 
-<footer>
-  حقوق الملكية © قطاع الأمن العام بمقاطعة بوليتو
-</footer>
-
 <script>
-const el = (id) => document.getElementById(id);
+function el(id){ return document.getElementById(id); }
 
-let currentMode = "";
-const fixedUnits = "الامــن الــعـام + امـن الـطـرق + المهام والواجبات الخاصه";
+let currentMode="";
+const fixedUnits="الامــن الــعـام + امـن الـطـرق + المهام والواجبات الخاصه";
 
-const supervisionRanks = ["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
+const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
+const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
+const allRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب"];
 
 // التوجيهات والمواقع
 const taskMap = {
@@ -294,106 +268,88 @@ const taskMap = {
   "سيف": "جيم + لام + دال"
 };
 
-// فتح الفورم
-function openForm(type) {
-  currentMode = type;
-  el("menu-section").style.display = "none";
-  el("form-section").style.display = "block";
-  updateRankOptions(supervisionRanks);
-  el("unit").value = fixedUnits;
-}
-
-// العودة للقائمة
-function goBack() {
-  el("menu-section").style.display = "block";
-  el("form-section").style.display = "none";
-}
-
-// تحديث الرتب
-function updateRankOptions(ranks) {
-  const rankSelect = el("rank");
-  rankSelect.innerHTML = "<option disabled selected>اختر الرتبة</option>";
-  ranks.forEach(r => { rankSelect.innerHTML += `<option>${r}</option>`; });
-}
-
-// تحديث الموقع تلقائيًا حسب التوجيه
-function handleTaskInput() {
-  const taskInput = el("taskName").value.trim();
-  let matchedLocations = [];
-  for(const key in taskMap) {
-    if(taskInput.includes(key)) matchedLocations.push(taskMap[key]);
-  }
-  if(matchedLocations.length > 0) {
-    let currentLocation = el("location").value;
-    matchedLocations.forEach(locText => {
-      if(!currentLocation.includes(locText)) {
-        if(currentLocation.length>0 && !currentLocation.endsWith(" + ")) currentLocation += " + ";
-        currentLocation += locText;
-      }
-    });
-    el("location").value = currentLocation;
-  }
-}
-
-// إظهار سبب التبكير
-function toggleReason() {
-  const early = el("earlyReport").value;
-  el("reason-group").style.display = early === "yes" ? "block" : "none";
-}
-
-// الحصول على الوقت بتوقيت السعودية مع خصم ساعة
-function getSaudiTimeMinusHour() {
+// الوقت حسب السعودية (UTC+3)
+function getSaudiTime(){
   let now = new Date();
-  // تحويل التوقيت إلى السعودية (UTC+3)
-  let utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  let utc = now.getTime() + now.getTimezoneOffset()*60000;
   let saudiTime = new Date(utc + 3*3600000);
-  // خصم ساعة
-  saudiTime.setHours(saudiTime.getHours() -1);
   return saudiTime;
 }
 
-// تحويل وقت 24 ساعة إلى 12 ساعة
-function to12Hour(date) {
-  let h = date.getHours();
-  let m = date.getMinutes();
-  let p = h >= 12 ? "م" : "ص";
-  if(h === 0) h = 12;
-  if(h > 12) h -=12;
-  return {h:h<10?"0"+h:h.toString(), m:m<10?"0"+m:m.toString(), p};
+function initRankOptions(ranks){
+  const r=el("rank");
+  r.innerHTML="<option disabled selected>اختر الرتبة</option>";
+  ranks.forEach(x=> r.innerHTML+=`<option>${x}</option>`);
 }
 
-// نسخ التقرير النهائي
-function copyReport() {
-  const task = el("taskName").value.trim() || "...";
-  const loc = el("location").value.trim() || "...";
-  const rank = el("rank").value || "...";
-  const id = el("militaryID").value || "0000";
-  const unitText = fixedUnits;
+function openForm(type){
+  currentMode=type;
+  el("menu-section").style.display="none";
+  el("form-section").style.display="block";
+  el("taskName").value="";
+  el("location").value="";
+  initRankOptions(currentMode==="supervision"?supervisionRanks:(currentMode==="zone"?zoneRanks:allRanks));
+  el("earlySelect").value="no";
+  toggleEarlyReason();
 
-  // الوقت
-  let startDate = getSaudiTimeMinusHour();
-  let endDate = new Date(startDate.getTime() + 60*60000); // ساعة
-  const start = to12Hour(startDate);
-  const end = to12Hour(endDate);
+  if(type==="supervision"){
+    el("title-text").innerText="تقرير الإشراف";
+    el("location").readOnly=false;
+  }else if(type==="zone"){
+    el("title-text").innerText="تقرير ضابط منطقة";
+    el("location").readOnly=false;
+  }else{
+    el("title-text").innerText="تقرير الدورات";
+    el("location").readOnly=false;
+  }
+}
 
-  // سبب التبكير
-  let early = el("earlyReport").value;
-  let reasonText = "";
-  if(early === "yes") {
-    reasonText = `\n\n** \` سبب التبكير : ${el("earlyReason").value} \`**`;
+// التعامل مع مسح أو تعديل التوجيه
+function handleTaskInput(){
+  const taskInput = el("taskName").value.trim();
+  if(taskInput==="") { el("location").value=""; return; }
+
+  let matchedLocations=[];
+  for(const key in taskMap) if(taskInput.includes(key)) matchedLocations.push(taskMap[key]);
+  el("location").value = matchedLocations.length>0 ? matchedLocations.join(" + ") : "";
+}
+
+// اظهار سبب التبكير
+function toggleEarlyReason(){
+  el("earlyReasonGroup").style.display = el("earlySelect").value==="yes" ? "block":"none";
+}
+
+function goBack(){
+  el("menu-section").style.display="block";
+  el("form-section").style.display="none";
+}
+
+function copyReport(){
+  const task=el("taskName").value||"...";
+  const loc=el("location").value||"...";
+  const rank=el("rank").value||"...";
+  const early=el("earlySelect").value==="yes" ? el("earlyReason").value : null;
+
+  // الوقت الحالي بالسعودية
+  let endTime = getSaudiTime();
+  let startTime = new Date(endTime.getTime() - 60*60000); // ساعة قبل
+
+  function formatTime(d){
+    let h = d.getHours()%12||12;
+    let m = d.getMinutes();
+    let p = d.getHours()>=12?"م":"ص";
+    return `${h<10?"0"+h:h}:${m<10?"0"+m:m} ${p}`;
   }
 
-  let report = `** \`تـم اسـتـلام مـهـام ( ${task} )  من السـاعة ${start.h}:${start.m} ${start.p} اٍلـى الـساعة ${end.h}:${end.m} ${end.p} \`**\n\n`;
-  report += `** \`الـمـنـطـقـة : ${loc} \`** \n\n`;
-  report += `** \`الـجــهــات الامــنـيــة المـــتــواجــده : \`** \n\n`;
-  report += `** \`${unitText}\`** \n\n`;
-  report += `** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\`** <@${id}>`;
-  report += reasonText;
+  let report = `** \`تـم اسـتـلام مـهـام ( ${task} )  من السـاعة ${formatTime(startTime)} اٍلـى الـساعة ${formatTime(endTime)} \`**\n\n`;
+  report += `** \`الـمـنـطـقـة : ${loc} \`**\n\n`;
+  if(currentMode==="supervision") report += `** \`الـجــهــات الامــنـيــة المـــتــواجــده : \`**\n\n** \`${fixedUnits}\` **\n\n`;
+  report += `** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@1358333213965156392>\n\n`;
+  if(early) report += `** \` سبب التبكير : ${early} \`**`;
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
 }
 </script>
-
 </body>
 </html>
