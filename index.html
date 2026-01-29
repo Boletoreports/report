@@ -204,6 +204,11 @@ select { color:#000; } /* الرتبة باللون الأسود */
 </div>
 
 <div class="form-group">
+<label>كوبي ايدي العسكري</label>
+<input type="text" id="copyID" placeholder="ضع الكوبي ايدي هنا">
+</div>
+
+<div class="form-group">
 <label>التقرير نازل بدري؟</label>
 <select id="earlySelect" onchange="toggleEarlyReason()">
   <option value="no" selected>لا</option>
@@ -288,23 +293,12 @@ function openForm(type){
   el("form-section").style.display="block";
   el("taskName").value="";
   el("location").value="";
+  el("copyID").value="";
   initRankOptions(currentMode==="supervision"?supervisionRanks:(currentMode==="zone"?zoneRanks:allRanks));
   el("earlySelect").value="no";
   toggleEarlyReason();
-
-  if(type==="supervision"){
-    el("title-text").innerText="تقرير الإشراف";
-    el("location").readOnly=false;
-  }else if(type==="zone"){
-    el("title-text").innerText="تقرير ضابط منطقة";
-    el("location").readOnly=false;
-  }else{
-    el("title-text").innerText="تقرير الدورات";
-    el("location").readOnly=false;
-  }
 }
 
-// التعامل مع مسح أو تعديل التوجيه
 function handleTaskInput(){
   const taskInput = el("taskName").value.trim();
   if(taskInput==="") { el("location").value=""; return; }
@@ -314,7 +308,6 @@ function handleTaskInput(){
   el("location").value = matchedLocations.length>0 ? matchedLocations.join(" + ") : "";
 }
 
-// اظهار سبب التبكير
 function toggleEarlyReason(){
   el("earlyReasonGroup").style.display = el("earlySelect").value==="yes" ? "block":"none";
 }
@@ -328,6 +321,7 @@ function copyReport(){
   const task=el("taskName").value||"...";
   const loc=el("location").value||"...";
   const rank=el("rank").value||"...";
+  const copyID=el("copyID").value||"1358333213965156392"; // افتراضي
   const early=el("earlySelect").value==="yes" ? el("earlyReason").value : null;
 
   // الوقت الحالي بالسعودية
@@ -344,7 +338,7 @@ function copyReport(){
   let report = `** \`تـم اسـتـلام مـهـام ( ${task} )  من السـاعة ${formatTime(startTime)} اٍلـى الـساعة ${formatTime(endTime)} \`**\n\n`;
   report += `** \`الـمـنـطـقـة : ${loc} \`**\n\n`;
   if(currentMode==="supervision") report += `** \`الـجــهــات الامــنـيــة المـــتــواجــده : \`**\n\n** \`${fixedUnits}\` **\n\n`;
-  report += `** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@1358333213965156392>\n\n`;
+  report += `** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>\n\n`;
   if(early) report += `** \` سبب التبكير : ${early} \`**`;
 
   navigator.clipboard.writeText(report);
