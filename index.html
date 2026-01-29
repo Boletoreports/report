@@ -30,7 +30,6 @@ body{
   overflow-x:hidden;
 }
 
-/* لوجوهات متحركة */
 body::before, body::after {
   content:'';
   position:fixed;
@@ -111,7 +110,7 @@ input,select,textarea{
   font-family:'Cairo';
 }
 
-select { color:#000; } /* الرتبة باللون الأسود */
+select { color:#000; }
 
 .time-input-group{
   display:flex;
@@ -177,6 +176,7 @@ select { color:#000; } /* الرتبة باللون الأسود */
 <div id="form-section">
 <h2 id="title-text">تقديم التقرير</h2>
 
+<!-- دورة -->
 <div class="form-group" id="course-dropdown" style="display:none">
 <label>اسم الدورة</label>
 <select id="courseName" onchange="handleCourseChange()">
@@ -188,26 +188,33 @@ select { color:#000; } /* الرتبة باللون الأسود */
 </select>
 </div>
 
+<!-- التوجيه -->
 <div class="form-group">
 <label>التوجيه</label>
-<input type="text" id="taskName" oninput="handleTaskInput()">
+<select id="taskName" onchange="handleTaskInput()">
+  <option disabled selected>اختر التوجيه</option>
+</select>
 </div>
 
+<!-- الموقع -->
 <div class="form-group">
 <label>الموقع</label>
 <input type="text" id="location" readonly>
 </div>
 
+<!-- الرتبة -->
 <div class="form-group">
 <label>اختر الرتبة</label>
 <select id="rank"></select>
 </div>
 
+<!-- كوبي ايدي -->
 <div class="form-group">
 <label>كوبي ايدي العسكري</label>
 <input type="text" id="copyID" placeholder="ضع الكوبي ايدي هنا">
 </div>
 
+<!-- نزول بدري -->
 <div class="form-group">
 <label>التقرير نازل بدري؟</label>
 <select id="earlySelect" onchange="toggleEarlyReason()">
@@ -245,8 +252,19 @@ const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","�
 const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
 const allRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب"];
 
-// التوجيهات والمواقع
-const taskMap = {
+// التوجيهات للمنطقة
+const zoneTasks = {
+  "سين 10": "ساندي",
+  "سين 20": "ساندي",
+  "باء 10": "بوليتو",
+  "باء 20": "جزيره بوليتو",
+  "لام 10": "لام",
+  "جيم 10": "جيم",
+  "دال 10": "دال"
+};
+
+// التوجيهات للإشراف (ثابتة)
+const supervisionTasks = {
   "سهم 1": "ساندي + بوليتو",
   "سهم 2": "ساندي + بوليتو",
   "سهم 3": "ساندي + بوليتو",
@@ -273,18 +291,24 @@ const taskMap = {
   "سيف": "جيم + لام + دال"
 };
 
-// الوقت حسب السعودية (UTC+3)
+// الوقت حسب السعودية
 function getSaudiTime(){
   let now = new Date();
   let utc = now.getTime() + now.getTimezoneOffset()*60000;
-  let saudiTime = new Date(utc + 3*3600000);
-  return saudiTime;
+  return new Date(utc + 3*3600000);
 }
 
 function initRankOptions(ranks){
   const r=el("rank");
   r.innerHTML="<option disabled selected>اختر الرتبة</option>";
   ranks.forEach(x=> r.innerHTML+=`<option>${x}</option>`);
+}
+
+function populateTasks(){
+  const taskSelect = el("taskName");
+  taskSelect.innerHTML="<option disabled selected>اختر التوجيه</option>";
+  let tasks = currentMode==="supervision" ? Object.keys(supervisionTasks) : Object.keys(zoneTasks);
+  tasks.forEach(t=> taskSelect.innerHTML+=`<option value="${t}">${t}</option>`);
 }
 
 function openForm(type){
@@ -297,15 +321,18 @@ function openForm(type){
   initRankOptions(currentMode==="supervision"?supervisionRanks:(currentMode==="zone"?zoneRanks:allRanks));
   el("earlySelect").value="no";
   toggleEarlyReason();
+  populateTasks();
 }
 
 function handleTaskInput(){
-  const taskInput = el("taskName").value.trim();
+  const taskInput = el("taskName").value;
   if(taskInput==="") { el("location").value=""; return; }
 
-  let matchedLocations=[];
-  for(const key in taskMap) if(taskInput.includes(key)) matchedLocations.push(taskMap[key]);
-  el("location").value = matchedLocations.length>0 ? matchedLocations.join(" + ") : "";
+  if(currentMode==="supervision"){
+    el("location").value = supervisionTasks[taskInput] || "";
+  }else if(currentMode==="zone"){
+    el("location").value = zoneTasks[taskInput] || "";
+  }
 }
 
 function toggleEarlyReason(){
@@ -321,12 +348,11 @@ function copyReport(){
   const task=el("taskName").value||"...";
   const loc=el("location").value||"...";
   const rank=el("rank").value||"...";
-  const copyID=el("copyID").value||"1358333213965156392"; // افتراضي
+  const copyID=el("copyID").value||"1358333213965156392"; 
   const early=el("earlySelect").value==="yes" ? el("earlyReason").value : null;
 
-  // الوقت الحالي بالسعودية
   let endTime = getSaudiTime();
-  let startTime = new Date(endTime.getTime() - 60*60000); // ساعة قبل
+  let startTime = new Date(endTime.getTime() - 60*60000);
 
   function formatTime(d){
     let h = d.getHours()%12||12;
