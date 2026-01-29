@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -13,21 +12,12 @@
 
 :root{
 --primary-blue:#00d4ff;
---dark-bg:#0a0a0a;
 --card-bg:rgba(20,20,20,.85);
 --border-color:rgba(0,212,255,.2);
 --text-gray:#b0b0b0;
 }
 
-/* FIX TEXT HIGHLIGHT */
-::selection{
-background:#00d4ff;
-color:#0a0a0a;
-}
-::-moz-selection{
-background:#00d4ff;
-color:#0a0a0a;
-}
+::selection{background:#00d4ff;color:#0a0a0a}
 
 body{
 margin:0;
@@ -38,38 +28,25 @@ min-height:100vh;
 overflow:hidden;
 }
 
-/* ANIMATED GIF LOGO BACKGROUND */
 .bg-logos{
 position:fixed;
 inset:0;
 z-index:0;
 pointer-events:none;
-overflow:hidden;
 }
-
 .bg-logos img{
 position:absolute;
 width:220px;
 opacity:.12;
-animation:float 22s ease-in-out infinite;
+animation:float 24s ease-in-out infinite;
 }
-
-.bg-logos img.logo1{
-top:8%;
-left:5%;
-animation-duration:24s;
-}
-
-.bg-logos img.logo2{
-bottom:8%;
-right:5%;
-animation-duration:28s;
-}
+.logo1{top:8%;left:5%}
+.logo2{bottom:8%;right:5%}
 
 @keyframes float{
-0%{transform:translateY(0) scale(1)}
-50%{transform:translateY(-40px) scale(1.05)}
-100%{transform:translateY(0) scale(1)}
+0%{transform:translateY(0)}
+50%{transform:translateY(-40px)}
+100%{transform:translateY(0)}
 }
 
 .container{
@@ -77,26 +54,15 @@ position:relative;
 z-index:1;
 width:90%;
 max-width:450px;
-margin:auto;
-margin-top:5vh;
+margin:5vh auto;
 background:var(--card-bg);
 backdrop-filter:blur(15px);
 border:1px solid var(--border-color);
 border-radius:20px;
 padding:35px;
-box-shadow:0 20px 50px rgba(0,0,0,.5);
 }
 
-h2{
-text-align:center;
-color:var(--primary-blue);
-margin-bottom:30px;
-}
-
-.main-menu{
-display:grid;
-gap:15px;
-}
+h2{text-align:center;color:var(--primary-blue)}
 
 .menu-card{
 background:rgba(255,255,255,.03);
@@ -107,31 +73,11 @@ cursor:pointer;
 display:flex;
 gap:15px;
 align-items:center;
-transition:.3s;
+margin-bottom:15px;
 }
 
-.menu-card:hover{
-background:rgba(0,212,255,.08);
-border-color:var(--primary-blue);
-transform:translateX(-5px);
-}
-
-.menu-card i{
-color:var(--primary-blue);
-font-size:22px;
-}
-
-.form-group{
-margin-bottom:20px;
-}
-
-label{
-display:block;
-margin-bottom:8px;
-font-size:14px;
-color:var(--text-gray);
-font-weight:600;
-}
+.form-group{margin-bottom:20px}
+label{color:var(--text-gray);font-size:14px}
 
 input,select,textarea{
 width:100%;
@@ -141,13 +87,6 @@ border:1px solid rgba(255,255,255,.1);
 border-radius:10px;
 color:#fff;
 font-family:'Cairo';
-}
-
-.time-input-group{
-display:flex;
-align-items:center;
-gap:8px;
-direction:ltr;
 }
 
 .btn-copy{
@@ -160,16 +99,9 @@ color:#fff;
 font-size:16px;
 font-weight:700;
 cursor:pointer;
-margin-top:20px;
 }
 
-.back-link{
-margin-top:15px;
-text-align:center;
-font-size:13px;
-cursor:pointer;
-color:var(--text-gray);
-}
+.back-link{text-align:center;margin-top:15px;color:var(--text-gray);cursor:pointer}
 
 #form-section{display:none}
 </style>
@@ -177,72 +109,32 @@ color:var(--text-gray);
 
 <body>
 
-<!-- Animated GIF Background Logos -->
 <div class="bg-logos">
-<img src="logo1.gif" class="logo1" alt="">
-<img src="logo2.gif" class="logo2" alt="">
+<img src="logo1.gif" class="logo1">
+<img src="logo2.gif" class="logo2">
 </div>
 
 <div class="container">
 
 <div id="menu-section">
-<h2><i class="fas fa-shield-alt"></i> بوليتو - التقارير</h2>
+<h2>بوليتو - التقارير</h2>
 
-<div class="main-menu">
-<div class="menu-card" onclick="openForm('supervision')">
-<i class="fas fa-user-shield"></i>
-<strong>تقارير الإشراف</strong>
-</div>
-
-<div class="menu-card" onclick="openForm('zone')">
-<i class="fas fa-map-marker-alt"></i>
-<strong>تقارير ضابط منطقة</strong>
-</div>
-
-<div class="menu-card" onclick="openForm('courses')">
-<i class="fas fa-graduation-cap"></i>
-<strong>تقارير الدورات</strong>
-</div>
-</div>
+<div class="menu-card" onclick="openForm('supervision')">تقارير الإشراف</div>
+<div class="menu-card" onclick="openForm('zone')">تقارير ضابط منطقة</div>
+<div class="menu-card" onclick="openForm('courses')">تقارير الدورات</div>
 </div>
 
 <div id="form-section">
-<h2 id="title-text">تقديم التقرير</h2>
-
-<div class="form-group" id="course-dropdown" style="display:none">
-<label>اسم الدورة</label>
-<select id="courseName">
-<option disabled selected>اختر الدورة</option>
-<option>شرطة عسكرية</option>
-<option>الشؤون الإدارية</option>
-<option>دورة نقل سجون</option>
-<option>S.W.A.T</option>
-</select>
-</div>
+<h2 id="title-text"></h2>
 
 <div class="form-group">
 <label>التوجيه</label>
-<input type="text" id="taskName">
-</div>
-
-<div class="form-group">
-<label>وقت المباشرة</label>
-<div class="time-input-group">
-<select id="pFrom"><option>م</option><option>ص</option></select>
-<select id="hFrom"></select> :
-<select id="mFrom"></select>
-</div>
-
-<div class="time-input-group" style="margin-top:8px">
-<select id="pTo"><option>م</option><option>ص</option></select>
-<select id="hTo"></select> :
-<select id="mTo"></select>
-</div>
+<input id="taskName">
 </div>
 
 <div class="form-group">
 <label>الموقع</label>
-<input type="text" id="location">
+<input id="location">
 </div>
 
 <div class="form-group">
@@ -251,16 +143,16 @@ color:var(--text-gray);
 </div>
 
 <div class="form-group" id="unit-group">
-<label id="unit-label">الوحدات التابعة لك</label>
-<textarea id="unit" rows="3"></textarea>
+<label id="unit-label"></label>
+<textarea id="unit"></textarea>
 </div>
 
 <div class="form-group">
 <label>الرقم العسكري</label>
-<input type="text" id="militaryID">
+<input id="militaryID">
 </div>
 
-<button class="btn-copy" onclick="copyReport()">نسخ التقرير النهائي</button>
+<button class="btn-copy" onclick="copyReport()">نسخ التقرير</button>
 <div class="back-link" onclick="goBack()">رجوع</div>
 </div>
 
@@ -274,56 +166,31 @@ const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","�
 const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
 const allRanks=[...supervisionRanks,...zoneRanks];
 
-function initTime(){
-["hFrom","hTo"].forEach(id=>{
-const el=document.getElementById(id);
-el.innerHTML="";
-for(let i=1;i<=12;i++){
-el.innerHTML+=`<option>${i<10?"0"+i:i}</option>`;
-}
-});
-["mFrom","mTo"].forEach(id=>{
-const el=document.getElementById(id);
-el.innerHTML="";
-for(let i=0;i<60;i+=5){
-el.innerHTML+=`<option>${i<10?"0"+i:i}</option>`;
-}
-});
-}
-
 function updateRankOptions(ranks){
-const r=document.getElementById("rank");
-r.innerHTML="<option disabled selected>اختر الرتبة</option>";
-ranks.forEach(x=>r.innerHTML+=`<option>${x}</option>`);
+rank.innerHTML="<option disabled selected>اختر الرتبة</option>";
+ranks.forEach(r=>rank.innerHTML+=`<option>${r}</option>`);
 }
 
 function openForm(type){
 currentMode=type;
 menu-section.style.display="none";
 form-section.style.display="block";
-initTime();
-
-const unit=document.getElementById("unit");
-unit.readOnly=false;
-unit.value="";
 
 if(type==="supervision"){
 title-text.innerText="تقرير الإشراف";
-course-dropdown.style.display="none";
-unit-group.style.display="block";
-unit-label.innerText="الـجــهــات الامـلـنـيــة المـــتــواجــده";
-updateRankOptions(supervisionRanks);
+unit-label.innerText="الجهات الأمنية المتواجدة";
 unit.value=fixedUnits;
 unit.readOnly=true;
-}else if(type==="zone"){
+updateRankOptions(supervisionRanks);
+}
+else if(type==="zone"){
 title-text.innerText="تقرير ضابط منطقة";
-course-dropdown.style.display="none";
-unit-group.style.display="block";
 unit-label.innerText="الوحدات التابعة لك";
+unit.readOnly=false;
 updateRankOptions(zoneRanks);
-}else{
+}
+else{
 title-text.innerText="تقرير الدورات";
-course-dropdown.style.display="block";
 unit-group.style.display="none";
 updateRankOptions(allRanks);
 }
@@ -334,12 +201,33 @@ menu-section.style.display="block";
 form-section.style.display="none";
 }
 
+/* 🔥 AUTO SAUDI TIME + 1 HOUR DURATION */
+function getSaudiTime(){
+return new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Riyadh"}));
+}
+
+function formatTime(d){
+let h=d.getHours();
+let m=d.getMinutes().toString().padStart(2,"0");
+let p=h>=12?"م":"ص";
+h=h%12||12;
+return `${h}:${m} ${p}`;
+}
+
 function copyReport(){
-navigator.clipboard.writeText("تم نسخ التقرير");
+const now=getSaudiTime();
+const before=new Date(now.getTime()-60*60*1000);
+
+const report=
+`** تم استلام مهام (${taskName.value||"..."}) من ${formatTime(before)} إلى ${formatTime(now)} **\n\n`+
+`** الموقع : ${location.value||"..."} **\n\n`+
+(currentMode!=="courses"?`** ${unit-label.innerText} : **\n${unit.value}\n\n`:"")+
+`** تم رفع التقرير من قبل (${rank.value||"..."}) : ** <@${militaryID.value||"0000"}>`;
+
+navigator.clipboard.writeText(report);
 alert("تم نسخ التقرير ✅");
 }
 </script>
 
 </body>
 </html>
-```
