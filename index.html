@@ -9,109 +9,153 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
 
 :root{
---primary-blue:#00d4ff;
---card-bg:rgba(20,20,20,.85);
---border-color:rgba(0,212,255,.2);
---text-gray:#b0b0b0;
+  --primary-blue:#00d4ff;
+  --card-bg:rgba(20,20,20,.85);
+  --border-color:rgba(0,212,255,.2);
+  --text-gray:#b0b0b0;
 }
 
 ::selection{background:#00d4ff;color:#0a0a0a}
 
 body{
-margin:0;
-font-family:'Cairo',sans-serif;
-background:radial-gradient(circle,#1a1a1a,#050505);
-color:#fff;
-min-height:100vh;
-overflow:hidden;
+  margin:0;
+  font-family:'Cairo',sans-serif;
+  background:radial-gradient(circle,#1a1a1a,#050505);
+  color:#fff;
+  min-height:100vh;
+  overflow:hidden;
 }
 
+/* خلفية اللوجو */
 .bg-logos{
-position:fixed;
-inset:0;
-pointer-events:none;
-z-index:0;
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  overflow:hidden;
 }
 .bg-logos img{
-position:absolute;
-width:220px;
-opacity:.12;
-animation:float 25s ease-in-out infinite;
+  position:absolute;
+  width:220px;
+  opacity:.12;
+  will-change: transform;
 }
-.logo1{top:8%;left:5%}
-.logo2{bottom:8%;right:5%}
+.logo1{
+  top:10%;
+  left:5%;
+  animation:float1 25s ease-in-out infinite;
+}
+.logo2{
+  bottom:10%;
+  right:5%;
+  animation:float2 30s ease-in-out infinite;
+}
 
-@keyframes float{
-0%{transform:translateY(0)}
-50%{transform:translateY(-40px)}
-100%{transform:translateY(0)}
+@keyframes float1{
+  0%{transform:translateY(0) rotate(0deg);}
+  25%{transform:translateY(-30px) rotate(10deg);}
+  50%{transform:translateY(0) rotate(0deg);}
+  75%{transform:translateY(30px) rotate(-10deg);}
+  100%{transform:translateY(0) rotate(0deg);}
+}
+
+@keyframes float2{
+  0%{transform:translateY(0) rotate(0deg);}
+  20%{transform:translateY(25px) rotate(-10deg);}
+  40%{transform:translateY(-20px) rotate(5deg);}
+  60%{transform:translateY(15px) rotate(-5deg);}
+  80%{transform:translateY(-10px) rotate(10deg);}
+  100%{transform:translateY(0) rotate(0deg);}
 }
 
 .container{
-position:relative;
-z-index:1;
-width:90%;
-max-width:450px;
-margin:5vh auto;
-background:var(--card-bg);
-backdrop-filter:blur(15px);
-border:1px solid var(--border-color);
-border-radius:20px;
-padding:35px;
+  position:relative;
+  z-index:1;
+  width:90%;
+  max-width:450px;
+  margin:5vh auto;
+  background:var(--card-bg);
+  backdrop-filter:blur(15px);
+  border:1px solid var(--border-color);
+  border-radius:20px;
+  padding:35px;
 }
 
 h2{text-align:center;color:var(--primary-blue)}
 
 .menu-card{
-background:rgba(255,255,255,.03);
-border:1px solid rgba(255,255,255,.05);
-padding:18px;
-border-radius:15px;
-cursor:pointer;
-margin-bottom:15px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.05);
+  padding:18px;
+  border-radius:15px;
+  cursor:pointer;
+  margin-bottom:15px;
 }
 
 .form-group{margin-bottom:18px}
 label{color:var(--text-gray);font-size:14px}
 
-input,select,textarea{
-width:100%;
-padding:12px;
-background:rgba(255,255,255,.05);
-border:1px solid rgba(255,255,255,.1);
-border-radius:10px;
-color:#fff;
-font-family:'Cairo';
+input,textarea{
+  width:100%;
+  padding:12px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;
+  color:#fff;
+  font-family:'Cairo';
+}
+
+/* قائمة الرتبة واضحة */
+select{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.2);
+  background:#ffffff;
+  color:#000000;
+  font-family:'Cairo';
+}
+select option{
+  color:#000000;
+  background:#ffffff;
 }
 
 .btn-copy{
-width:100%;
-padding:15px;
-background:linear-gradient(135deg,#00829d,#00d4ff);
-border:none;
-border-radius:10px;
-color:#fff;
-font-size:16px;
-font-weight:700;
-cursor:pointer;
+  width:100%;
+  padding:15px;
+  background:linear-gradient(135deg,#00829d,#00d4ff);
+  border:none;
+  border-radius:10px;
+  color:#fff;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
 }
 
 .back-link{
-margin-top:15px;
-text-align:center;
-cursor:pointer;
-color:var(--text-gray);
+  margin-top:15px;
+  text-align:center;
+  cursor:pointer;
+  color:var(--text-gray);
 }
 
 #form-section{display:none}
+
+/* Footer */
+.footer{
+  text-align:center;
+  margin-top:20px;
+  font-size:12px;
+  color:rgba(255,255,255,0.5);
+}
 </style>
 </head>
 
 <body>
 
 <div class="bg-logos">
-<img src="logo1.gif" class="logo1">
-<img src="logo2.gif" class="logo2">
+  <img src="logo1.gif" class="logo1">
+  <img src="logo2.gif" class="logo2">
 </div>
 
 <div class="container">
@@ -147,14 +191,19 @@ color:var(--text-gray);
 </div>
 
 <div class="form-group">
-<label>الرقم العسكري</label>
-<input id="militaryID">
+<label>الكوبي ايدي</label>
+<input id="copyID" placeholder="1234567890">
 </div>
 
 <button class="btn-copy" onclick="copyReport()">نسخ التقرير</button>
 <div class="back-link" onclick="goBack()">رجوع</div>
 </div>
 
+</div> <!-- نهاية container -->
+
+<!-- Footer -->
+<div class="footer">
+حقوق الملكية &copy; قطاع الأمن العام بمقاطعة بوليتو
 </div>
 
 <script>
@@ -180,7 +229,6 @@ courses:["عميد ركن","عقيد ركن","مقدم ركن","رائد","نق�
 };
 
 const fixedUnits="الامن العام + امن الطرق + المهام الخاصة";
-
 const el=id=>document.getElementById(id);
 
 function openForm(type){
@@ -209,6 +257,7 @@ el("rank").innerHTML="<option disabled selected>اختر الرتبة</option>";
 arr.forEach(r=>el("rank").innerHTML+=`<option>${r}</option>`);
 }
 
+// تغيير الموقع تلقائي للتوجيهات في تقارير الإشراف
 el("taskName").addEventListener("input",()=>{
 if(currentMode==="supervision"){
 el("location").value=taskMap[el("taskName").value.trim()]||"";
@@ -220,25 +269,26 @@ el("menu-section").style.display="block";
 el("form-section").style.display="none";
 }
 
+// الوقت بتوقيت السعودية
 function saudiTime(){
-return new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Riyadh"}));
+  return new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Riyadh"}));
 }
-
 function fmt(t){
-let h=t.getHours(),m=String(t.getMinutes()).padStart(2,"0");
-let p=h>=12?"م":"ص"; h=h%12||12;
-return `${h}:${m} ${p}`;
+  let h=t.getHours(),m=String(t.getMinutes()).padStart(2,"0");
+  let p=h>=12?"م":"ص"; h=h%12||12;
+  return `${h}:${m} ${p}`;
 }
 
+// نسخ التقرير
 function copyReport(){
 const now=saudiTime();
-const before=new Date(now-3600000);
+const before=new Date(now-3600000); // ساعة قبل
 
 const report=
 `تم استلام مهام (${el("taskName").value||"..."}) من ${fmt(before)} إلى ${fmt(now)}\n\n`+
 `الموقع : ${el("location").value||"..."}\n\n`+
 (currentMode!=="courses"?`${el("unitLabel").innerText} :\n${el("unit").value}\n\n`:"")+
-`تم رفع التقرير من قبل (${el("rank").value||"..."}) : <@${el("militaryID").value||"0000"}>`;
+`تم رفع التقرير من قبل (${el("rank").value||"..."}) : <@${el("copyID").value||"0000"}>`;
 
 navigator.clipboard.writeText(report);
 alert("تم نسخ التقرير ✅");
