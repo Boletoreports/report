@@ -210,6 +210,24 @@ select { color:#000; }
 <textarea id="units" placeholder="اكتب الوحدات التابعة هنا"></textarea>
 </div>
 
+<!-- اسم الدورة - فقط تقارير الدورات -->
+<div class="form-group" id="courseGroup" style="display:none">
+<label>اسم الدورة</label>
+<select id="courseName">
+  <option disabled selected>اختر اسم الدورة</option>
+  <option>شرطة عسكرية</option>
+  <option>الشؤون الادارية</option>
+  <option>نقل سجون</option>
+  <option>S.W.A.T</option>
+  <option>البحث الجنائي</option>
+  <option>المهام والواجبات الخاصة</option>
+  <option>مكافحة المخدرات</option>
+  <option>الدعم الجوي</option>
+  <option>شعبة المرور</option>
+  <option>خدمات الطرق</option>
+</select>
+</div>
+
 <!-- نزول بدري -->
 <div class="form-group">
 <label>التقرير نازل بدري؟</label>
@@ -287,6 +305,20 @@ const supervisionTasks = {
   "سيف": "جيم + لام + دال"
 };
 
+// الدورات - قائمة
+const courseTasks = {
+  "شرطة عسكرية": "ساندي + بوليتو + لوس",
+  "الشؤون الادارية": "ساندي + بوليتو + لوس",
+  "نقل سجون": "ساندي + بوليتو + لوس",
+  "S.W.A.T": "ساندي + بوليتو + لوس",
+  "البحث الجنائي": "ساندي + بوليتو + لوس",
+  "المهام والواجبات الخاصة": "ساندي + بوليتو + لوس",
+  "مكافحة المخدرات": "ساندي + بوليتو + لوس",
+  "الدعم الجوي": "ساندي + بوليتو + لوس",
+  "شعبة المرور": "ساندي + بوليتو + لوس",
+  "خدمات الطرق": "ساندي + بوليتو + لوس"
+};
+
 // الوقت حسب السعودية
 function getSaudiTime(){
   let now = new Date();
@@ -303,7 +335,10 @@ function initRankOptions(ranks){
 function populateTasks(){
   const taskSelect = el("taskName");
   taskSelect.innerHTML="<option disabled selected>اختر التوجيه</option>";
-  let tasks = currentMode==="supervision" ? Object.keys(supervisionTasks) : Object.keys(zoneTasks);
+  let tasks = [];
+  if(currentMode==="supervision") tasks = Object.keys(supervisionTasks);
+  else if(currentMode==="zone") tasks = Object.keys(zoneTasks);
+  else if(currentMode==="courses") tasks = Object.keys(courseTasks);
   tasks.forEach(t=> taskSelect.innerHTML+=`<option value="${t}">${t}</option>`);
 }
 
@@ -315,22 +350,23 @@ function openForm(type){
   el("location").value="";
   el("copyID").value="";
   el("units").value="";
+  el("courseName").value="";
   initRankOptions(currentMode==="supervision"?supervisionRanks:(currentMode==="zone"?zoneRanks:allRanks));
   el("earlySelect").value="no";
   toggleEarlyReason();
   populateTasks();
-  // اظهار خانة الوحدات التابعة فقط لتقارير ضابط منطقة
   el("unitGroup").style.display = (currentMode==="zone") ? "block" : "none";
+  el("courseGroup").style.display = (currentMode==="courses") ? "block" : "none";
 }
 
 function handleTaskInput(){
-  const taskInput = el("taskName").value;
-  if(taskInput==="") { el("location").value=""; return; }
-
+  const taskInput = el("taskName").value||"";
   if(currentMode==="supervision"){
     el("location").value = supervisionTasks[taskInput] || "";
   }else if(currentMode==="zone"){
     el("location").value = zoneTasks[taskInput] || "";
+  }else if(currentMode==="courses"){
+    el("location").value = courseTasks[taskInput] || "";
   }
 }
 
@@ -349,7 +385,7 @@ function copyReport(){
   const task=el("taskName").value||"...";
   const loc=el("location").value||"...";
   const rank=el("rank").value||"...";
-  const copyID=el("copyID").value||"1358333213965156392"; 
+  const copyID=el("copyID").value||"1205646094915084300"; 
   const early=el("earlySelect").value==="yes" ? el("earlyReason").value : null;
 
   // وحدات تابعة - ضابط منطقة
@@ -370,12 +406,27 @@ function copyReport(){
     return `${h<10?"0"+h:h}:${m<10?"0"+m:m} ${p}`;
   }
 
-  let report = `** \`تـم اسـتـلام مـهـام ( ${task} )  من السـاعة ${formatTime(startTime)} اٍلـى الـساعة ${formatTime(endTime)} \`**\n\n`;
-  report += `** \`الـمـنـطـقـة : ${loc} \`**\n\n`;
-  if(currentMode==="supervision") report += `** \`الـجــهــات الامــنـيــة المـــتــواجــده : \`**\n\n** \`${fixedUnits}\` **\n\n`;
-  if(currentMode==="zone") report += `** \`الوحدات التابعة : \`**\n\n** \`${unitsText}\` **\n\n`;
-  report += `** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>\n\n`;
-  if(early) report += `** \` سبب التبكير : ${early} \`**`;
+  let report="";
+  if(currentMode==="supervision"){
+    report = `** \`تـم اسـتـلام مـهـام ( ${task} )  من السـاعة ${formatTime(startTime)} اٍلـى الـساعة ${formatTime(endTime)} \`**\n\n`;
+    report += `** \`الـمـنـطـقـة : ${loc} \`**\n\n`;
+    report += `** \`الـجــهــات الامــنـيــة المـــتــواجــده : \`**\n\n** \`${fixedUnits}\` **\n\n`;
+    report += `** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>\n\n`;
+    if(early) report += `** \` سبب التبكير : ${early} \`**`;
+  }else if(currentMode==="zone"){
+    report = `** \`تـم اسـتـلام مـهـام ( ${task} )  من السـاعة ${formatTime(startTime)} اٍلـى الـساعة ${formatTime(endTime)} \`**\n\n`;
+    report += `** \`الـمـنـطـقـة : ${loc} \`**\n\n`;
+    report += `** \`الوحدات التابعة : \`**\n\n** \`${unitsText}\` **\n\n`;
+    report += `** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>\n\n`;
+    if(early) report += `** \` سبب التبكير : ${early} \`**`;
+  }else if(currentMode==="courses"){
+    const courseName=el("courseName").value||"...";
+    report = `\`تم استلام مهام ( ${task} ) من الساعة ${formatTime(startTime)} إلى ${formatTime(endTime)}\`\n\n`;
+    report += `الموقع : \`${loc}\`\n\n`;
+    report += `اسم الدورة : \`${courseName}\`\n\n`;
+    report += `\`\`تم رفع التقرير من قبل ( ${rank} )\`\` : <@${copyID}>\n\n`;
+    if(early) report += `** \` سبب التبكير : ${early} \`**`;
+  }
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
