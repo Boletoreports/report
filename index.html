@@ -47,7 +47,7 @@ body::after  { background-image:url('logo2.gif'); bottom:20px; right:20px; anima
 
 .container{
   width:90%;
-  max-width:450px;
+  max-width:500px;
   background:var(--card-bg);
   backdrop-filter:blur(15px);
   border:1px solid var(--border-color);
@@ -109,6 +109,8 @@ input,select,textarea{
   color:#fff;
   font-family:'Cairo';
 }
+
+textarea{height:100px;resize:vertical;overflow:auto;}
 
 select { color:#000; }
 
@@ -176,18 +178,6 @@ select { color:#000; }
 <div id="form-section">
 <h2 id="title-text">تقديم التقرير</h2>
 
-<!-- دورة -->
-<div class="form-group" id="course-dropdown" style="display:none">
-<label>اسم الدورة</label>
-<select id="courseName" onchange="handleCourseChange()">
-<option disabled selected>اختر الدورة</option>
-<option>شرطة عسكرية</option>
-<option>الشؤون الإدارية</option>
-<option>دورة نقل سجون</option>
-<option>S.W.A.T</option>
-</select>
-</div>
-
 <!-- التوجيه -->
 <div class="form-group">
 <label>التوجيه</label>
@@ -212,6 +202,12 @@ select { color:#000; }
 <div class="form-group">
 <label>كوبي ايدي العسكري</label>
 <input type="text" id="copyID" placeholder="ضع الكوبي ايدي هنا">
+</div>
+
+<!-- وحدات تابعة - فقط ضابط منطقة -->
+<div class="form-group" id="unitGroup" style="display:none">
+<label>الوحدات التابعة (حد أقصى 400 كلمة)</label>
+<textarea id="units" placeholder="اكتب الوحدات التابعة هنا"></textarea>
 </div>
 
 <!-- نزول بدري -->
@@ -318,10 +314,13 @@ function openForm(type){
   el("taskName").value="";
   el("location").value="";
   el("copyID").value="";
+  el("units").value="";
   initRankOptions(currentMode==="supervision"?supervisionRanks:(currentMode==="zone"?zoneRanks:allRanks));
   el("earlySelect").value="no";
   toggleEarlyReason();
   populateTasks();
+  // اظهار خانة الوحدات التابعة فقط لتقارير ضابط منطقة
+  el("unitGroup").style.display = (currentMode==="zone") ? "block" : "none";
 }
 
 function handleTaskInput(){
@@ -344,12 +343,22 @@ function goBack(){
   el("form-section").style.display="none";
 }
 
+function countWords(text){ return text.trim().split(/\s+/).filter(w=>w.length>0).length; }
+
 function copyReport(){
   const task=el("taskName").value||"...";
   const loc=el("location").value||"...";
   const rank=el("rank").value||"...";
   const copyID=el("copyID").value||"1358333213965156392"; 
   const early=el("earlySelect").value==="yes" ? el("earlyReason").value : null;
+
+  // وحدات تابعة - ضابط منطقة
+  let unitsText = "";
+  if(currentMode==="zone"){
+    const unitsInput = el("units").value || "";
+    if(countWords(unitsInput)>400){ alert("الوحدات التابعة يجب ألا تتجاوز 400 كلمة"); return; }
+    unitsText = unitsInput;
+  }
 
   let endTime = getSaudiTime();
   let startTime = new Date(endTime.getTime() - 60*60000);
@@ -364,6 +373,7 @@ function copyReport(){
   let report = `** \`تـم اسـتـلام مـهـام ( ${task} )  من السـاعة ${formatTime(startTime)} اٍلـى الـساعة ${formatTime(endTime)} \`**\n\n`;
   report += `** \`الـمـنـطـقـة : ${loc} \`**\n\n`;
   if(currentMode==="supervision") report += `** \`الـجــهــات الامــنـيــة المـــتــواجــده : \`**\n\n** \`${fixedUnits}\` **\n\n`;
+  if(currentMode==="zone") report += `** \`الوحدات التابعة : \`**\n\n** \`${unitsText}\` **\n\n`;
   report += `** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>\n\n`;
   if(early) report += `** \` سبب التبكير : ${early} \`**`;
 
