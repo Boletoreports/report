@@ -58,7 +58,7 @@ body::after {
   box-shadow:0 20px 50px rgba(0,0,0,.5);
   margin-top:20px;
 }
-h2{
+h2.section-title{
   text-align:center;
   color:var(--primary-blue);
   margin-bottom:30px;
@@ -101,7 +101,7 @@ select { color:#000; }
 #taskName{ position:relative; }
 .suggestions{
   position:absolute;
-  background:rgba(0,0,0,0.9);
+  background:rgba(0,0,0,0.95);
   top:100%; left:0;
   right:0;
   border:1px solid var(--border-color);
@@ -124,7 +124,7 @@ select { color:#000; }
 <body>
 <div class="container">
   <div id="menu-section">
-    <h2><i class="fas fa-shield-alt"></i> بوليتو - التقارير</h2>
+    <h2 class="section-title"><i class="fas fa-shield-alt"></i> بوليتو - التقارير</h2>
     <div class="main-menu">
       <div class="menu-card" onclick="openForm('supervision')">
         <i class="fas fa-user-shield"></i> <strong>تقارير الإشراف</strong>
@@ -142,7 +142,7 @@ select { color:#000; }
   </div>
 
   <div id="form-section">
-    <h2 id="title-text">تقديم التقرير</h2>
+    <h2 class="section-title" id="title-text">التقرير</h2>
     <div class="form-group" id="taskGroup">
       <label>التوجيه (اكتب يدوي)</label>
       <input type="text" id="taskName" placeholder="اكتب التوجيه" autocomplete="off">
@@ -161,8 +161,8 @@ select { color:#000; }
       <input type="text" id="copyID" placeholder="ضع الكوبي ايدي هنا">
     </div>
     <div class="form-group" id="unitGroup" style="display:none">
-      <label>الوحدات التابعة (حد أقصى 400 كلمة)</label>
-      <textarea id="units" placeholder="اكتب الوحدات التابعة هنا"></textarea>
+      <label>الوحدات التابعة (اختياري لتحديد الموقع)</label>
+      <input type="text" id="units" placeholder="اكتب الوحدات هنا">
     </div>
     <div class="form-group" id="courseGroup" style="display:none">
       <label>اسم الدورة</label>
@@ -179,6 +179,8 @@ select { color:#000; }
         <option>شعبة المرور</option>
         <option>خدمات الطرق</option>
       </select>
+      <label>الوحدات (اختياري لتحديد الموقع)</label>
+      <input type="text" id="courseUnits" placeholder="اكتب الوحدات هنا">
     </div>
     <div class="form-group">
       <label>التقرير نازل مبكر؟</label>
@@ -209,14 +211,14 @@ const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","�
 const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
 const allRanks=[...supervisionRanks,...zoneRanks];
 
-// التوجيهات حسب نوع التقرير
 const supervisionTasks = {
   "سهم 1":"ساندي + بوليتو","سهم 2":"ساندي + بوليتو","سهم 3":"ساندي + بوليتو","سهم 4":"ساندي + بوليتو","سهم 5":"ساندي + بوليتو",
-  "درع 1":"ساندي + بوليتو","درع 2":"ساندي + بوليتو","درع 3":"ساندي + بوليتو","درع 4":"ساندي + بوليتو","درع 5":"ساندي + بوليتو",
+  "درع 1":"ساندي + بوليتو","درع 2":"ساندي + بوليتو","درع 3":"ساندي + بوليتو","درع 4":"ساندي + بوليتو",
   "جنوب 1":"ساندي","جنوب 2":"ساندي","جنوب 3":"ساندي","جنوب 4":"ساندي",
   "غرب 1":"بوليتو","غرب 2":"بوليتو","غرب 3":"بوليتو","غرب 4":"بوليتو",
   "ساهر 1":"جيم + لام","ساهر 2":"جيم + لام","ساهر 3":"دال","ساهر 4":"دال",
-  "رصد":"جيم + لام + دال","سيف":"جيم + لام + دال"
+  "رصد 1":"جيم + لام + دال","رصد 2":"جيم + لام + دال","رصد 3":"جيم + لام + دال","رصد 4":"جيم + لام + دال",
+  "سيف 1":"جيم + لام + دال","سيف 2":"جيم + لام + دال","سيف 3":"جيم + لام + دال","سيف 4":"جيم + لام + دال"
 };
 
 const zoneTasks = {
@@ -238,18 +240,6 @@ const courseTasks = {
   "خدمات الطرق":"ساندي + بوليتو + لوس"
 };
 
-function getSaudiTime(){
-  let now = new Date();
-  let utc = now.getTime() + now.getTimezoneOffset()*60000;
-  return new Date(utc + 3*3600000);
-}
-
-function initRankOptions(ranks){
-  const r=el("rank");
-  r.innerHTML="<option disabled selected>اختر الرتبة</option>";
-  ranks.forEach(x=> r.innerHTML+=`<option>${x}</option>`);
-}
-
 function openForm(type){
   currentMode=type;
   el("menu-section").style.display="none";
@@ -259,96 +249,40 @@ function openForm(type){
   el("copyID").value="";
   el("units").value="";
   el("courseName").value="";
-  initRankOptions(currentMode==="supervision"?supervisionRanks:(currentMode==="zone"?zoneRanks:allRanks));
+  el("courseUnits").value="";
   el("earlySelect").value="no";
   toggleEarlyReason();
-  el("unitGroup").style.display = (currentMode==="zone") ? "block" : "none";
-  el("courseGroup").style.display = (currentMode==="courses") ? "block" : "none";
+
+  // عنوان القسم
+  let titleText="";
+  if(type==="supervision") titleText="تقارير الإشراف";
+  else if(type==="zone") titleText="تقارير ضابط منطقة";
+  else if(type==="courses") titleText="تقارير الدورات";
+  el("title-text").textContent=titleText;
+
+  // إظهار/إخفاء وحدات
+  el("unitGroup").style.display = (type==="zone" || type==="supervision") ? "block" : "none";
+  el("courseGroup").style.display = (type==="courses") ? "block" : "none";
+
+  // الرتب
+  const ranks = (type==="supervision") ? supervisionRanks : (type==="zone") ? zoneRanks : allRanks;
+  const r=el("rank"); r.innerHTML="<option disabled selected>اختر الرتبة</option>";
+  ranks.forEach(x=> r.innerHTML+=`<option>${x}</option>`);
 
   setupSuggestions();
-  if(currentMode==="courses"){
+  if(type==="courses"){
     el("courseName").onchange = function(){
       const val = el("courseName").value;
-      el("location").value = courseTasks[val] || "";
+      const units=el("courseUnits").value.trim();
+      el("location").value = units || courseTasks[val] || "";
     };
+    el("courseUnits").addEventListener("input",function(){
+      const val = el("courseName").value;
+      el("location").value = this.value || courseTasks[val] || "";
+    });
   }
 }
 
-function toggleEarlyReason(){
-  el("earlyReasonGroup").style.display = el("earlySelect").value==="yes" ? "block":"none";
-}
-
-function goBack(){
-  el("menu-section").style.display="block";
-  el("form-section").style.display="none";
-}
-
-function countWords(text){
-  return text.trim().split(/\s+/).filter(w=>w.length>0).length;
-}
-
-function copyReport(){
-  const task=el("taskName").value||"...";
-  const loc=el("location").value||"...";
-  const rank=el("rank").value||"...";
-  const copyID=el("copyID").value||"1205646094915084300";
-  const early=el("earlySelect").value==="yes"?el("earlyReason").value:null;
-
-  let unitsText="";
-  if(currentMode==="zone"){
-    const unitsInput=el("units").value||"";
-    if(countWords(unitsInput)>400){ alert("الوحدات التابعة يجب ألا تتجاوز 400 كلمة"); return; }
-    unitsText=unitsInput;
-  }
-
-  let endTime=getSaudiTime();
-  let startTime=new Date(endTime.getTime()-60*60000);
-
-  function formatTime(d){
-    let h=d.getHours()%12||12;
-    let m=d.getMinutes();
-    let p=d.getHours()>=12?"م":"ص";
-    return `${h<10?"0"+h:h}:${m<10?"0"+m:m} ${p}`;
-  }
-
-  let report="";
-  if(currentMode==="supervision"){
-    report=`** \`تـم اسـتـلام مـهـام ( ${task} ) من السـاعة ${formatTime(startTime)} اٍلـى الـساعة ${formatTime(endTime)}\` **
-
-** \`الـمـنـطـقـة : ${loc}\` **
-** \`الـجــهــات الامــنـيــة المــتــواجــده :\` **
-** \`${fixedUnits}\` **
-** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
-  }
-  else if(currentMode==="zone"){
-    report=`** \`تـم اسـتـلام مـهـام ( ${task} ) من السـاعة ${formatTime(startTime)} اٍلـى الـساعة ${formatTime(endTime)}\` **
-
-** \`الـمـنـطـقـة : ${loc}\` **
-** \`الوحدات التابعة :\` **
-** \`${unitsText}\` **
-** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
-  }
-  else if(currentMode==="courses"){
-    const courseName=el("courseName").value||"...";
-    report=`\`تم استلام مهام ( ${task} ) من الساعة ${formatTime(startTime)} إلى ${formatTime(endTime)}\`
-
-الموقع : \`${loc}\`
-اسم الدورة : \`${courseName}\`
-\`\`تم رفع التقرير من قبل ( ${rank} )\`\` : <@${copyID}>`;
-  }
-
-  if(early) report+=`\n** \`سبب التبكير : ${early}\` **`;
-
-  navigator.clipboard.writeText(report);
-  alert("تم نسخ التقرير ✅");
-}
-
-// تقرير العمليات
-function openOperationsReports(){
-  window.open("https://1boletop.netlify.app/","_blank");
-}
-
-// اقتراحات التوجيهات
 function setupSuggestions(){
   const input=el("taskName");
   const suggestDiv=el("taskSuggestions");
@@ -369,7 +303,6 @@ function setupSuggestions(){
   });
   input.addEventListener("blur",()=>setTimeout(()=>suggestDiv.style.display="none",200));
   input.addEventListener("focus",()=>{ if(suggestDiv.children.length) suggestDiv.style.display="block"; });
-  input.addEventListener("change",updateLocation);
 }
 
 function updateLocation(){
@@ -379,6 +312,61 @@ function updateLocation(){
   else if(currentMode==="zone") loc=zoneTasks[val]||"";
   el("location").value=loc;
 }
+
+function toggleEarlyReason(){
+  el("earlyReasonGroup").style.display = el("earlySelect").value==="yes" ? "block":"none";
+}
+
+function goBack(){
+  el("menu-section").style.display="block";
+  el("form-section").style.display="none";
+}
+
+function countWords(text){ return text.trim().split(/\s+/).filter(w=>w.length>0).length; }
+
+function getSaudiTime(){ let now=new Date(); let utc=now.getTime()+now.getTimezoneOffset()*60000; return new Date(utc + 3*3600000); }
+
+function copyReport(){
+  const task=el("taskName").value||"...";
+  const loc=el("location").value||"...";
+  const rank=el("rank").value||"...";
+  const copyID=el("copyID").value||"1205646094915084300";
+  const early=el("earlySelect").value==="yes"?el("earlyReason").value:null;
+
+  let unitsText="";
+  if(currentMode==="zone" || currentMode==="supervision") unitsText=el("units").value.trim();
+  if(currentMode==="courses") unitsText=el("courseUnits").value.trim();
+
+  let endTime=getSaudiTime();
+  let startTime=new Date(endTime.getTime()-60*60000);
+
+  function formatTime(d){ let h=d.getHours()%12||12; let m=d.getMinutes(); let p=d.getHours()>=12?"م":"ص"; return `${h<10?"0"+h:h}:${m<10?"0"+m:m} ${p}`; }
+
+  let report="";
+  if(currentMode==="supervision" || currentMode==="zone"){
+    report=`** \`تـم اسـتـلام مـهـام ( ${task} ) من السـاعة ${formatTime(startTime)} اٍلـى الـساعة ${formatTime(endTime)}\` **
+
+** \`الـمـنـطـقـة : ${loc}\` **
+** \`الوحدات التابعة :\` **
+** \`${unitsText || fixedUnits}\` **
+** \`رتبة العسكري : ${rank}\` **
+** \`كوبي ايدي العسكري : ${copyID}\` **
+
+${early?"** `التقرير نازل مبكر : "+early+"` **":""}`;
+  } else if(currentMode==="courses"){
+    const course=el("courseName").value||"...";
+    report=`** \`تقرير دورة: ${course}\` **
+
+** \`الوحدات التابعة :\` **
+** \`${unitsText || fixedUnits}\` **
+
+${early?"** `التقرير نازل مبكر : "+early+"` **":""}`;
+  }
+
+  navigator.clipboard.writeText(report).then(()=>alert("تم نسخ التقرير!"));
+}
+
+function openOperationsReports(){ window.open("https://1boletop.netlify.app/","_blank"); }
 </script>
 </body>
 </html>
