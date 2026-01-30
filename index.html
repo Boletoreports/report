@@ -6,6 +6,7 @@
 <title>نظام التقارير العسكرية الذكي</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
 body{
   margin:0;
@@ -18,7 +19,7 @@ body{
 }
 .container{
   width:90%;
-  max-width:500px;
+  max-width:520px;
   background:rgba(20,20,20,.85);
   border-radius:20px;
   padding:30px;
@@ -71,15 +72,23 @@ button{
 <body>
 <div class="container">
 
+<!-- القائمة -->
 <div id="menu-section">
 <h2>بوليتو - التقارير</h2>
 <div class="main-menu">
-<div class="menu-card" onclick="openForm('supervision')"><i class="fas fa-user-shield"></i> تقارير الإشراف</div>
-<div class="menu-card" onclick="openForm('zone')"><i class="fas fa-map-marker-alt"></i> تقارير ضابط منطقة</div>
-<div class="menu-card" onclick="openForm('courses')"><i class="fas fa-graduation-cap"></i> تقارير الدورات</div>
+  <div class="menu-card" onclick="openForm('supervision')">
+    <i class="fas fa-user-shield"></i> تقارير الإشراف
+  </div>
+  <div class="menu-card" onclick="openForm('zone')">
+    <i class="fas fa-map-marker-alt"></i> تقارير ضابط منطقة
+  </div>
+  <div class="menu-card" onclick="openForm('courses')">
+    <i class="fas fa-graduation-cap"></i> تقارير الدورات
+  </div>
 </div>
 </div>
 
+<!-- النموذج -->
 <div id="form-section">
 <h2 id="title"></h2>
 
@@ -111,32 +120,48 @@ button{
 </div>
 
 <script>
+function el(id){ return document.getElementById(id); }
+
 const fixedUnits="الامــن الــعـام + امـن الـطـرق + المهام والواجبات الخاصه";
-const ranks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
-let mode="";
 
-function el(id){return document.getElementById(id);}
+// الرتب
+const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
+const courseRanks=["جندي","جندي اول","عريف","وكيل رقيب"];
 
-function openForm(m){
-  mode=m;
+let currentMode="";
+
+// فتح النموذج
+function openForm(mode){
+  currentMode=mode;
   el("menu-section").style.display="none";
   el("form-section").style.display="block";
-  el("title").textContent="تقارير الإشراف";
-  el("rank").innerHTML='<option disabled selected>اختر الرتبة</option>';
-  ranks.forEach(r=>el("rank").innerHTML+=`<option>${r}</option>`);
+
+  el("title").textContent =
+    mode==="courses" ? "تقارير الدورات" :
+    mode==="zone" ? "تقارير ضابط منطقة" :
+    "تقارير الإشراف";
+
+  const rankSelect=el("rank");
+  rankSelect.innerHTML='<option disabled selected>اختر الرتبة</option>';
+
+  let ranksToUse = mode==="courses" ? courseRanks : supervisionRanks;
+  ranksToUse.forEach(r=>{
+    rankSelect.innerHTML+=`<option>${r}</option>`;
+  });
 }
 
+// رجوع
 function goBack(){
   el("menu-section").style.display="block";
   el("form-section").style.display="none";
 }
 
+// وقت السعودية
 function saTime(){
   let d=new Date();
   let utc=d.getTime()+d.getTimezoneOffset()*60000;
   return new Date(utc+3*3600000);
 }
-
 function format(t){
   let h=t.getHours()%12||12;
   let m=t.getMinutes();
@@ -144,6 +169,7 @@ function format(t){
   return `${h<10?"0"+h:h}:${m<10?"0"+m:m} ${p}`;
 }
 
+// نسخ التقرير
 function copyReport(){
   let task=el("task").value||"...";
   let loc=el("location").value||"...";
