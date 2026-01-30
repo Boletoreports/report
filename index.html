@@ -30,7 +30,6 @@ body {
   position: relative;
 }
 
-/* الصور المتحركة */
 body::before,
 body::after {
   content: '';
@@ -79,8 +78,6 @@ body::after {
     transform: translate(0, 0);
   }
 }
-
-/* باقي التنسيق */
 
 .container {
   width: 90%;
@@ -149,6 +146,9 @@ h2 {
       </div>
       <div class="menu-card" onclick="alert('تقرير الدورات')">
         <i class="fas fa-graduation-cap"></i> <strong>تقارير الدورات</strong>
+      </div>
+      <div class="menu-card" onclick="window.open('https://1boletop.netlify.app/', '_blank')">
+        <i class="fas fa-cogs"></i> <strong>تقارير العمليات</strong>
       </div>
     </div>
   </div>
