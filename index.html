@@ -241,6 +241,7 @@ const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","�
 const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
 const allRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب"];
 
+// ===== الاقتراحات =====
 const supervisionTasks = [
   "سهم 1","سهم 2","سهم 3","سهم 4","سهم 5",
   "درع 1","درع 2","درع 3","درع 4","درع 5",
@@ -249,6 +250,14 @@ const supervisionTasks = [
   "ساهر 1","ساهر 2","ساهر 3","ساهر 4",
   "رصد 1","رصد 2","رصد 3","رصد 4",
   "سيف 1","سيف 2","سيف 3","سيف 4"
+];
+
+const zoneTasks = [
+  "سين 10","سين 20",
+  "باء 10","باء 20",
+  "جيم 10",
+  "لام 10",
+  "دال 10","دال 20"
 ];
 
 const courseTasks = {
@@ -316,7 +325,8 @@ function updateTaskSuggestions(){
   let suggestionsDiv = el("taskSuggestions");
   suggestionsDiv.innerHTML = "";
   if(input===""){ suggestionsDiv.style.display="none"; return; }
-  let filtered = supervisionTasks.filter(x=>x.toLowerCase().includes(input));
+  let tasks = currentMode==="supervision"?supervisionTasks:currentMode==="zone"?zoneTasks:[];
+  let filtered = tasks.filter(x=>x.toLowerCase().includes(input));
   filtered.forEach(s=>{
     let div = document.createElement("div");
     div.className="autocomplete-suggestion";
@@ -331,15 +341,25 @@ function updateTaskSuggestions(){
   suggestionsDiv.style.display = filtered.length>0?"block":"none";
 }
 
-// ======= تحديث الموقع تلقائياً لتقارير الاشراف ======
+// ======= تحديث الموقع تلقائياً ======
 function updateLocationByTask(task){
   let loc="";
-  if(["سهم 1","سهم 2","سهم 3","سهم 4","سهم 5","درع 1","درع 2","درع 3","درع 4","درع 5"].includes(task)) loc="ساندي + بوليتو";
-  else if(["جنوب 1","جنوب 2","جنوب 3","جنوب 4"].includes(task)) loc="ساندي";
-  else if(["غرب 1","غرب 2","غرب 3","غرب 4"].includes(task)) loc="بوليتو";
-  else if(["رصد 1","رصد 2","رصد 3","رصد 4","سيف 1","سيف 2","سيف 3","سيف 4"].includes(task)) loc="جيم + لام + دال";
-  else if(["ساهر 1","ساهر 2"].includes(task)) loc="جيم + لام";
-  else if(["ساهر 3","ساهر 4"].includes(task)) loc="دال";
+  if(currentMode==="supervision"){
+    if(["سهم 1","سهم 2","سهم 3","سهم 4","سهم 5","درع 1","درع 2","درع 3","درع 4","درع 5"].includes(task)) loc="ساندي + بوليتو";
+    else if(["جنوب 1","جنوب 2","جنوب 3","جنوب 4"].includes(task)) loc="ساندي";
+    else if(["غرب 1","غرب 2","غرب 3","غرب 4"].includes(task)) loc="بوليتو";
+    else if(["رصد 1","رصد 2","رصد 3","رصد 4","سيف 1","سيف 2","سيف 3","سيف 4"].includes(task)) loc="جيم + لام + دال";
+    else if(["ساهر 1","ساهر 2"].includes(task)) loc="جيم + لام";
+    else if(["ساهر 3","ساهر 4"].includes(task)) loc="دال";
+  } else if(currentMode==="zone"){
+    if(["سين 10","سين 20"].includes(task)) loc="ساندي";
+    else if(["باء 10"].includes(task)) loc="بوليتو";
+    else if(["باء 20"].includes(task)) loc="جزيره بوليتو";
+    else if(["جيم 10"].includes(task)) loc="جيم";
+    else if(["لام 10"].includes(task)) loc="لام";
+    else if(["دال 10"].includes(task)) loc="دال";
+    else if(["دال 20"].includes(task)) loc="دال 2";
+  }
   el("location").value = loc;
 }
 
@@ -372,35 +392,4 @@ function copyReport(){
     report = `** \`تـم اسـتـلام مـهـام ( ${task} ) من السـاعة ${formatTime(startTime)} اٍلـى الـساعة ${formatTime(endTime)}\` **
 
 ** \`الـمـنـطـقـة : ${loc}\` **
-** \`الـجــهــات الامــنـيــة المــتــواجــده :\` **
-** \`${fixedUnits}\` **
-** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
-  }
-  else if(currentMode==="zone"){
-    report = `** \`تـم اسـتـلام مـهـام ( ${task} ) من السـاعة ${formatTime(startTime)} اٍلـى الـساعة ${formatTime(endTime)}\` **
-
-** \`الـمـنـطـقـة : ${loc}\` **
-** \`الوحدات التابعة :\` **
-** \`${unitsText}\` **
-** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
-  }
-  else if(currentMode==="courses"){
-    const courseName=el("courseName").value||"...";
-    report = `** \`تقرير دورة ( ${courseName} )\` **
-** \`الـمـنـطـقـة : ساندي + بوليتو + لوس\` **
-** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
-  }
-
-  if(early) report+=`\n**\`سبب نزول التقرير مبكراً : ${early}\`**`;
-
-  navigator.clipboard.writeText(report);
-  alert("تم نسخ التقرير بنجاح!");
-}
-
-el("taskName").addEventListener("input",updateTaskSuggestions);
-document.addEventListener("click",function(e){
-  if(e.target.id!=="taskName") el("taskSuggestions").style.display="none";
-});
-</script>
-</body>
-</html>
+** \`الـجــه
