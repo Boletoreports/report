@@ -1,196 +1,248 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام التقارير العسكرية الذكي</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --primary-blue:#00d4ff;
+  --card-bg:rgba(20,20,20,.8);
+  --border-color:rgba(0,212,255,.2);
+  --text-gray:#b0b0b0;
+}
+
+body{
+  margin:0;
+  font-family:'Cairo',sans-serif;
+  background:radial-gradient(circle,#1a1a1a,#050505);
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  min-height:100vh;
+}
+
+.container{
+  width:90%;
+  max-width:500px;
+  background:var(--card-bg);
+  border:1px solid var(--border-color);
+  border-radius:20px;
+  padding:30px;
+  margin-top:20px;
+}
+
+h2{
+  text-align:center;
+  color:var(--primary-blue);
+}
+
+.main-menu{
+  display:grid;
+  gap:15px;
+}
+
+.menu-card{
+  background:rgba(255,255,255,.05);
+  padding:18px;
+  border-radius:15px;
+  cursor:pointer;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  transition:.3s;
+}
+
+.menu-card:hover{
+  background:rgba(0,212,255,.1);
+  transform:translateX(-5px);
+}
+
+.menu-card i{
+  color:var(--primary-blue);
+  font-size:22px;
+}
+
+.form-group{
+  margin-bottom:18px;
+}
+
+label{
+  display:block;
+  margin-bottom:6px;
+  font-size:14px;
+  color:var(--text-gray);
+}
+
+input,select,textarea{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);
+  color:#fff;
+  font-family:'Cairo';
+}
+
+select{color:#000}
+textarea{height:90px}
+
+.btn-copy{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(135deg,#00829d,#00d4ff);
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.back-link{
+  text-align:center;
+  margin-top:12px;
+  cursor:pointer;
+  color:var(--text-gray);
+}
+
+#form-section{display:none}
+
+.footer{
+  text-align:center;
+  margin-top:20px;
+  font-size:12px;
+  color:var(--text-gray);
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div id="menu-section">
+  <h2><i class="fas fa-shield-alt"></i> بوليتو - التقارير</h2>
+  <div class="main-menu">
+    <div class="menu-card" onclick="openForm('supervision')">
+      <i class="fas fa-user-shield"></i> تقارير الإشراف
+    </div>
+    <div class="menu-card" onclick="openForm('zone')">
+      <i class="fas fa-map-marker-alt"></i> تقارير ضابط منطقة
+    </div>
+    <div class="menu-card" onclick="openForm('courses')">
+      <i class="fas fa-graduation-cap"></i> تقارير الدورات
+    </div>
+  </div>
+</div>
+
+<div id="form-section">
+  <h2>تقديم التقرير</h2>
+
+  <div class="form-group">
+    <label>التوجيه</label>
+    <input id="taskName">
+  </div>
+
+  <div class="form-group">
+    <label>الموقع</label>
+    <input id="location" readonly>
+  </div>
+
+  <div class="form-group">
+    <label>الرتبة</label>
+    <select id="rank"></select>
+  </div>
+
+  <div class="form-group">
+    <label>كوبي ايدي العسكري</label>
+ 
+    <input id="copyID">
+  </div>
+
+  <div class="form-group" id="unitGroup" style="display:none">
+    <label>الوحدات التابعة</label>
+    <textarea id="units"></textarea>
+  </div>
+
+  <div class="form-group" id="courseGroup" style="display:none">
+    <label>اسم الدورة</label>
+    <select id="courseName">
+      <option disabled selected>اختر</option>
+      <option>شرطة عسكرية</option>
+      <option>S.W.A.T</option>
+      <option>البحث الجنائي</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>نزل بدري؟</label>
+    <select id="earlySelect" onchange="toggleEarlyReason()">
+      <option value="no">لا</option>
+      <option value="yes">نعم</option>
+    </select>
+  </div>
+
+  <div class="form-group" id="earlyReasonGroup" style="display:none">
+    <label>سبب التبكير</label>
+    <select id="earlyReason">
+      <option>ريستارت</option>
+      <option>صيانه</option>
+    </select>
+  </div>
+
+  <button class="btn-copy" onclick="copyReport()">نسخ التقرير</button>
+  <div class="back-link" onclick="goBack()">رجوع</div>
+</div>
+
+<div class="footer">© قطاع الأمن العام - بوليتو</div>
+</div>
+
 <script>
-function el(id){ return document.getElementById(id); }
+const ranks={
+  supervision:["عميد","عقيد","مقدم"],
+  zone:["رئيس رقباء","رقيب"],
+  courses:["ملازم","نقيب"]
+};
 
 let currentMode="";
-const fixedUnits="الامــن الــعـام + امـن الـطـرق + المهام والواجبات الخاصه";
 
-const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
-const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
-const allRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب"];
-
-// التوجيهات للمنطقة
-const zoneTasks={
-  "سين 10":"ساندي",
-  "سين 20":"ساندي",
-  "باء 10":"بوليتو",
-  "باء 20":"جزيره بوليتو",
-  "لام 10":"لام",
-  "جيم 10":"جيم",
-  "دال 10":"دال"
-};
-
-// التوجيهات للإشراف
-const supervisionTasks={
-  "سهم 1":"ساندي + بوليتو",
-  "سهم 2":"ساندي + بوليتو",
-  "سهم 3":"ساندي + بوليتو",
-  "سهم 4":"ساندي + بوليتو",
-  "سهم 5":"ساندي + بوليتو",
-  "درع 1":"ساندي + بوليتو",
-  "درع 2":"ساندي + بوليتو",
-  "درع 3":"ساندي + بوليتو",
-  "درع 4":"ساندي + بوليتو",
-  "درع 5":"ساندي + بوليتو",
-  "جنوب 1":"ساندي",
-  "جنوب 2":"ساندي",
-  "جنوب 3":"ساندي",
-  "جنوب 4":"ساندي",
-  "غرب 1":"بوليتو",
-  "غرب 2":"بوليتو",
-  "غرب 3":"بوليتو",
-  "غرب 4":"بوليتو",
-  "ساهر 1":"جيم + لام",
-  "ساهر 2":"جيم + لام",
-  "ساهر 3":"دال",
-  "ساهر 4":"دال",
-  "رصد":"جيم + لام + دال",
-  "سيف":"جيم + لام + دال"
-};
-
-// الدورات
-const courseTasks={
-  "شرطة عسكرية":"ساندي + بوليتو + لوس",
-  "الشؤون الادارية":"ساندي + بوليتو + لوس",
-  "نقل سجون":"ساندي + بوليتو + لوس",
-  "S.W.A.T":"ساندي + بوليتو + لوس",
-  "البحث الجنائي":"ساندي + بوليتو + لوس",
-  "المهام والواجبات الخاصة":"ساندي + بوليتو + لوس",
-  "مكافحة المخدرات":"ساندي + بوليتو + لوس",
-  "الدعم الجوي":"ساندي + بوليتو + لوس",
-  "شعبة المرور":"ساندي + بوليتو + لوس",
-  "خدمات الطرق":"ساندي + بوليتو + لوس"
-};
-
-// وقت السعودية
-function getSaudiTime(){
-  const now=new Date();
-  const utc=now.getTime()+now.getTimezoneOffset()*60000;
-  return new Date(utc+3*3600000);
-}
-
-function initRankOptions(ranks){
-  const r=el("rank");
-  if(!r) return;
-  r.innerHTML='<option disabled selected>اختر الرتبة</option>';
-  ranks.forEach(x=>r.innerHTML+=`<option>${x}</option>`);
-}
+function el(id){return document.getElementById(id);}
 
 function openForm(type){
   currentMode=type;
+  el("menu-section").style.display="none";
+  el("form-section").style.display="block";
 
-  if(el("menu-section")) el("menu-section").style.display="none";
-  if(el("form-section")) el("form-section").style.display="block";
+  el("rank").innerHTML='<option disabled selected>اختر</option>';
+  ranks[type].forEach(r=>el("rank").innerHTML+=`<option>${r}</option>`);
 
-  if(el("taskName")) el("taskName").value="";
-  if(el("location")) el("location").value="";
-  if(el("copyID")) el("copyID").value="";
-  if(el("units")) el("units").value="";
-  if(el("courseName")) el("courseName").value="";
-
-  initRankOptions(
-    currentMode==="supervision" ? supervisionRanks :
-    (currentMode==="zone" ? zoneRanks : allRanks)
-  );
-
-  if(el("earlySelect")) el("earlySelect").value="no";
-  toggleEarlyReason();
-
-  if(el("unitGroup"))
-    el("unitGroup").style.display=(currentMode==="zone")?"block":"none";
-
-  if(el("courseGroup"))
-    el("courseGroup").style.display=(currentMode==="courses")?"block":"none";
-
-  if(currentMode==="courses" && el("courseName")){
-    el("courseName").onchange=function(){
-      if(el("location"))
-        el("location").value=courseTasks[this.value]||"";
-    };
-  }
+  el("unitGroup").style.display=type==="zone"?"block":"none";
+  el("courseGroup").style.display=type==="courses"?"block":"none";
 }
 
 function toggleEarlyReason(){
-  if(!el("earlySelect")||!el("earlyReasonGroup")) return;
   el("earlyReasonGroup").style.display=
     el("earlySelect").value==="yes"?"block":"none";
 }
 
 function goBack(){
-  if(el("menu-section")) el("menu-section").style.display="block";
-  if(el("form-section")) el("form-section").style.display="none";
-}
-
-function countWords(text){
-  return text.trim().split(/\s+/).filter(w=>w.length>0).length;
+  el("menu-section").style.display="block";
+  el("form-section").style.display="none";
 }
 
 function copyReport(){
-  const task=el("taskName")?.value||"...";
-  const loc=el("location")?.value||"...";
-  const rank=el("rank")?.value||"...";
-  const copyID=el("copyID")?.value||"1205646094915084300";
-  const early=el("earlySelect")?.value==="yes"?el("earlyReason")?.value:null;
-
-  let unitsText="";
-  if(currentMode==="zone" && el("units")){
-    if(countWords(el("units").value)>400){
-      alert("الوحدات التابعة يجب ألا تتجاوز 400 كلمة");
-      return;
-    }
-    unitsText=el("units").value;
-  }
-
-  const endTime=getSaudiTime();
-  const startTime=new Date(endTime.getTime()-60*60000);
-
-  function formatTime(d){
-    let h=d.getHours()%12||12;
-    let m=d.getMinutes();
-    let p=d.getHours()>=12?"م":"ص";
-    return `${h<10?"0"+h:h}:${m<10?"0"+m:m} ${p}`;
-  }
-
-  let report="";
-
-  if(currentMode==="supervision"){
-    report=`** \`تـم اسـتـلام مـهـام ( ${task} ) من السـاعة ${formatTime(startTime)} اٍلـى الـساعة ${formatTime(endTime)}\` **
-
-** \`الـمـنـطـقـة : ${loc}\` **
-
-** \`الـجــهــات الامــنـيــة المــتــواجــده :\` **
-** \`${fixedUnits}\` **
-
-** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
-  }
-  else if(currentMode==="zone"){
-    report=`** \`تـم اسـتـلام مـهـام ( ${task} ) من السـاعة ${formatTime(startTime)} اٍلـى الـساعة ${formatTime(endTime)}\` **
-
-** \`الـمـنـطـقـة : ${loc}\` **
-
-** \`الوحدات التابعة :\` **
-** \`${unitsText}\` **
-
-** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
-  }
-  else if(currentMode==="courses"){
-    const courseName=el("courseName")?.value||"...";
-    report=`\`تم استلام مهام ( ${task} ) من الساعة ${formatTime(startTime)} إلى ${formatTime(endTime)}\`
-
-الموقع : \`${loc}\`
-
-اسم الدورة : \`${courseName}\`
-
-\`\`تم رفع التقرير من قبل ( ${rank} )\`\` : <@${copyID}>`;
-  }
-
-  if(early) report+=`\n** \`سبب التبكير : ${early}\` **`;
+  const report=
+`تم استلام مهام (${el("taskName").value})
+الموقع: ${el("location").value}
+الرتبة: ${el("rank").value}
+ايدي: ${el("copyID").value}`;
 
   navigator.clipboard.writeText(report);
-  alert("تم نسخ التقرير ✅");
-}
-
-// تقارير العمليات
-function openOperationsReports(){
-  window.location.href="https://1boletop.netlify.app/";
+  alert("تم النسخ ✅");
 }
 </script>
+</body>
+</html>
