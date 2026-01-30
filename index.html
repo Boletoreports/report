@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-
 :root{
   --primary-blue:#00d4ff;
   --dark-bg:#0a0a0a;
@@ -15,7 +14,6 @@
   --border-color:rgba(0,212,255,.2);
   --text-gray:#b0b0b0;
 }
-
 body{
   margin:0;
   font-family:'Cairo',sans-serif;
@@ -37,18 +35,10 @@ body::before, body::after {
   background-repeat:no-repeat;
   z-index:-1;
 }
-body::before {
-  background-image:url('logo1.gif');
-  top:20px; left:20px;
-  animation:move1 20s linear infinite;
-}
-body::after {
-  background-image:url('logo2.gif');
-  bottom:20px; right:20px;
-  animation:move2 25s linear infinite;
-}
-@keyframes move1 { 0%{transform:translate(0,0)} 50%{transform:translate(50px,50px)} 100%{transform:translate(0,0)} }
-@keyframes move2 { 0%{transform:translate(0,0)} 50%{transform:translate(-50px,-50px)} 100%{transform:translate(0,0)} }
+body::before { background-image:url('logo1.gif'); top:20px; left:20px; animation:move1 20s linear infinite; }
+body::after { background-image:url('logo2.gif'); bottom:20px; right:20px; animation:move2 25s linear infinite; }
+@keyframes move1 {0%{transform:translate(0,0)} 50%{transform:translate(50px,50px)} 100%{transform:translate(0,0)}}
+@keyframes move2 {0%{transform:translate(0,0)} 50%{transform:translate(-50px,-50px)} 100%{transform:translate(0,0)}}
 
 .container{
   width:90%;
@@ -86,47 +76,25 @@ h2{
 .menu-card i{color:var(--primary-blue);font-size:22px}
 
 .form-group{ margin-bottom:20px; }
-label{
-  display:block;
-  margin-bottom:8px;
-  font-size:14px;
-  color:var(--text-gray);
-  font-weight:600;
-}
-input,select,textarea{
-  width:100%;
-  padding:12px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:10px;
-  color:#fff;
-  font-family:'Cairo';
-}
+label{ display:block; margin-bottom:8px; font-size:14px; color:var(--text-gray); font-weight:600; }
+input,select,textarea{ width:100%; padding:12px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:10px; color:#fff; font-family:'Cairo'; }
 textarea{height:100px;resize:vertical;overflow:auto;}
-select{color:#000;}
+select { color:#000; }
 
-.btn-copy{
-  width:100%;
-  padding:15px;
-  background:linear-gradient(135deg,#00829d,#00d4ff);
-  border:none;
-  border-radius:10px;
-  color:#fff;
-  font-size:16px;
-  font-weight:700;
-  cursor:pointer;
-  margin-top:20px;
-}
-.back-link{
-  margin-top:15px;
-  text-align:center;
-  font-size:13px;
-  cursor:pointer;
-  color:var(--text-gray);
-}
+.time-input-group{ display:flex; align-items:center; gap:8px; direction:ltr; }
+
+.btn-copy{ width:100%; padding:15px; background:linear-gradient(135deg,#00829d,#00d4ff); border:none; border-radius:10px; color:#fff; font-size:16px; font-weight:700; cursor:pointer; margin-top:20px; }
+
+.back-link{ margin-top:15px; text-align:center; font-size:13px; cursor:pointer; color:var(--text-gray); }
+
 #form-section{display:none}
+
 .footer{ text-align:center; margin-top:20px; font-size:12px; color:var(--text-gray); }
 
+input::-webkit-calendar-picker-indicator { filter: invert(1); }
+
+/* الاقتراحات منظمة */
+datalist option { background: #1a1a1a; color: #fff; padding:5px; }
 </style>
 </head>
 <body>
@@ -150,29 +118,39 @@ select{color:#000;}
   </div>
 
   <div id="form-section">
-    <h2 id="title-text">تقديم التقرير</h2>
-
+    <h2 id="title-text"></h2>
+    <!-- التوجيه -->
     <div class="form-group" id="taskGroup">
-      <label>التوجيه</label>
-      <input type="text" id="taskName" placeholder="اكتب التوجيه" list="taskOptions" oninput="updateLocation()">
-      <datalist id="taskOptions"></datalist>
+      <label>التوجيه (اكتب يدوي)</label>
+      <input type="text" id="taskName" placeholder="اكتب التوجيه" list="taskSuggestions">
+      <datalist id="taskSuggestions"></datalist>
     </div>
 
+    <!-- الموقع -->
     <div class="form-group">
       <label>الموقع</label>
-      <input type="text" id="location" placeholder="الموقع" readonly>
+      <input type="text" id="location" placeholder="الموقع">
     </div>
 
+    <!-- الرتبة -->
     <div class="form-group">
       <label>اختر الرتبة</label>
       <select id="rank"></select>
     </div>
 
+    <!-- كوبي ايدي -->
+    <div class="form-group">
+      <label>كوبي ايدي العسكري</label>
+      <input type="text" id="copyID" placeholder="ضع الكوبي ايدي هنا">
+    </div>
+
+    <!-- وحدات تابعة -->
     <div class="form-group" id="unitGroup" style="display:none">
       <label>الوحدات التابعة (حد أقصى 400 كلمة)</label>
       <textarea id="units" placeholder="اكتب الوحدات التابعة هنا"></textarea>
     </div>
 
+    <!-- اسم الدورة -->
     <div class="form-group" id="courseGroup" style="display:none">
       <label>اسم الدورة</label>
       <select id="courseName">
@@ -197,7 +175,6 @@ select{color:#000;}
         <option value="yes">نعم</option>
       </select>
     </div>
-
     <div class="form-group" id="earlyReasonGroup" style="display:none">
       <label>سبب التبكير</label>
       <select id="earlyReason">
@@ -211,39 +188,52 @@ select{color:#000;}
     <div class="back-link" onclick="goBack()">رجوع</div>
   </div>
 
-  <div class="footer">
-    حقوق الملكية © قطاع الأمن العام بمقاطعة بوليتو
-  </div>
+  <div class="footer"> حقوق الملكية © قطاع الأمن العام بمقاطعة بوليتو </div>
 </div>
 
 <script>
-function el(id){return document.getElementById(id);}
+function el(id){ return document.getElementById(id); }
 let currentMode="";
+const fixedUnits="الامــن الــعـام + امـن الـطـرق + المهام والواجبات الخاصه";
 
 // الرتب
 const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
 const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
 const allRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب"];
 
-// التوجيهات والإشراف
-const supervisionTasks={
-  "سهم 1":"ساندي + بوليتو","سهم 2":"ساندي + بوليتو","سهم 3":"ساندي + بوليتو","سهم 4":"ساندي + بوليتو","سهم 5":"ساندي + بوليتو",
-  "درع 1":"ساندي + بوليتو","درع 2":"ساندي + بوليتو","درع 3":"ساندي + بوليتو","درع 4":"ساندي + بوليتو",
-  "جنوب 1":"ساندي","جنوب 2":"ساندي","جنوب 3":"ساندي","جنوب 4":"ساندي",
-  "غرب 1":"بوليتو","غرب 2":"بوليتو","غرب 3":"بوليتو","غرب 4":"بوليتو",
-  "ساهر 1":"جيم + لام","ساهر 2":"جيم + لام","ساهر 3":"دال","ساهر 4":"دال",
-  "رصد 1":"جيم + لام + دال","رصد 2":"جيم + لام + دال","رصد 3":"جيم + لام + دال","رصد 4":"جيم + لام + دال",
-  "سيف 1":"جيم + لام + دال","سيف 2":"جيم + لام + دال","سيف 3":"جيم + لام + دال","سيف 4":"جيم + لام + دال"
-};
+// التوجيهات
+const supervisionTasks=["سهم 1","سهم 2","سهم 3","سهم 4","سهم 5","درع 1","درع 2","درع 3","درع 4","جنوب 1","جنوب 2","جنوب 3","جنوب 4","غرب 1","غرب 2","غرب 3","غرب 4","ساهر 1","ساهر 2","ساهر 3","ساهر 4","رصد 1","رصد 2","رصد 3","رصد 4","سيف 1","سيف 2","سيف 3","سيف 4"];
+const zoneTasks=["سين 10","سين 20","باء 10","باء 20","جيم 10","لام 10","دال 10","دال 20"];
 
-// التوجيهات لمنطقة
-const zoneTasks={
-  "سين 10":"ساندي","سين 20":"ساندي",
-  "باء 10":"بوليتو","باء 20":"جزيره بوليتو",
-  "جيم 10":"جيم","لام 10":"لام",
-  "دال 10":"دال","دال 20":"دال 2"
-};
+// تحديد الموقع تلقائي
+function updateLocation(task){
+  if(currentMode==="supervision"){
+    if(["سهم 1","سهم 2","سهم 3","سهم 4","سهم 5","درع 1","درع 2","درع 3","درع 4"].includes(task))
+      el("location").value="ساندي + بوليتو";
+    else if(["جنوب 1","جنوب 2","جنوب 3","جنوب 4"].includes(task))
+      el("location").value="ساندي";
+    else if(["غرب 1","غرب 2","غرب 3","غرب 4"].includes(task))
+      el("location").value="بوليتو";
+    else if(["ساهر 1","ساهر 2"].includes(task))
+      el("location").value="جيم + لام";
+    else if(["ساهر 3","ساهر 4"].includes(task))
+      el("location").value="دال";
+    else if(["رصد 1","رصد 2","رصد 3","رصد 4","سيف 1","سيف 2","سيف 3","سيف 4"].includes(task))
+      el("location").value="جيم + لام + دال";
+    else el("location").value="";
+  } else if(currentMode==="zone"){
+    if(["سين 10","سين 20"].includes(task)) el("location").value="ساندي";
+    else if(["باء 10"].includes(task)) el("location").value="بوليتو";
+    else if(["باء 20"].includes(task)) el("location").value="جزيره بوليتو";
+    else if(["جيم 10"].includes(task)) el("location").value="جيم";
+    else if(["لام 10"].includes(task)) el("location").value="لام";
+    else if(["دال 10"].includes(task)) el("location").value="دال";
+    else if(["دال 20"].includes(task)) el("location").value="دال 2";
+    else el("location").value="";
+  }
+}
 
+// الوقت السعودية
 function getSaudiTime(){
   let now = new Date();
   let utc = now.getTime() + now.getTimezoneOffset()*60000;
@@ -260,42 +250,38 @@ function openForm(type){
   currentMode=type;
   el("menu-section").style.display="none";
   el("form-section").style.display="block";
-
   el("title-text").textContent = type==="supervision"?"تقارير الإشراف":type==="zone"?"تقارير ضابط منطقة":"تقارير الدورات";
-
   el("taskName").value="";
   el("location").value="";
   el("copyID").value="";
   el("units").value="";
   el("courseName").value="";
-  el("location").readOnly = (currentMode!=="courses"); // الدورات يقدر يكتب
-
-  initRankOptions(currentMode==="supervision"?supervisionRanks:currentMode==="zone"?zoneRanks:allRanks);
   el("earlySelect").value="no";
   toggleEarlyReason();
+  el("unitGroup").style.display = (currentMode==="zone") ? "block" : "none";
+  el("courseGroup").style.display = (currentMode==="courses") ? "block" : "none";
 
-  el("unitGroup").style.display = currentMode==="zone"?"block":"none";
-  el("courseGroup").style.display = currentMode==="courses"?"block":"none";
+  // الرتب
+  initRankOptions(currentMode==="supervision"?supervisionRanks:(currentMode==="zone"?zoneRanks:allRanks));
 
-  // قائمة اقتراحات التوجيهات
-  let datalist = el("taskOptions");
-  datalist.innerHTML = "";
-  let tasks = currentMode==="supervision"?Object.keys(supervisionTasks):currentMode==="zone"?Object.keys(zoneTasks):[];
-  tasks.forEach(t=> datalist.innerHTML+=`<option value="${t}">`);
+  // الاقتراحات
+  const list = el("taskSuggestions");
+  list.innerHTML="";
+  const tasks = currentMode==="supervision"?supervisionTasks:currentMode==="zone"?zoneTasks:[];
+  tasks.forEach(t=>{ const opt=document.createElement("option"); opt.value=t; list.appendChild(opt); });
 
-  // حدث تلقائي لتحديث الموقع عند اختيار التوجيه
-  updateLocation();
-}
+  // تغييرات عند الكتابة
+  el("taskName").oninput = function(){ updateLocation(this.value); };
 
-function updateLocation(){
-  const task = el("taskName").value;
-  if(currentMode==="supervision" && supervisionTasks[task]) el("location").value = supervisionTasks[task];
-  else if(currentMode==="zone" && zoneTasks[task]) el("location").value = zoneTasks[task];
-  else if(currentMode!=="courses") el("location").value = ""; // تفريغ إذا التوجيه غير معروف
+  if(currentMode==="courses"){
+    el("courseName").onchange = function(){
+      el("location").value = ""; // المستخدم يكتب الموقع
+    };
+  }
 }
 
 function toggleEarlyReason(){
-  el("earlyReasonGroup").style.display = el("earlySelect").value==="yes"?"block":"none";
+  el("earlyReasonGroup").style.display = el("earlySelect").value==="yes" ? "block":"none";
 }
 
 function goBack(){
@@ -308,54 +294,45 @@ function countWords(text){
 }
 
 function copyReport(){
-  const task = el("taskName").value||"...";
-  const rank = el("rank").value||"...";
-  const copyID = el("copyID").value||"1205646094915084300";
-  const early = el("earlySelect").value==="yes"?el("earlyReason").value:null;
-  let loc = el("location").value||"...";
-
-  // تعيين الموقع تلقائي للإشراف أو المنطقة (لضمان النسخ الصحيح)
-  if(currentMode==="supervision" && supervisionTasks[task]) loc = supervisionTasks[task];
-  if(currentMode==="zone" && zoneTasks[task]) loc = zoneTasks[task];
+  const task=el("taskName").value||"...";
+  const loc=el("location").value||"...";
+  const rank=el("rank").value||"...";
+  const copyID=el("copyID").value||"1205646094915084300";
+  const early=el("earlySelect").value==="yes" ? el("earlyReason").value : null;
 
   let unitsText="";
   if(currentMode==="zone"){
-    const unitsInput = el("units").value || "";
+    const unitsInput=el("units").value||"";
     if(countWords(unitsInput)>400){ alert("الوحدات التابعة يجب ألا تتجاوز 400 كلمة"); return; }
-    unitsText = unitsInput;
+    unitsText=unitsInput;
   }
 
-  let endTime = getSaudiTime();
-  let startTime = new Date(endTime.getTime()-60*60000);
-  function formatTime(d){
-    let h = d.getHours()%12||12;
-    let m = d.getMinutes();
-    let p = d.getHours()>=12?"م":"ص";
-    return `${h<10?"0"+h:h}:${m<10?"0"+m:m} ${p}`;
-  }
+  let endTime=getSaudiTime();
+  let startTime=new Date(endTime.getTime()-60*60000);
+  function formatTime(d){ let h=d.getHours()%12||12; let m=d.getMinutes(); let p=d.getHours()>=12?"م":"ص"; return `${h<10?"0"+h:h}:${m<10?"0"+m:m} ${p}`; }
 
   let report="";
   if(currentMode==="supervision"){
-    report =
-`** \`تم استلام مهام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
-** \`المنطقة : ${loc}\` **
-** \`الجهات الأمنية المتواجدة :\` **
-** \`الامــن الــعـام + امـن الـطـرق + المهام والواجبات الخاصه\` **
-** \`تم رفع التقرير من قبل ( ${rank} ) :\` ** <@${copyID}>`;
+    report=`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
+
+** \`الـمـنـطـقـة : ${loc}\` **
+** \`الـجــهــات الامــنـيــة المــتــواجــده :\` **
+** \`${fixedUnits}\` **
+** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
   } else if(currentMode==="zone"){
-    report =
-`** \`تم استلام مهام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
-** \`المنطقة : ${loc}\` **
+    report=`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
+
+** \`الـمـنـطـقـة : ${loc}\` **
 ** \`الوحدات التابعة :\` **
 ** \`${unitsText}\` **
-** \`تم رفع التقرير من قبل ( ${rank} ) :\` ** <@${copyID}>`;
+** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
   } else if(currentMode==="courses"){
-    const courseName = el("courseName").value||"...";
-    report =
-`تم استلام مهام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}
-الموقع : ${loc}
-اسم الدورة : ${courseName}
-تم رفع التقرير من قبل ( ${rank} ) : <@${copyID}>`;
+    const courseName=el("courseName").value||"...";
+    report=`\`تم استلام مهام ( ${task} ) من الساعة ${formatTime(startTime)} إلى ${formatTime(endTime)}\`
+
+الموقع : \`${loc}\`
+اسم الدورة : \`${courseName}\`
+\`\`تم رفع التقرير من قبل ( ${rank} )\`\` : <@${copyID}>`;
   }
 
   if(early) report += `\n** \`سبب التبكير : ${early}\` **`;
@@ -364,9 +341,8 @@ function copyReport(){
   alert("تم نسخ التقرير ✅");
 }
 
-function openOperationsReports(){
-  window.open("https://1boletop.netlify.app/","_blank");
-}
+function openOperationsReports(){ window.open("https://1boletop.netlify.app/","_blank"); }
+
 </script>
 </body>
 </html>
