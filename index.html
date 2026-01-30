@@ -18,29 +18,37 @@ body{
   align-items:flex-start;
   min-height:100vh;
   padding-bottom:50px;
+  position:relative;
+  overflow:hidden;
 }
 
-/* الصور الانميشن */
-.logo-animation {
-  width: 60px;
-  height: 60px;
-  animation: spin 5s linear infinite;
-  margin: 0 auto 15px auto;
+/* الصور المتحركة كخلفية */
+body::before, body::after {
+  content:"";
+  position:absolute;
+  width:100px;
+  height:100px;
+  background-size:contain;
+  background-repeat:no-repeat;
+  z-index:0;
 }
-.logo2-animation {
-  width: 60px;
-  height: 60px;
-  animation: bounce 2s linear infinite;
-  margin: 0 auto 15px auto;
+
+body::before { 
+  background-image:url('logo1.gif'); 
+  top:20px; 
+  left:20px; 
+  animation:move1 20s linear infinite; 
 }
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+
+body::after { 
+  background-image:url('logo2.gif'); 
+  bottom:20px; 
+  right:20px; 
+  animation:move2 25s linear infinite; 
 }
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
-}
+
+@keyframes move1 {0%{transform:translate(0,0)} 50%{transform:translate(50px,50px)} 100%{transform:translate(0,0)}}
+@keyframes move2 {0%{transform:translate(0,0)} 50%{transform:translate(-50px,-50px)} 100%{transform:translate(0,0)}}
 
 .container{
   width:90%;
@@ -50,16 +58,15 @@ body{
   padding:35px;
   box-shadow:0 20px 50px rgba(0,0,0,.5);
   margin-top:20px;
+  position:relative;
+  z-index:1;
 }
-
 h2{
   text-align:center;
   color:#00d4ff;
   margin-bottom:30px;
 }
-
 .main-menu{ display:grid; gap:15px; }
-
 .menu-card{
   background:rgba(255,255,255,.03);
   border-radius:15px;
@@ -70,12 +77,10 @@ h2{
   padding:20px;
   transition:.3s;
 }
-
 .menu-card:hover{
   background:rgba(0,212,255,.08);
   transform:translateX(-5px);
 }
-
 .menu-card i{color:#00d4ff;font-size:22px}
 
 .form-group{ margin-bottom:20px; }
@@ -92,9 +97,6 @@ datalist option { background: #1a1a1a; color: #fff; padding:5px; }
 </head>
 <body>
 <div class="container">
-  <!-- شعار متحرك logo1 -->
-  <img src="logo1.gif" alt="Logo1" class="logo-animation">
-
   <div id="menu-section">
     <h2><i class="fas fa-shield-alt"></i> بوليتو - التقارير</h2>
     <div class="main-menu">
@@ -114,8 +116,6 @@ datalist option { background: #1a1a1a; color: #fff; padding:5px; }
   </div>
 
   <div id="form-section">
-    <!-- شعار متحرك ثاني logo2 داخل الفورم -->
-    <img src="logo2.gif" alt="Logo2" class="logo2-animation">
     <h2 id="title-text"></h2>
 
     <div class="form-group" id="taskGroup">
@@ -186,8 +186,169 @@ datalist option { background: #1a1a1a; color: #fff; padding:5px; }
 </div>
 
 <script>
-// كل السكربت الخاص بالتقارير والرتب يبقى كما هو، مع السطر الثابت والرتب الجديدة للدورات
-// لا تغييرات مطلوبة هنا
+function el(id){ return document.getElementById(id); }
+let currentMode="";
+const fixedUnits="الامــن الــعـام + امـن الـطـرق + المهام والواجبات الخاصه";
+
+const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
+const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
+const courseRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب","جندي اول","عريف","وكيل رقيب"];
+
+const allRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب"];
+
+const supervisionTasks=["سهم 1","سهم 2","سهم 3","سهم 4","سهم 5","درع 1","درع 2","درع 3","درع 4","جنوب 1","جنوب 2","جنوب 3","جنوب 4","غرب 1","غرب 2","غرب 3","غرب 4","ساهر 1","ساهر 2","ساهر 3","ساهر 4","رصد 1","رصد 2","رصد 3","رصد 4","سيف 1","سيف 2","سيف 3","سيف 4"];
+const zoneTasks=["سين 10","سين 20","باء 10","باء 20","جيم 10","لام 10","دال 10","دال 20"];
+
+function updateLocation(task){
+  if(currentMode==="supervision"){
+    if(["سهم 1","سهم 2","سهم 3","سهم 4","سهم 5","درع 1","درع 2","درع 3","درع 4"].includes(task))
+      el("location").value="ساندي + بوليتو";
+    else if(["جنوب 1","جنوب 2","جنوب 3","جنوب 4"].includes(task))
+      el("location").value="ساندي";
+    else if(["غرب 1","غرب 2","غرب 3","غرب 4"].includes(task))
+      el("location").value="بوليتو";
+    else if(["ساهر 1","ساهر 2"].includes(task))
+      el("location").value="جيم + لام";
+    else if(["ساهر 3","ساهر 4"].includes(task))
+      el("location").value="دال";
+    else if(["رصد 1","رصد 2","رصد 3","رصد 4","سيف 1","سيف 2","سيف 3","سيف 4"].includes(task))
+      el("location").value="جيم + لام + دال";
+    else el("location").value="";
+  } else if(currentMode==="zone"){
+    if(["سين 10","سين 20"].includes(task)) el("location").value="ساندي";
+    else if(["باء 10"].includes(task)) el("location").value="بوليتو";
+    else if(["باء 20"].includes(task)) el("location").value="جزيره بوليتو";
+    else if(["جيم 10"].includes(task)) el("location").value="جيم";
+    else if(["لام 10"].includes(task)) el("location").value="لام";
+    else if(["دال 10"].includes(task)) el("location").value="دال";
+    else if(["دال 20"].includes(task)) el("location").value="دال 2";
+    else el("location").value="";
+  }
+}
+
+function getSaudiTime(){
+  let now = new Date();
+  let utc = now.getTime() + now.getTimezoneOffset()*60000;
+  return new Date(utc + 3*3600000);
+}
+
+function initRankOptions(ranks){
+  const r=el("rank");
+  r.innerHTML="<option disabled selected>اختر الرتبة</option>";
+  ranks.forEach(x=> r.innerHTML+=`<option>${x}</option>`);
+}
+
+function openForm(type){
+  currentMode=type;
+  el("menu-section").style.display="none";
+  el("form-section").style.display="block";
+  el("title-text").textContent = type==="supervision"?"تقارير الإشراف":type==="zone"?"تقارير ضابط منطقة":"تقارير الدورات";
+  el("taskName").value="";
+  el("location").value="";
+  el("copyID").value="";
+  el("units").value="";
+  el("courseName").value="";
+  el("earlySelect").value="no";
+  toggleEarlyReason();
+  el("unitGroup").style.display = (currentMode==="zone") ? "block" : "none";
+  el("courseGroup").style.display = (currentMode==="courses") ? "block" : "none";
+
+  if(currentMode==="supervision") initRankOptions(supervisionRanks);
+  else if(currentMode==="zone") initRankOptions(zoneRanks);
+  else if(currentMode==="courses") initRankOptions(courseRanks);
+
+  const list = el("taskSuggestions");
+  list.innerHTML="";
+  const tasks = currentMode==="supervision"?supervisionTasks:currentMode==="zone"?zoneTasks:[];
+  tasks.forEach(t=>{ const opt=document.createElement("option"); opt.value=t; list.appendChild(opt); });
+
+  el("taskName").oninput = function(){ updateLocation(this.value); };
+  if(currentMode==="courses"){
+    el("courseName").onchange = function(){ el("location").value = ""; };
+  }
+}
+
+function toggleEarlyReason(){
+  el("earlyReasonGroup").style.display = el("earlySelect").value==="yes" ? "block":"none";
+}
+
+function goBack(){
+  el("menu-section").style.display="block";
+  el("form-section").style.display="none";
+}
+
+function countWords(text){
+  return text.trim().split(/\s+/).filter(w=>w.length>0).length;
+}
+
+function copyReport(){
+  const task=el("taskName").value||"...";
+  const loc=el("location").value||"...";
+  const rank=el("rank").value||"...";
+  const copyID=el("copyID").value||"1358333213965156392";
+  const early=el("earlySelect").value==="yes" ? el("earlyReason").value : null;
+
+  let unitsText="";
+  if(currentMode==="zone"){
+    const unitsInput=el("units").value||"";
+    if(countWords(unitsInput)>400){ alert("الوحدات التابعة يجب ألا تتجاوز 400 كلمة"); return; }
+    unitsText=unitsInput;
+  }
+
+  let endTime=getSaudiTime();
+  let startTime=new Date(endTime.getTime()-60*60000);
+  function formatTime(d){ let h=d.getHours()%12||12; let m=d.getMinutes(); let p=d.getHours()>=12?"م":"ص"; return `${h<10?"0"+h:h}:${m<10?"0"+m:m} ${p}`; }
+
+  let report="";
+
+  const securityLine =
+`** \`الـجــهــات الامــنـيــة المــتــواجــده :\` **
+** \`${fixedUnits}\` **`;
+
+  if(currentMode==="supervision"){
+    report=
+`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
+
+** \`الـمـنـطـقـة : ${loc}\` **
+
+${securityLine}
+
+** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
+  } else if(currentMode==="zone"){
+    report=
+`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
+
+** \`الـمـنـطـقـة : ${loc}\` **
+
+** \`الوحدات التابعة :\` **
+** \`${unitsText}\` **
+
+${securityLine}
+
+** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
+  } else if(currentMode==="courses"){
+    const courseName=el("courseName").value||"...";
+    report=
+`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
+
+** \`الموقع : ${loc}\` **
+
+** \`اسم الدورة : ${courseName}\` **
+
+${securityLine}
+
+** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
+  }
+
+  if(early) report += `
+
+** \`سبب التبكير : ${early}\` **`;
+
+  navigator.clipboard.writeText(report);
+  alert("تم نسخ التقرير ✅");
+}
+
+function openOperationsReports(){ window.open("https://1boletop.netlify.app/","_blank"); }
 </script>
 </body>
 </html>
