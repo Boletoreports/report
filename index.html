@@ -19,8 +19,8 @@ body{
   min-height:100vh;
   padding-bottom:50px;
   position:relative;
-  overflow-x:hidden; /* لمنع افقي */
-  overflow-y:auto;  /* يسمح بالتمرير لتحت */
+  overflow-x:hidden;
+  overflow-y:auto;
 }
 
 /* الانيميشن للوغوهات */
@@ -295,7 +295,6 @@ function copyReport(){
   const loc=el("location").value||"...";
   const rank=el("rank").value||"...";
   const copyID=el("copyID").value||"1358333213965156392";
-  const early=el("earlySelect").value==="yes" ? el("earlyReason").value : null;
 
   let unitsText="";
   if(currentMode==="zone"){
@@ -349,9 +348,11 @@ ${securityLine}
 ** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
   }
 
-  if(early) report += `
-
-** \`سبب التبكير : ${early}\` **`;
+  // اضافة سبب نزول التقرير المبكر
+  if(el("earlySelect").value === "yes") {
+      const earlyReason = el("earlyReason").value;
+      report += `\n\n** \`سبب نزول التقرير مبكر : ${earlyReason}\` **`;
+  }
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
