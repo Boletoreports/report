@@ -5,244 +5,134 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>نظام التقارير العسكرية الذكي</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --primary-blue:#00d4ff;
-  --card-bg:rgba(20,20,20,.8);
-  --border-color:rgba(0,212,255,.2);
-  --text-gray:#b0b0b0;
+  --main:#00d4ff;
+  --bg:#050505;
+  --card:#0f0f0f;
+  --border:rgba(0,212,255,.25);
 }
+
+*{box-sizing:border-box}
 
 body{
   margin:0;
   font-family:'Cairo',sans-serif;
-  background:radial-gradient(circle,#1a1a1a,#050505);
+  background:
+    radial-gradient(circle at top,#1a1a1a,#000);
   color:#fff;
+  min-height:100vh;
   display:flex;
   justify-content:center;
-  min-height:100vh;
+  align-items:center;
 }
 
-.container{
-  width:90%;
-  max-width:500px;
-  background:var(--card-bg);
-  border:1px solid var(--border-color);
-  border-radius:20px;
+/* الحاوية الرئيسية */
+.wrapper{
+  width:100%;
+  max-width:1100px;
   padding:30px;
-  margin-top:20px;
 }
 
-h2{
+/* الكرت */
+.container{
+  background:linear-gradient(180deg,#111,#0a0a0a);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:40px;
+  box-shadow:0 0 80px rgba(0,212,255,.15);
+}
+
+/* العنوان */
+h1{
   text-align:center;
-  color:var(--primary-blue);
+  color:var(--main);
+  margin-bottom:35px;
+  font-size:28px;
 }
 
-.main-menu{
+/* الأزرار */
+.menu{
   display:grid;
-  gap:15px;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
 }
 
-.menu-card{
-  background:rgba(255,255,255,.05);
-  padding:18px;
-  border-radius:15px;
+.card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  padding:22px;
   cursor:pointer;
   display:flex;
-  gap:12px;
   align-items:center;
+  gap:15px;
   transition:.3s;
 }
 
-.menu-card:hover{
-  background:rgba(0,212,255,.1);
-  transform:translateX(-5px);
+.card:hover{
+  border-color:var(--main);
+  background:rgba(0,212,255,.08);
+  transform:translateY(-6px);
 }
 
-.menu-card i{
-  color:var(--primary-blue);
-  font-size:22px;
+.card i{
+  font-size:26px;
+  color:var(--main);
 }
 
-.form-group{
-  margin-bottom:18px;
-}
-
-label{
-  display:block;
-  margin-bottom:6px;
-  font-size:14px;
-  color:var(--text-gray);
-}
-
-input,select,textarea{
-  width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,.1);
-  background:rgba(255,255,255,.05);
-  color:#fff;
-  font-family:'Cairo';
-}
-
-select{color:#000}
-textarea{height:90px}
-
-.btn-copy{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:10px;
-  background:linear-gradient(135deg,#00829d,#00d4ff);
-  color:#fff;
+.card span{
+  font-size:18px;
   font-weight:700;
-  cursor:pointer;
 }
 
-.back-link{
-  text-align:center;
-  margin-top:12px;
-  cursor:pointer;
-  color:var(--text-gray);
-}
-
-#form-section{display:none}
-
+/* الفوتر */
 .footer{
   text-align:center;
-  margin-top:20px;
-  font-size:12px;
-  color:var(--text-gray);
+  margin-top:30px;
+  font-size:13px;
+  opacity:.6;
+}
+
+/* تحسين الموبايل */
+@media (max-width:600px){
+  .container{padding:25px}
+  h1{font-size:22px}
 }
 </style>
 </head>
 
 <body>
-<div class="container">
 
-<div id="menu-section">
-  <h2><i class="fas fa-shield-alt"></i> بوليتو - التقارير</h2>
-  <div class="main-menu">
-    <div class="menu-card" onclick="openForm('supervision')">
-      <i class="fas fa-user-shield"></i> تقارير الإشراف
+<div class="wrapper">
+  <div class="container">
+    <h1><i class="fas fa-shield-alt"></i> بوليتو – التقارير</h1>
+
+    <div class="menu">
+      <div class="card">
+        <i class="fas fa-user-shield"></i>
+        <span>تقارير الإشراف</span>
+      </div>
+
+      <div class="card">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>تقارير ضابط منطقة</span>
+      </div>
+
+      <div class="card">
+        <i class="fas fa-graduation-cap"></i>
+        <span>تقارير الدورات</span>
+      </div>
     </div>
-    <div class="menu-card" onclick="openForm('zone')">
-      <i class="fas fa-map-marker-alt"></i> تقارير ضابط منطقة
-    </div>
-    <div class="menu-card" onclick="openForm('courses')">
-      <i class="fas fa-graduation-cap"></i> تقارير الدورات
+
+    <div class="footer">
+      © قطاع الأمن العام – بوليتو
     </div>
   </div>
 </div>
 
-<div id="form-section">
-  <h2>تقديم التقرير</h2>
-
-  <div class="form-group">
-    <label>التوجيه</label>
-    <input id="taskName">
-  </div>
-
-  <div class="form-group">
-    <label>الموقع</label>
-    <input id="location" readonly>
-  </div>
-
-  <div class="form-group">
-    <label>الرتبة</label>
-    <select id="rank"></select>
-  </div>
-
-  <div class="form-group">
-    <label>كوبي ايدي العسكري</label>
- 
-    <input id="copyID">
-  </div>
-
-  <div class="form-group" id="unitGroup" style="display:none">
-    <label>الوحدات التابعة</label>
-    <textarea id="units"></textarea>
-  </div>
-
-  <div class="form-group" id="courseGroup" style="display:none">
-    <label>اسم الدورة</label>
-    <select id="courseName">
-      <option disabled selected>اختر</option>
-      <option>شرطة عسكرية</option>
-      <option>S.W.A.T</option>
-      <option>البحث الجنائي</option>
-    </select>
-  </div>
-
-  <div class="form-group">
-    <label>نزل بدري؟</label>
-    <select id="earlySelect" onchange="toggleEarlyReason()">
-      <option value="no">لا</option>
-      <option value="yes">نعم</option>
-    </select>
-  </div>
-
-  <div class="form-group" id="earlyReasonGroup" style="display:none">
-    <label>سبب التبكير</label>
-    <select id="earlyReason">
-      <option>ريستارت</option>
-      <option>صيانه</option>
-    </select>
-  </div>
-
-  <button class="btn-copy" onclick="copyReport()">نسخ التقرير</button>
-  <div class="back-link" onclick="goBack()">رجوع</div>
-</div>
-
-<div class="footer">© قطاع الأمن العام - بوليتو</div>
-</div>
-
-<script>
-const ranks={
-  supervision:["عميد","عقيد","مقدم"],
-  zone:["رئيس رقباء","رقيب"],
-  courses:["ملازم","نقيب"]
-};
-
-let currentMode="";
-
-function el(id){return document.getElementById(id);}
-
-function openForm(type){
-  currentMode=type;
-  el("menu-section").style.display="none";
-  el("form-section").style.display="block";
-
-  el("rank").innerHTML='<option disabled selected>اختر</option>';
-  ranks[type].forEach(r=>el("rank").innerHTML+=`<option>${r}</option>`);
-
-  el("unitGroup").style.display=type==="zone"?"block":"none";
-  el("courseGroup").style.display=type==="courses"?"block":"none";
-}
-
-function toggleEarlyReason(){
-  el("earlyReasonGroup").style.display=
-    el("earlySelect").value==="yes"?"block":"none";
-}
-
-function goBack(){
-  el("menu-section").style.display="block";
-  el("form-section").style.display="none";
-}
-
-function copyReport(){
-  const report=
-`تم استلام مهام (${el("taskName").value})
-الموقع: ${el("location").value}
-الرتبة: ${el("rank").value}
-ايدي: ${el("copyID").value}`;
-
-  navigator.clipboard.writeText(report);
-  alert("تم النسخ ✅");
-}
-</script>
 </body>
 </html>
