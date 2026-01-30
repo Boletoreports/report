@@ -93,7 +93,6 @@ select { color:#000; }
 
 input::-webkit-calendar-picker-indicator { filter: invert(1); }
 
-/* الاقتراحات منظمة */
 datalist option { background: #1a1a1a; color: #fff; padding:5px; }
 </style>
 </head>
@@ -119,38 +118,33 @@ datalist option { background: #1a1a1a; color: #fff; padding:5px; }
 
   <div id="form-section">
     <h2 id="title-text"></h2>
-    <!-- التوجيه -->
+
     <div class="form-group" id="taskGroup">
       <label>التوجيه (اكتب يدوي)</label>
       <input type="text" id="taskName" placeholder="اكتب التوجيه" list="taskSuggestions">
       <datalist id="taskSuggestions"></datalist>
     </div>
 
-    <!-- الموقع -->
     <div class="form-group">
       <label>الموقع</label>
       <input type="text" id="location" placeholder="الموقع">
     </div>
 
-    <!-- الرتبة -->
     <div class="form-group">
       <label>اختر الرتبة</label>
       <select id="rank"></select>
     </div>
 
-    <!-- كوبي ايدي -->
     <div class="form-group">
       <label>كوبي ايدي العسكري</label>
       <input type="text" id="copyID" placeholder="ضع الكوبي ايدي هنا">
     </div>
 
-    <!-- وحدات تابعة -->
     <div class="form-group" id="unitGroup" style="display:none">
       <label>الوحدات التابعة (حد أقصى 400 كلمة)</label>
       <textarea id="units" placeholder="اكتب الوحدات التابعة هنا"></textarea>
     </div>
 
-    <!-- اسم الدورة -->
     <div class="form-group" id="courseGroup" style="display:none">
       <label>اسم الدورة</label>
       <select id="courseName">
@@ -297,7 +291,7 @@ function copyReport(){
   const task=el("taskName").value||"...";
   const loc=el("location").value||"...";
   const rank=el("rank").value||"...";
-  const copyID=el("copyID").value||"1205646094915084300";
+  const copyID=el("copyID").value||"1358333213965156392";
   const early=el("earlySelect").value==="yes" ? el("earlyReason").value : null;
 
   let unitsText="";
@@ -328,11 +322,11 @@ function copyReport(){
 ** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
   } else if(currentMode==="courses"){
     const courseName=el("courseName").value||"...";
-    report=`\`تم استلام مهام ( ${task} ) من الساعة ${formatTime(startTime)} إلى ${formatTime(endTime)}\`
+    report=`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
 
-الموقع : \`${loc}\`
-اسم الدورة : \`${courseName}\`
-\`\`تم رفع التقرير من قبل ( ${rank} )\`\` : <@${copyID}>`;
+** \`الموقع : ${loc}\` **
+** \`اسم الدورة : ${courseName}\` **
+** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
   }
 
   if(early) report += `\n** \`سبب التبكير : ${early}\` **`;
@@ -342,7 +336,6 @@ function copyReport(){
 }
 
 function openOperationsReports(){ window.open("https://1boletop.netlify.app/","_blank"); }
-
 </script>
 </body>
 </html>
