@@ -72,7 +72,7 @@ button{
 <body>
 <div class="container">
 
-<!-- القائمة -->
+<!-- القائمة الرئيسية -->
 <div id="menu-section">
 <h2>بوليتو - التقارير</h2>
 <div class="main-menu">
@@ -84,6 +84,9 @@ button{
   </div>
   <div class="menu-card" onclick="openForm('courses')">
     <i class="fas fa-graduation-cap"></i> تقارير الدورات
+  </div>
+  <div class="menu-card" onclick="openOperations()">
+    <i class="fas fa-clipboard-list"></i> تقارير العمليات
   </div>
 </div>
 </div>
@@ -126,6 +129,7 @@ const fixedUnits="الامــن الــعـام + امـن الـطـرق + ا
 
 // الرتب
 const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
+const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
 const courseRanks=["جندي","جندي اول","عريف","وكيل رقيب"];
 
 let currentMode="";
@@ -144,8 +148,12 @@ function openForm(mode){
   const rankSelect=el("rank");
   rankSelect.innerHTML='<option disabled selected>اختر الرتبة</option>';
 
-  let ranksToUse = mode==="courses" ? courseRanks : supervisionRanks;
-  ranksToUse.forEach(r=>{
+  let ranks =
+    mode==="courses" ? courseRanks :
+    mode==="zone" ? zoneRanks :
+    supervisionRanks;
+
+  ranks.forEach(r=>{
     rankSelect.innerHTML+=`<option>${r}</option>`;
   });
 }
@@ -192,6 +200,11 @@ function copyReport(){
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
+}
+
+// تقارير العمليات
+function openOperations(){
+  window.open("https://1boletop.netlify.app/","_blank");
 }
 </script>
 </body>
