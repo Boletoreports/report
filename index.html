@@ -22,7 +22,7 @@ body{
   overflow:hidden;
 }
 
-/* الصور المتحركة كخلفية */
+/* الشعارات المتحركة */
 body::before, body::after {
   content:"";
   position:absolute;
@@ -33,22 +33,31 @@ body::before, body::after {
   z-index:0;
 }
 
-body::before { 
-  background-image:url('logo1.gif'); 
-  top:20px; 
-  left:20px; 
-  animation:move1 20s linear infinite; 
+body::before {
+  background-image:url('https://i.gifer.com/origin/3f/3f3dff776d295f9b0e8b93551f4bfc3b.gif');
+  top:20px;
+  left:20px;
+  animation:move1 20s linear infinite;
 }
 
-body::after { 
-  background-image:url('logo2.gif'); 
-  bottom:20px; 
-  right:20px; 
-  animation:move2 25s linear infinite; 
+body::after {
+  background-image:url('https://i.gifer.com/origin/3f/3f3dff776d295f9b0e8b93551f4bfc3b.gif'); /* نفس الصورة مؤقتًا */
+  bottom:20px;
+  right:20px;
+  animation:move2 25s linear infinite;
 }
 
-@keyframes move1 {0%{transform:translate(0,0)} 50%{transform:translate(50px,50px)} 100%{transform:translate(0,0)}}
-@keyframes move2 {0%{transform:translate(0,0)} 50%{transform:translate(-50px,-50px)} 100%{transform:translate(0,0)}}
+@keyframes move1 {
+ 0%{transform:translate(0,0)}
+ 50%{transform:translate(50px,50px)}
+ 100%{transform:translate(0,0)}
+}
+
+@keyframes move2 {
+ 0%{transform:translate(0,0)}
+ 50%{transform:translate(-50px,-50px)}
+ 100%{transform:translate(0,0)}
+}
 
 .container{
   width:90%;
@@ -182,7 +191,7 @@ datalist option { background: #1a1a1a; color: #fff; padding:5px; }
     <div class="back-link" onclick="goBack()">رجوع</div>
   </div>
 
-  <div class="footer"> حقوق الملكية © قطاع الأمن العام بمقاطعة بوليتو </div>
+  <div class="footer"> حقوق الملكية © لقيادة قطاع الأمن العام بمقاطعة بوليتو </div>
 </div>
 
 <script>
@@ -193,8 +202,6 @@ const fixedUnits="الامــن الــعـام + امـن الـطـرق + ا
 const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
 const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
 const courseRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب","جندي اول","عريف","وكيل رقيب"];
-
-const allRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب"];
 
 const supervisionTasks=["سهم 1","سهم 2","سهم 3","سهم 4","سهم 5","درع 1","درع 2","درع 3","درع 4","جنوب 1","جنوب 2","جنوب 3","جنوب 4","غرب 1","غرب 2","غرب 3","غرب 4","ساهر 1","ساهر 2","ساهر 3","ساهر 4","رصد 1","رصد 2","رصد 3","رصد 4","سيف 1","سيف 2","سيف 3","سيف 4"];
 const zoneTasks=["سين 10","سين 20","باء 10","باء 20","جيم 10","لام 10","دال 10","دال 20"];
@@ -300,49 +307,18 @@ function copyReport(){
   function formatTime(d){ let h=d.getHours()%12||12; let m=d.getMinutes(); let p=d.getHours()>=12?"م":"ص"; return `${h<10?"0"+h:h}:${m<10?"0"+m:m} ${p}`; }
 
   let report="";
-
-  const securityLine =
-`** \`الـجــهــات الامــنـيــة المــتــواجــده :\` **
-** \`${fixedUnits}\` **`;
+  const securityLine =`** \`الـجــهــات الامــنـيــة المــتــواجــده :\` **\n** \`${fixedUnits}\` **`;
 
   if(currentMode==="supervision"){
-    report=
-`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
-
-** \`الـمـنـطـقـة : ${loc}\` **
-
-${securityLine}
-
-** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
+    report=`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **\n\n** \`الـمـنـطـقـة : ${loc}\` **\n\n${securityLine}\n\n** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
   } else if(currentMode==="zone"){
-    report=
-`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
-
-** \`الـمـنـطـقـة : ${loc}\` **
-
-** \`الوحدات التابعة :\` **
-** \`${unitsText}\` **
-
-${securityLine}
-
-** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
+    report=`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **\n\n** \`الـمـنـطـقـة : ${loc}\` **\n\n** \`الوحدات التابعة :\` **\n** \`${unitsText}\` **\n\n${securityLine}\n\n** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
   } else if(currentMode==="courses"){
     const courseName=el("courseName").value||"...";
-    report=
-`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
-
-** \`الموقع : ${loc}\` **
-
-** \`اسم الدورة : ${courseName}\` **
-
-${securityLine}
-
-** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
+    report=`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **\n\n** \`الموقع : ${loc}\` **\n\n** \`اسم الدورة : ${courseName}\` **\n\n${securityLine}\n\n** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
   }
 
-  if(early) report += `
-
-** \`سبب التبكير : ${early}\` **`;
+  if(early) report += `\n\n** \`سبب التبكير : ${early}\` **`;
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
