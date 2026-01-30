@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
 :root{
   --primary-blue:#00d4ff;
   --dark-bg:#0a0a0a;
@@ -14,6 +15,7 @@
   --border-color:rgba(0,212,255,.2);
   --text-gray:#b0b0b0;
 }
+
 body{
   margin:0;
   font-family:'Cairo',sans-serif;
@@ -93,6 +95,7 @@ select { color:#000; }
 
 input::-webkit-calendar-picker-indicator { filter: invert(1); }
 
+/* الاقتراحات منظمة */
 datalist option { background: #1a1a1a; color: #fff; padding:5px; }
 </style>
 </head>
@@ -169,6 +172,7 @@ datalist option { background: #1a1a1a; color: #fff; padding:5px; }
         <option value="yes">نعم</option>
       </select>
     </div>
+
     <div class="form-group" id="earlyReasonGroup" style="display:none">
       <label>سبب التبكير</label>
       <select id="earlyReason">
@@ -199,7 +203,6 @@ const allRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد"
 const supervisionTasks=["سهم 1","سهم 2","سهم 3","سهم 4","سهم 5","درع 1","درع 2","درع 3","درع 4","جنوب 1","جنوب 2","جنوب 3","جنوب 4","غرب 1","غرب 2","غرب 3","غرب 4","ساهر 1","ساهر 2","ساهر 3","ساهر 4","رصد 1","رصد 2","رصد 3","رصد 4","سيف 1","سيف 2","سيف 3","سيف 4"];
 const zoneTasks=["سين 10","سين 20","باء 10","باء 20","جيم 10","لام 10","دال 10","دال 20"];
 
-// تحديد الموقع تلقائي
 function updateLocation(task){
   if(currentMode==="supervision"){
     if(["سهم 1","سهم 2","سهم 3","سهم 4","سهم 5","درع 1","درع 2","درع 3","درع 4"].includes(task))
@@ -227,7 +230,6 @@ function updateLocation(task){
   }
 }
 
-// الوقت السعودية
 function getSaudiTime(){
   let now = new Date();
   let utc = now.getTime() + now.getTimezoneOffset()*60000;
@@ -255,22 +257,16 @@ function openForm(type){
   el("unitGroup").style.display = (currentMode==="zone") ? "block" : "none";
   el("courseGroup").style.display = (currentMode==="courses") ? "block" : "none";
 
-  // الرتب
   initRankOptions(currentMode==="supervision"?supervisionRanks:(currentMode==="zone"?zoneRanks:allRanks));
 
-  // الاقتراحات
   const list = el("taskSuggestions");
   list.innerHTML="";
   const tasks = currentMode==="supervision"?supervisionTasks:currentMode==="zone"?zoneTasks:[];
   tasks.forEach(t=>{ const opt=document.createElement("option"); opt.value=t; list.appendChild(opt); });
 
-  // تغييرات عند الكتابة
   el("taskName").oninput = function(){ updateLocation(this.value); };
-
   if(currentMode==="courses"){
-    el("courseName").onchange = function(){
-      el("location").value = ""; // المستخدم يكتب الموقع
-    };
+    el("courseName").onchange = function(){ el("location").value = ""; };
   }
 }
 
@@ -305,31 +301,42 @@ function copyReport(){
   let startTime=new Date(endTime.getTime()-60*60000);
   function formatTime(d){ let h=d.getHours()%12||12; let m=d.getMinutes(); let p=d.getHours()>=12?"م":"ص"; return `${h<10?"0"+h:h}:${m<10?"0"+m:m} ${p}`; }
 
+  const separator = "** ---------------------------------------- **\n";
+
   let report="";
   if(currentMode==="supervision"){
-    report=`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
-
+    report=
+`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
+${separator}
 ** \`الـمـنـطـقـة : ${loc}\` **
+${separator}
 ** \`الـجــهــات الامــنـيــة المــتــواجــده :\` **
 ** \`${fixedUnits}\` **
+${separator}
 ** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
   } else if(currentMode==="zone"){
-    report=`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
-
+    report=
+`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
+${separator}
 ** \`الـمـنـطـقـة : ${loc}\` **
+${separator}
 ** \`الوحدات التابعة :\` **
 ** \`${unitsText}\` **
+${separator}
 ** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
   } else if(currentMode==="courses"){
     const courseName=el("courseName").value||"...";
-    report=`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
-
+    report=
+`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
+${separator}
 ** \`الموقع : ${loc}\` **
+${separator}
 ** \`اسم الدورة : ${courseName}\` **
+${separator}
 ** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
   }
 
-  if(early) report += `\n** \`سبب التبكير : ${early}\` **`;
+  if(early) report += `\n${separator}** \`سبب التبكير : ${early}\` **`;
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
