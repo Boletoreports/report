@@ -1,158 +1,318 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>نظام التقارير العسكرية الذكي</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-
-:root {
-  --primary-blue: #00d4ff;
-  --dark-bg: #0a0a0a;
-  --card-bg: rgba(20, 20, 20, 0.8);
-  --border-color: rgba(0, 212, 255, 0.2);
-  --text-gray: #b0b0b0;
+:root{
+  --primary-blue:#00d4ff;
+  --dark-bg:#0a0a0a;
+  --card-bg:rgba(20,20,20,.8);
+  --border-color:rgba(0,212,255,.2);
+  --text-gray:#b0b0b0;
 }
-
-body {
-  margin: 0;
-  font-family: 'Cairo', sans-serif;
-  background: radial-gradient(circle, #1a1a1a, #050505);
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  padding-bottom: 50px;
-  overflow-x: hidden;
-  position: relative;
+body{
+  margin:0;
+  font-family:'Cairo',sans-serif;
+  background:radial-gradient(circle,#1a1a1a,#050505);
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  min-height:100vh;
+  padding-bottom:50px;
+  overflow-x:hidden;
 }
-
-body::before,
-body::after {
-  content: '';
-  position: fixed;
-  width: 200px;
-  height: 200px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  z-index: -1;
+body::before, body::after {
+  content:'';
+  position:fixed;
+  width:200px;
+  height:200px;
+  background-size:contain;
+  background-repeat:no-repeat;
+  z-index:-1;
 }
-
-body::before {
-  background-image: url('logo1.gif');
-  top: 20px;
-  left: 20px;
-  animation: move1 20s linear infinite;
+body::before { background-image:url('logo1.gif'); top:20px; left:20px; animation:move1 20s linear infinite; }
+body::after { background-image:url('logo2.gif'); bottom:20px; right:20px; animation:move2 25s linear infinite; }
+@keyframes move1 { 0%{transform:translate(0,0)} 50%{transform:translate(50px,50px)} 100%{transform:translate(0,0)} }
+@keyframes move2 { 0%{transform:translate(0,0)} 50%{transform:translate(-50px,-50px)} 100%{transform:translate(0,0)} }
+.container{
+  width:90%;
+  max-width:500px;
+  background:var(--card-bg);
+  backdrop-filter:blur(15px);
+  border:1px solid var(--border-color);
+  border-radius:20px;
+  padding:35px;
+  box-shadow:0 20px 50px rgba(0,0,0,.5);
+  margin-top:20px;
 }
-
-body::after {
-  background-image: url('logo2.gif');
-  bottom: 20px;
-  right: 20px;
-  animation: move2 25s linear infinite;
+h2{ text-align:center; color:var(--primary-blue); margin-bottom:30px; }
+.main-menu{ display:grid; gap:15px; }
+.menu-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.05);
+  padding:20px;
+  border-radius:15px;
+  cursor:pointer;
+  display:flex;
+  gap:15px;
+  align-items:center;
+  transition:.3s;
 }
-
-@keyframes move1 {
-  0% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(50px, 50px);
-  }
-  100% {
-    transform: translate(0, 0);
-  }
+.menu-card:hover{ background:rgba(0,212,255,.08); border-color:var(--primary-blue); transform:translateX(-5px); }
+.menu-card i{color:var(--primary-blue);font-size:22px}
+.form-group{ margin-bottom:20px; }
+label{ display:block; margin-bottom:8px; font-size:14px; color:var(--text-gray); font-weight:600; }
+input,select,textarea{
+  width:100%;
+  padding:12px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;
+  color:#fff;
+  font-family:'Cairo';
 }
-
-@keyframes move2 {
-  0% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(-50px, -50px);
-  }
-  100% {
-    transform: translate(0, 0);
-  }
+textarea{height:100px;resize:vertical;overflow:auto;}
+select { color:#000; }
+.time-input-group{ display:flex; align-items:center; gap:8px; direction:ltr; }
+.btn-copy{
+  width:100%;
+  padding:15px;
+  background:linear-gradient(135deg,#00829d,#00d4ff);
+  border:none;
+  border-radius:10px;
+  color:#fff;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  margin-top:20px;
 }
-
-.container {
-  width: 90%;
-  max-width: 500px;
-  background: var(--card-bg);
-  backdrop-filter: blur(15px);
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 35px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-  margin-top: 20px;
-}
-
-h2 {
-  text-align: center;
-  color: var(--primary-blue);
-  margin-bottom: 30px;
-}
-
-.main-menu {
-  display: grid;
-  gap: 15px;
-}
-
-.menu-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 20px;
-  border-radius: 15px;
-  cursor: pointer;
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  transition: 0.3s;
-}
-
-.menu-card:hover {
-  background: rgba(0, 212, 255, 0.08);
-  border-color: var(--primary-blue);
-  transform: translateX(-5px);
-}
-
-.menu-card i {
-  color: var(--primary-blue);
-  font-size: 22px;
-}
-
-.footer {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 12px;
-  color: var(--text-gray);
-}
+.back-link{ margin-top:15px; text-align:center; font-size:13px; cursor:pointer; color:var(--text-gray); }
+#form-section{display:none}
+.footer{ text-align:center; margin-top:20px; font-size:12px; color:var(--text-gray); }
 </style>
 </head>
 <body>
 <div class="container">
+  <!-- قائمة الرئيسية -->
   <div id="menu-section">
     <h2><i class="fas fa-shield-alt"></i> بوليتو - التقارير</h2>
     <div class="main-menu">
-      <div class="menu-card" onclick="alert('تقرير الإشراف')">
+      <div class="menu-card" onclick="openForm('supervision')">
         <i class="fas fa-user-shield"></i> <strong>تقارير الإشراف</strong>
       </div>
-      <div class="menu-card" onclick="alert('تقرير ضابط منطقة')">
+      <div class="menu-card" onclick="openForm('zone')">
         <i class="fas fa-map-marker-alt"></i> <strong>تقارير ضابط منطقة</strong>
       </div>
-      <div class="menu-card" onclick="alert('تقرير الدورات')">
+      <div class="menu-card" onclick="openForm('courses')">
         <i class="fas fa-graduation-cap"></i> <strong>تقارير الدورات</strong>
       </div>
-      <div class="menu-card" onclick="window.open('https://1boletop.netlify.app/', '_blank')">
-        <i class="fas fa-cogs"></i> <strong>تقارير العمليات</strong>
+      <div class="menu-card" onclick="openOperationsReports()">
+        <i class="fas fa-file-alt"></i> <strong>تقارير العمليات</strong>
       </div>
     </div>
   </div>
+
+  <!-- فورم التقرير -->
+  <div id="form-section">
+    <h2 id="title-text">تقديم التقرير</h2>
+
+    <div class="form-group" id="taskGroup">
+      <label>التوجيه (اكتب يدوي)</label>
+      <input type="text" id="taskName" placeholder="اكتب التوجيه">
+    </div>
+
+    <div class="form-group">
+      <label>الموقع</label>
+      <input type="text" id="location" readonly>
+    </div>
+
+    <div class="form-group">
+      <label>اختر الرتبة</label>
+      <select id="rank"></select>
+    </div>
+
+    <div class="form-group">
+      <label>كوبي ايدي العسكري</label>
+      <input type="text" id="copyID" placeholder="ضع الكوبي ايدي هنا">
+    </div>
+
+    <div class="form-group" id="unitGroup" style="display:none">
+      <label>الوحدات التابعة (حد أقصى 400 كلمة)</label>
+      <textarea id="units" placeholder="اكتب الوحدات التابعة هنا"></textarea>
+    </div>
+
+    <div class="form-group" id="courseGroup" style="display:none">
+      <label>اسم الدورة</label>
+      <select id="courseName">
+        <option disabled selected>اختر اسم الدورة</option>
+        <option>شرطة عسكرية</option>
+        <option>الشؤون الادارية</option>
+        <option>نقل سجون</option>
+        <option>S.W.A.T</option>
+        <option>البحث الجنائي</option>
+        <option>المهام والواجبات الخاصة</option>
+        <option>مكافحة المخدرات</option>
+        <option>الدعم الجوي</option>
+        <option>شعبة المرور</option>
+        <option>خدمات الطرق</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>التقرير نازل بدري؟</label>
+      <select id="earlySelect" onchange="toggleEarlyReason()">
+        <option value="no" selected>لا</option>
+        <option value="yes">نعم</option>
+      </select>
+    </div>
+
+    <div class="form-group" id="earlyReasonGroup" style="display:none">
+      <label>سبب التبكير</label>
+      <select id="earlyReason">
+        <option value="ريستارت">ريستارت</option>
+        <option value="صيانه">صيانه</option>
+        <option value="إعادة اصطفاف">إعادة اصطفاف</option>
+      </select>
+    </div>
+
+    <button class="btn-copy" onclick="copyReport()">نسخ التقرير النهائي</button>
+    <div class="back-link" onclick="goBack()">رجوع</div>
+  </div>
+
   <div class="footer">حقوق الملكية © قطاع الأمن العام بمقاطعة بوليتو</div>
 </div>
+
+<script>
+function el(id){ return document.getElementById(id); }
+
+let currentMode="";
+const fixedUnits="الامــن الــعـام + امـن الـطـرق + المهام والواجبات الخاصه";
+
+const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
+const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
+const allRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب"];
+
+const zoneTasks = { "سين 10": "ساندي","سين 20": "ساندي","باء 10": "بوليتو","باء 20": "جزيره بوليتو","لام 10": "لام","جيم 10": "جيم","دال 10": "دال" };
+const supervisionTasks = { "سهم 1": "ساندي + بوليتو","سهم 2": "ساندي + بوليتو","سهم 3": "ساندي + بوليتو","سهم 4": "ساندي + بوليتو","سهم 5": "ساندي + بوليتو","درع 1": "ساندي + بوليتو","درع 2": "ساندي + بوليتو","درع 3": "ساندي + بوليتو","درع 4": "ساندي + بوليتو","درع 5": "ساندي + بوليتو","جنوب 1": "ساندي","جنوب 2": "ساندي","جنوب 3": "ساندي","جنوب 4": "ساندي","غرب 1": "بوليتو","غرب 2": "بوليتو","غرب 3": "بوليتو","غرب 4": "بوليتو","ساهر 1": "جيم + لام","ساهر 2": "جيم + لام","ساهر 3": "دال","ساهر 4": "دال","رصد": "جيم + لام + دال","سيف": "جيم + لام + دال" };
+const courseTasks = { "شرطة عسكرية": "ساندي + بوليتو + لوس","الشؤون الادارية": "ساندي + بوليتو + لوس","نقل سجون": "ساندي + بوليتو + لوس","S.W.A.T": "ساندي + بوليتو + لوس","البحث الجنائي": "ساندي + بوليتو + لوس","المهام والواجبات الخاصة": "ساندي + بوليتو + لوس","مكافحة المخدرات": "ساندي + بوليتو + لوس","الدعم الجوي": "ساندي + بوليتو + لوس","شعبة المرور": "ساندي + بوليتو + لوس","خدمات الطرق": "ساندي + بوليتو + لوس" };
+
+function getSaudiTime(){
+  let now=new Date();
+  let utc=now.getTime()+now.getTimezoneOffset()*60000;
+  return new Date(utc+3*3600000);
+}
+
+function initRankOptions(ranks){
+  const r=el("rank");
+  r.innerHTML="<option disabled selected>اختر الرتبة</option>";
+  ranks.forEach(x=> r.innerHTML+=`<option>${x}</option>`);
+}
+
+function openForm(type){
+  currentMode=type;
+  el("menu-section").style.display="none";
+  el("form-section").style.display="block";
+  el("taskName").value="";
+  el("location").value="";
+  el("copyID").value="";
+  el("units").value="";
+  el("courseName").value="";
+  initRankOptions(currentMode==="supervision"?supervisionRanks:(currentMode==="zone"?zoneRanks:allRanks));
+  el("earlySelect").value="no";
+  toggleEarlyReason();
+  el("unitGroup").style.display=(currentMode==="zone")?"block":"none";
+  el("courseGroup").style.display=(currentMode==="courses")?"block":"none";
+
+  if(currentMode==="courses"){
+    el("courseName").onchange=function(){
+      const val=el("courseName").value;
+      el("location").value=courseTasks[val]||"";
+    }
+  }
+}
+
+function toggleEarlyReason(){
+  el("earlyReasonGroup").style.display=el("earlySelect").value==="yes"?"block":"none";
+}
+
+function goBack(){
+  el("menu-section").style.display="block";
+  el("form-section").style.display="none";
+}
+
+function countWords(text){
+  return text.trim().split(/\s+/).filter(w=>w.length>0).length;
+}
+
+function copyReport(){
+  const task=el("taskName").value||"...";
+  const loc=el("location").value||"...";
+  const rank=el("rank").value||"...";
+  const copyID=el("copyID").value||"1205646094915084300";
+  const early=el("earlySelect").value==="yes"?el("earlyReason").value:null;
+
+  let unitsText="";
+  if(currentMode==="zone"){
+    const unitsInput=el("units").value||"";
+    if(countWords(unitsInput)>400){ alert("الوحدات التابعة يجب ألا تتجاوز 400 كلمة"); return; }
+    unitsText=unitsInput;
+  }
+
+  let endTime=getSaudiTime();
+  let startTime=new Date(endTime.getTime()-60*60000);
+
+  function formatTime(d){
+    let h=d.getHours()%12||12;
+    let m=d.getMinutes();
+    let p=d.getHours()>=12?"م":"ص";
+    return `${h<10?"0"+h:h}:${m<10?"0"+m:m} ${p}`;
+  }
+
+  let report="";
+
+  if(currentMode==="supervision"){
+    report=`** \`تم استلام مهام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
+
+** \`المنطقة : ${loc}\` **
+
+** \`الجهات الأمنية المتواجدة :\` **
+** \`${fixedUnits}\` **
+
+** \`تم رفع التقرير من قبل ( ${rank} ) :\` ** <@${copyID}>`;
+  }else if(currentMode==="zone"){
+    report=`** \`تم استلام مهام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
+
+** \`المنطقة : ${loc}\` **
+
+** \`الوحدات التابعة :\` **
+** \`${unitsText}\` **
+
+** \`تم رفع التقرير من قبل ( ${rank} ) :\` ** <@${copyID}>`;
+  }else if(currentMode==="courses"){
+    const courseName=el("courseName").value||"...";
+    report=`\`تم استلام مهام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\`
+
+الموقع : \`${loc}\`
+
+اسم الدورة : \`${courseName}\`
+
+\`\`تم رفع التقرير من قبل ( ${rank} )\`\` : <@${copyID}>`;
+  }
+
+  if(early) report+=`\n** \`سبب التبكير : ${early}\` **`;
+
+  navigator.clipboard.writeText(report);
+  alert("تم نسخ التقرير ✅");
+}
+
+function openOperationsReports(){
+  window.open("https://1boletop.netlify.app/","_blank");
+}
+</script>
 </body>
 </html>
