@@ -1,138 +1,158 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>نظام التقارير العسكرية الذكي</title>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 <style>
-:root{
-  --main:#00d4ff;
-  --bg:#050505;
-  --card:#0f0f0f;
-  --border:rgba(0,212,255,.25);
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+:root {
+  --primary-blue: #00d4ff;
+  --dark-bg: #0a0a0a;
+  --card-bg: rgba(20, 20, 20, 0.8);
+  --border-color: rgba(0, 212, 255, 0.2);
+  --text-gray: #b0b0b0;
 }
 
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:'Cairo',sans-serif;
-  background:
-    radial-gradient(circle at top,#1a1a1a,#000);
-  color:#fff;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+body {
+  margin: 0;
+  font-family: 'Cairo', sans-serif;
+  background: radial-gradient(circle, #1a1a1a, #050505);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding-bottom: 50px;
+  overflow-x: hidden;
+  position: relative;
 }
 
-/* الحاوية الرئيسية */
-.wrapper{
-  width:100%;
-  max-width:1100px;
-  padding:30px;
+/* الصور المتحركة */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  width: 200px;
+  height: 200px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: -1;
 }
 
-/* الكرت */
-.container{
-  background:linear-gradient(180deg,#111,#0a0a0a);
-  border:1px solid var(--border);
-  border-radius:24px;
-  padding:40px;
-  box-shadow:0 0 80px rgba(0,212,255,.15);
+body::before {
+  background-image: url('logo1.gif');
+  top: 20px;
+  left: 20px;
+  animation: move1 20s linear infinite;
 }
 
-/* العنوان */
-h1{
-  text-align:center;
-  color:var(--main);
-  margin-bottom:35px;
-  font-size:28px;
+body::after {
+  background-image: url('logo2.gif');
+  bottom: 20px;
+  right: 20px;
+  animation: move2 25s linear infinite;
 }
 
-/* الأزرار */
-.menu{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:20px;
+@keyframes move1 {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(50px, 50px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
 }
 
-.card{
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:18px;
-  padding:22px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  gap:15px;
-  transition:.3s;
+@keyframes move2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-50px, -50px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
 }
 
-.card:hover{
-  border-color:var(--main);
-  background:rgba(0,212,255,.08);
-  transform:translateY(-6px);
+/* باقي التنسيق */
+
+.container {
+  width: 90%;
+  max-width: 500px;
+  background: var(--card-bg);
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 35px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  margin-top: 20px;
 }
 
-.card i{
-  font-size:26px;
-  color:var(--main);
+h2 {
+  text-align: center;
+  color: var(--primary-blue);
+  margin-bottom: 30px;
 }
 
-.card span{
-  font-size:18px;
-  font-weight:700;
+.main-menu {
+  display: grid;
+  gap: 15px;
 }
 
-/* الفوتر */
-.footer{
-  text-align:center;
-  margin-top:30px;
-  font-size:13px;
-  opacity:.6;
+.menu-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 15px;
+  cursor: pointer;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  transition: 0.3s;
 }
 
-/* تحسين الموبايل */
-@media (max-width:600px){
-  .container{padding:25px}
-  h1{font-size:22px}
+.menu-card:hover {
+  background: rgba(0, 212, 255, 0.08);
+  border-color: var(--primary-blue);
+  transform: translateX(-5px);
+}
+
+.menu-card i {
+  color: var(--primary-blue);
+  font-size: 22px;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--text-gray);
 }
 </style>
 </head>
-
 <body>
-
-<div class="wrapper">
-  <div class="container">
-    <h1><i class="fas fa-shield-alt"></i> بوليتو – التقارير</h1>
-
-    <div class="menu">
-      <div class="card">
-        <i class="fas fa-user-shield"></i>
-        <span>تقارير الإشراف</span>
+<div class="container">
+  <div id="menu-section">
+    <h2><i class="fas fa-shield-alt"></i> بوليتو - التقارير</h2>
+    <div class="main-menu">
+      <div class="menu-card" onclick="alert('تقرير الإشراف')">
+        <i class="fas fa-user-shield"></i> <strong>تقارير الإشراف</strong>
       </div>
-
-      <div class="card">
-        <i class="fas fa-map-marker-alt"></i>
-        <span>تقارير ضابط منطقة</span>
+      <div class="menu-card" onclick="alert('تقرير ضابط منطقة')">
+        <i class="fas fa-map-marker-alt"></i> <strong>تقارير ضابط منطقة</strong>
       </div>
-
-      <div class="card">
-        <i class="fas fa-graduation-cap"></i>
-        <span>تقارير الدورات</span>
+      <div class="menu-card" onclick="alert('تقرير الدورات')">
+        <i class="fas fa-graduation-cap"></i> <strong>تقارير الدورات</strong>
       </div>
-    </div>
-
-    <div class="footer">
-      © قطاع الأمن العام – بوليتو
     </div>
   </div>
+  <div class="footer">حقوق الملكية © قطاع الأمن العام بمقاطعة بوليتو</div>
 </div>
-
 </body>
 </html>
