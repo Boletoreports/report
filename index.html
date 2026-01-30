@@ -154,7 +154,7 @@ select{color:#000;}
 
     <div class="form-group" id="taskGroup">
       <label>التوجيه</label>
-      <input type="text" id="taskName" placeholder="اكتب التوجيه" list="taskOptions">
+      <input type="text" id="taskName" placeholder="اكتب التوجيه" list="taskOptions" oninput="updateLocation()">
       <datalist id="taskOptions"></datalist>
     </div>
 
@@ -166,11 +166,6 @@ select{color:#000;}
     <div class="form-group">
       <label>اختر الرتبة</label>
       <select id="rank"></select>
-    </div>
-
-    <div class="form-group">
-      <label>كوبي ايدي العسكري</label>
-      <input type="text" id="copyID" placeholder="ضع الكوبي ايدي هنا">
     </div>
 
     <div class="form-group" id="unitGroup" style="display:none">
@@ -233,7 +228,7 @@ const allRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد"
 // التوجيهات والإشراف
 const supervisionTasks={
   "سهم 1":"ساندي + بوليتو","سهم 2":"ساندي + بوليتو","سهم 3":"ساندي + بوليتو","سهم 4":"ساندي + بوليتو","سهم 5":"ساندي + بوليتو",
-  "درع 1":"ساندي + بوليتو","درع 2":"ساندي + بوليتو","درع 3":"ساندي + بوليتو","درع 4":"ساندي + بوليتو","درع 5":"ساندي + بوليتو",
+  "درع 1":"ساندي + بوليتو","درع 2":"ساندي + بوليتو","درع 3":"ساندي + بوليتو","درع 4":"ساندي + بوليتو",
   "جنوب 1":"ساندي","جنوب 2":"ساندي","جنوب 3":"ساندي","جنوب 4":"ساندي",
   "غرب 1":"بوليتو","غرب 2":"بوليتو","غرب 3":"بوليتو","غرب 4":"بوليتو",
   "ساهر 1":"جيم + لام","ساهر 2":"جيم + لام","ساهر 3":"دال","ساهر 4":"دال",
@@ -287,6 +282,16 @@ function openForm(type){
   datalist.innerHTML = "";
   let tasks = currentMode==="supervision"?Object.keys(supervisionTasks):currentMode==="zone"?Object.keys(zoneTasks):[];
   tasks.forEach(t=> datalist.innerHTML+=`<option value="${t}">`);
+
+  // حدث تلقائي لتحديث الموقع عند اختيار التوجيه
+  updateLocation();
+}
+
+function updateLocation(){
+  const task = el("taskName").value;
+  if(currentMode==="supervision" && supervisionTasks[task]) el("location").value = supervisionTasks[task];
+  else if(currentMode==="zone" && zoneTasks[task]) el("location").value = zoneTasks[task];
+  else if(currentMode!=="courses") el("location").value = ""; // تفريغ إذا التوجيه غير معروف
 }
 
 function toggleEarlyReason(){
@@ -309,7 +314,7 @@ function copyReport(){
   const early = el("earlySelect").value==="yes"?el("earlyReason").value:null;
   let loc = el("location").value||"...";
 
-  // تعيين الموقع تلقائي للإشراف أو المنطقة
+  // تعيين الموقع تلقائي للإشراف أو المنطقة (لضمان النسخ الصحيح)
   if(currentMode==="supervision" && supervisionTasks[task]) loc = supervisionTasks[task];
   if(currentMode==="zone" && zoneTasks[task]) loc = zoneTasks[task];
 
