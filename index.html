@@ -301,7 +301,6 @@ function copyReport(){
   let startTime=new Date(endTime.getTime()-60*60000);
   function formatTime(d){ let h=d.getHours()%12||12; let m=d.getMinutes(); let p=d.getHours()>=12?"م":"ص"; return `${h<10?"0"+h:h}:${m<10?"0"+m:m} ${p}`; }
 
-  const separator = "** ---------------------------------------- **\n";
 
   let report="";
   if(currentMode==="supervision"){
