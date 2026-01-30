@@ -159,6 +159,9 @@ const fixedUnits="الامــن الــعـام + امـن الـطـرق + ا
 
 const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
 const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
+// رتبة الدورات تشمل الرتب الأصلية + الرتب الجديدة
+const courseRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب","جندي اول","عريف","وكيل رقيب"];
+
 const allRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب"];
 
 const supervisionTasks=["سهم 1","سهم 2","سهم 3","سهم 4","سهم 5","درع 1","درع 2","درع 3","درع 4","جنوب 1","جنوب 2","جنوب 3","جنوب 4","غرب 1","غرب 2","غرب 3","غرب 4","ساهر 1","ساهر 2","ساهر 3","ساهر 4","رصد 1","رصد 2","رصد 3","رصد 4","سيف 1","سيف 2","سيف 3","سيف 4"];
@@ -218,7 +221,10 @@ function openForm(type){
   el("unitGroup").style.display = (currentMode==="zone") ? "block" : "none";
   el("courseGroup").style.display = (currentMode==="courses") ? "block" : "none";
 
-  initRankOptions(currentMode==="supervision"?supervisionRanks:(currentMode==="zone"?zoneRanks:allRanks));
+  // الرتب حسب نوع التقرير
+  if(currentMode==="supervision") initRankOptions(supervisionRanks);
+  else if(currentMode==="zone") initRankOptions(zoneRanks);
+  else if(currentMode==="courses") initRankOptions(courseRanks);
 
   const list = el("taskSuggestions");
   list.innerHTML="";
