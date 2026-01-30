@@ -263,14 +263,19 @@ function copyReport(){
   function formatTime(d){ let h=d.getHours()%12||12; let m=d.getMinutes(); let p=d.getHours()>=12?"م":"ص"; return `${h<10?"0"+h:h}:${m<10?"0"+m:m} ${p}`; }
 
   let report="";
+
+  // السطر الثابت لكل التقارير
+  const securityLine =
+`** \`الـجــهــات الامــنـيــة المــتــواجــده :\` **
+** \`${fixedUnits}\` **`;
+
   if(currentMode==="supervision"){
     report=
 `** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${formatTime(startTime)} إلى الساعة ${formatTime(endTime)}\` **
 
 ** \`الـمـنـطـقـة : ${loc}\` **
 
-** \`الـجــهــات الامــنـيــة المــتــواجــده :\` **
-** \`${fixedUnits}\` **
+${securityLine}
 
 ** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
   } else if(currentMode==="zone"){
@@ -282,6 +287,8 @@ function copyReport(){
 ** \`الوحدات التابعة :\` **
 ** \`${unitsText}\` **
 
+${securityLine}
+
 ** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
   } else if(currentMode==="courses"){
     const courseName=el("courseName").value||"...";
@@ -291,6 +298,8 @@ function copyReport(){
 ** \`الموقع : ${loc}\` **
 
 ** \`اسم الدورة : ${courseName}\` **
+
+${securityLine}
 
 ** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
   }
