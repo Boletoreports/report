@@ -23,7 +23,7 @@ body{
   overflow-y:auto;
 }
 
-/* الانيميشن للوغوهات */
+/* الانيميشن */
 body::before, body::after{
   content:'';
   position:fixed;
@@ -34,34 +34,19 @@ body::before, body::after{
   z-index:10;
   pointer-events:none;
 }
-
-body::before {
-  top:20px;
-  left:20px;
+body::before{
+  top:20px;left:20px;
   background-image:url('https://raw.githubusercontent.com/Boletoreports/report/main/logo1.gif');
   animation:move1 20s linear infinite;
 }
-
-body::after {
-  bottom:20px;
-  right:20px;
+body::after{
+  bottom:20px;right:20px;
   background-image:url('https://raw.githubusercontent.com/Boletoreports/report/main/logo2.gif');
   animation:move2 25s linear infinite;
 }
+@keyframes move1{0%{transform:translate(0)}50%{transform:translate(50px,50px)}100%{transform:translate(0)}}
+@keyframes move2{0%{transform:translate(0)}50%{transform:translate(-50px,-50px)}100%{transform:translate(0)}}
 
-@keyframes move1 {
- 0%{transform:translate(0,0)}
- 50%{transform:translate(50px,50px)}
- 100%{transform:translate(0,0)}
-}
-
-@keyframes move2 {
- 0%{transform:translate(0,0)}
- 50%{transform:translate(-50px,-50px)}
- 100%{transform:translate(0,0)}
-}
-
-/* التصميم */
 .container{
   width:90%;
   max-width:500px;
@@ -71,12 +56,8 @@ body::after {
   box-shadow:0 20px 50px rgba(0,0,0,.5);
   margin-top:20px;
 }
-h2{
-  text-align:center;
-  color:#00d4ff;
-  margin-bottom:30px;
-}
-.main-menu{ display:grid; gap:15px; }
+h2{text-align:center;color:#00d4ff;margin-bottom:30px}
+.main-menu{display:grid;gap:15px}
 .menu-card{
   background:rgba(255,255,255,.03);
   border-radius:15px;
@@ -87,14 +68,11 @@ h2{
   padding:20px;
   transition:.3s;
 }
-.menu-card:hover{
-  background:rgba(0,212,255,.08);
-  transform:translateX(-5px);
-}
+.menu-card:hover{background:rgba(0,212,255,.08);transform:translateX(-5px)}
 .menu-card i{color:#00d4ff;font-size:22px}
 
-.form-group{ margin-bottom:20px; }
-label{ display:block; margin-bottom:8px; font-size:14px; color:#b0b0b0; font-weight:600; }
+.form-group{margin-bottom:20px}
+label{display:block;margin-bottom:8px;font-size:14px;color:#b0b0b0;font-weight:600}
 input,select,textarea{
   width:100%;
   padding:12px;
@@ -104,8 +82,8 @@ input,select,textarea{
   font-family:'Cairo';
   border:1px solid rgba(255,255,255,.1);
 }
-textarea{height:100px;resize:vertical;overflow:auto;}
-select { color:#000; }
+textarea{height:100px;resize:vertical}
+select{color:#000}
 .btn-copy{
   width:100%;
   padding:15px;
@@ -126,49 +104,32 @@ select { color:#000; }
   color:#b0b0b0;
 }
 #form-section{display:none}
-.footer{
-  text-align:center;
-  margin-top:20px;
-  font-size:12px;
-  color:#b0b0b0;
-}
-datalist option {
-  background: #1a1a1a;
-  color: #fff;
-  padding:5px;
-}
+.footer{text-align:center;margin-top:20px;font-size:12px;color:#b0b0b0}
 </style>
 </head>
 
 <body>
 <div class="container">
 
-<!-- القائمة الرئيسية -->
+<!-- القائمة -->
 <div id="menu-section">
 <h2><i class="fas fa-shield-alt"></i> بوليتو - التقارير</h2>
 <div class="main-menu">
-
-<div class="menu-card" onclick="openForm('supervision')">
-<i class="fas fa-user-shield"></i><strong>تقارير الإشراف</strong>
-</div>
-
-<div class="menu-card" onclick="openForm('zone')">
-<i class="fas fa-map-marker-alt"></i><strong>تقارير ضابط منطقة</strong>
-</div>
-
-<div class="menu-card" onclick="openForm('courses')">
-<i class="fas fa-graduation-cap"></i><strong>تقارير الدورات</strong>
-</div>
-
-<!-- الإضافة فقط -->
-<div class="menu-card" onclick="openForm('duty')">
-<i class="fas fa-user-clock"></i><strong>تقارير ضابط خفر</strong>
-</div>
-
-<div class="menu-card" onclick="openOperationsReports()">
-<i class="fas fa-clipboard-list"></i><strong>تقارير العمليات</strong>
-</div>
-
+  <div class="menu-card" onclick="openForm('supervision')">
+    <i class="fas fa-user-shield"></i><strong>تقارير الإشراف</strong>
+  </div>
+  <div class="menu-card" onclick="openForm('zone')">
+    <i class="fas fa-map-marker-alt"></i><strong>تقارير ضابط منطقة</strong>
+  </div>
+  <div class="menu-card" onclick="openForm('courses')">
+    <i class="fas fa-graduation-cap"></i><strong>تقارير الدورات</strong>
+  </div>
+  <div class="menu-card" onclick="openForm('duty')">
+    <i class="fas fa-user-clock"></i><strong>تقارير ضابط خفر</strong>
+  </div>
+  <div class="menu-card" onclick="openOperationsReports()">
+    <i class="fas fa-clipboard-list"></i><strong>تقارير العمليات</strong>
+  </div>
 </div>
 </div>
 
@@ -176,41 +137,29 @@ datalist option {
 <div id="form-section">
 <h2 id="title-text"></h2>
 
-<!-- التوجيه -->
 <div class="form-group">
 <label>التوجيه</label>
-<input type="text" id="taskName">
+<input id="taskName">
 </div>
 
-<!-- الموقع -->
 <div class="form-group" id="locationGroup">
 <label>الموقع</label>
-<input type="text" id="location">
+<input id="location">
 </div>
 
-<!-- الرتبة -->
 <div class="form-group">
 <label>اختر الرتبة</label>
 <select id="rank"></select>
 </div>
 
-<!-- كوبي ايدي -->
 <div class="form-group">
 <label>كوبي ايدي صاحب التقرير</label>
-<input type="text" id="copyID" placeholder="ضع الكوبي ايدي هنا">
+<input id="copyID" placeholder="كوبي ايدي صاحب التقرير">
 </div>
 
-<!-- بقية الفورم القديم (الوحدات – الدورات – التبكير) -->
-<!-- كما هو من كودك الأصلي بدون أي حذف -->
-<!-- ………………………………… -->
-
-<!-- ضابط خفر (إضافة فقط) -->
+<!-- ضابط خفر -->
 <div id="dutyGroup" style="display:none">
-
-<div class="form-group">
-<label>عدد الوحدات الإجمالي</label>
-<input value="00" id="totalUnits">
-</div>
+<div class="form-group"><label>عدد الوحدات الإجمالي</label><input value="00" id="totalUnits"></div>
 
 <div class="form-group"><label>عدد وحدات أمن عام</label><input value="00" id="u1"></div>
 <div class="form-group"><label>عدد وحدات أمن الطرق</label><input value="00" id="u2"></div>
@@ -234,7 +183,6 @@ datalist option {
 <label>الملاحظات السلبية (إجباري)</label>
 <textarea id="negativeNotes"></textarea>
 </div>
-
 </div>
 
 <button class="btn-copy" onclick="copyReport()">نسخ التقرير النهائي</button>
@@ -245,9 +193,95 @@ datalist option {
 </div>
 
 <script>
-/* كل جافاسكريبت القديم كما هو */
-function el(id){ return document.getElementById(id); }
-/* + تمت إضافة منطق ضابط خفر فقط بدون المساس بالباقي */
+function el(id){return document.getElementById(id)}
+let currentMode="";
+
+const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
+const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
+const courseRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب","جندي اول","عريف","وكيل رقيب"];
+const dutyRanks=["ملازم","ملازم اول","نقيب","رائد","مقدم ركن","عقيد ركن","عميد ركن"];
+
+function initRankOptions(ranks){
+  el("rank").innerHTML='<option disabled selected>اختر الرتبة</option>';
+  ranks.forEach(r=>el("rank").innerHTML+=`<option>${r}</option>`);
+}
+
+function openForm(type){
+  currentMode=type;
+  el("menu-section").style.display="none";
+  el("form-section").style.display="block";
+
+  el("dutyGroup").style.display=type==="duty"?"block":"none";
+  el("locationGroup").style.display=type==="duty"?"none":"block";
+
+  el("taskName").readOnly=type==="duty";
+  el("taskName").value=type==="duty"?"ضابط خفر":"";
+
+  if(type==="supervision"){el("title-text").textContent="تقارير الإشراف";initRankOptions(supervisionRanks);}
+  else if(type==="zone"){el("title-text").textContent="تقارير ضابط منطقة";initRankOptions(zoneRanks);}
+  else if(type==="courses"){el("title-text").textContent="تقارير الدورات";initRankOptions(courseRanks);}
+  else if(type==="duty"){el("title-text").textContent="تقارير ضابط خفر";initRankOptions(dutyRanks);}
+}
+
+function goBack(){
+  el("menu-section").style.display="block";
+  el("form-section").style.display="none";
+}
+
+function saudiTime(){
+  const now=new Date();
+  const utc=now.getTime()+now.getTimezoneOffset()*60000;
+  return new Date(utc+3*3600000);
+}
+function formatTime(d){
+  let h=d.getHours()%12||12,m=d.getMinutes();
+  let p=d.getHours()>=12?"م":"ص";
+  return `${h<10?"0"+h:h}:${m<10?"0"+m:m} ${p}`;
+}
+
+function copyReport(){
+  if(currentMode!=="duty"){alert("تقارير ضابط خفر فقط في هذه النسخة");return;}
+
+  if(!el("positiveNotes").value||!el("negativeNotes").value){
+    alert("الملاحظات الإيجابية والسلبية إجبارية");return;
+  }
+
+  const end=saudiTime();
+  const start=new Date(end.getTime()-60*60*1000);
+
+  let report=
+`**\` تم استلام مهام (ضابط خفر) من الساعة ${formatTime(start)} الى ${formatTime(end)} \`**
+
+**\` وكان عدد حضور الوحدات في حين استلام التقرير (${el("totalUnits").value}) وحدات مفعلة من:\`**
+
+\`1- أمن عام (${el("u1").value}) وحدة\`
+\`2- أمن الطرق (${el("u2").value}) وحدة\`
+\`3- المهام والواجبات الخاصة (${el("u3").value}) وحدات\`
+\`4- ضباط المناطق (${el("u4").value}) وحدات\`
+\`5- المرور (${el("u5").value}) وحدات\`
+\`6- الدعم الجوي (${el("u6").value}) وحدة\`
+\`7- مكافحة مخدرات (${el("u7").value}) وحدات\`
+\`8- السوات (${el("u8").value}) وحدات\`
+\`9- البحث الجنائي (${el("u9").value}) وحدة\`
+\`10- شرطة عسكرية (${el("u10").value}) وحدة\`
+\`11- نقل سجون (${el("u11").value}) وحدات\`
+\`12- الشؤون الادارية (${el("u12").value}) وحدة\`
+
+\` الملاحظات الأيجابية : \`
+\`${el("positiveNotes").value}\`
+
+\` الملاحظات السلبية : \`
+\`${el("negativeNotes").value}\`
+
+**\`تم رفع التقرير من قبل (${el("rank").value})\` : <@${el("copyID").value}>**`;
+
+  navigator.clipboard.writeText(report);
+  alert("تم نسخ التقرير ✅");
+}
+
+function openOperationsReports(){
+  window.open("https://1boletop.netlify.app/","_blank");
+}
 </script>
 
 </body>
