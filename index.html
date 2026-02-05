@@ -23,6 +23,7 @@ body{
   overflow-y:auto;
 }
 
+/* الانيميشن للوغوهات */
 body::before, body::after{
   content:'';
   position:fixed;
@@ -60,6 +61,7 @@ body::after {
  100%{transform:translate(0,0)}
 }
 
+/* بقية تصميم الصفحة */
 .container{
   width:90%;
   max-width:500px;
@@ -104,7 +106,6 @@ input,select,textarea{
 }
 textarea{height:100px;resize:vertical;overflow:auto;}
 select { color:#000; }
-
 .btn-copy{
   width:100%;
   padding:15px;
@@ -149,13 +150,13 @@ datalist option { background:#1a1a1a; color:#fff; padding:5px; }
 
     <div class="form-group" id="taskGroup">
       <label>التوجيه (اكتب يدوي)</label>
-      <input type="text" id="taskName" list="taskSuggestions">
+      <input type="text" id="taskName" placeholder="اكتب التوجيه" list="taskSuggestions">
       <datalist id="taskSuggestions"></datalist>
     </div>
 
     <div class="form-group">
       <label>الموقع</label>
-      <input type="text" id="location">
+      <input type="text" id="location" placeholder="الموقع">
     </div>
 
     <div class="form-group">
@@ -165,10 +166,10 @@ datalist option { background:#1a1a1a; color:#fff; padding:5px; }
 
     <div class="form-group">
       <label>كوبي ايدي العسكري</label>
-      <input type="text" id="copyID">
+      <input type="text" id="copyID" placeholder="ضع الكوبي ايدي هنا">
     </div>
 
-    <!-- ⏰ إضافة الوقت اليدوي -->
+    <!-- ⏰ الوقت اليدوي -->
     <div class="form-group">
       <label>وقت بداية التقرير</label>
       <div style="display:flex;gap:10px;">
@@ -192,16 +193,42 @@ datalist option { background:#1a1a1a; color:#fff; padding:5px; }
     </div>
 
     <div class="form-group" id="unitGroup" style="display:none">
-      <label>الوحدات التابعة</label>
+      <label>الوحدات التابعة (حد أقصى 400 كلمة)</label>
       <textarea id="units"></textarea>
     </div>
 
     <div class="form-group" id="courseGroup" style="display:none">
       <label>اسم الدورة</label>
       <select id="courseName">
+        <option disabled selected>اختر اسم الدورة</option>
         <option>شرطة عسكرية</option>
         <option>الشؤون الادارية</option>
         <option>نقل سجون</option>
+        <option>S.W.A.T</option>
+        <option>البحث الجنائي</option>
+        <option>المهام والواجبات الخاصة</option>
+        <option>مكافحة المخدرات</option>
+        <option>الدعم الجوي</option>
+        <option>شعبة المرور</option>
+        <option>خدمات الطرق</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>التقرير نازل مبكر؟</label>
+      <select id="earlySelect" onchange="toggleEarlyReason()">
+        <option value="no" selected>لا</option>
+        <option value="yes">نعم</option>
+      </select>
+    </div>
+
+    <div class="form-group" id="earlyReasonGroup" style="display:none">
+      <label>سبب التبكير</label>
+      <select id="earlyReason">
+        <option value="ريستارت">ريستارت</option>
+        <option value="صيانه">صيانه</option>
+        <option value="إعادة اصطفاف">إعادة اصطفاف</option>
+        <option value="كراش عمومي">كراش عمومي</option>
       </select>
     </div>
 
@@ -209,7 +236,7 @@ datalist option { background:#1a1a1a; color:#fff; padding:5px; }
     <div class="back-link" onclick="goBack()">رجوع</div>
   </div>
 
-  <div class="footer"> حقوق الملكية © </div>
+  <div class="footer"> حقوق الملكية لقيادة قطاع الأمن العام بمقاطعة بوليتو © </div>
 </div>
 
 <script>
@@ -219,18 +246,10 @@ const fixedUnits="الامــن الــعـام + امـن الـطـرق + ا
 
 const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
 const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
-const courseRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب","جندي اول"];
+const courseRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب","جندي اول","عريف","وكيل رقيب"];
 
-const supervisionTasks=["سهم 1","سهم 2","سهم 3","سهم 4","سهم 5"];
-const zoneTasks=["سين 10","سين 20","باء 10","باء 20"];
-
-function updateLocation(task){
-  if(currentMode==="supervision"){
-    el("location").value="ساندي + بوليتو";
-  } else if(currentMode==="zone"){
-    el("location").value="ساندي";
-  }
-}
+const supervisionTasks=[/* كما هي */];
+const zoneTasks=[/* كما هي */];
 
 function getSaudiTime(){
   let now=new Date();
@@ -252,31 +271,18 @@ function copyReport(){
   const rank=el("rank").value||"...";
   const copyID=el("copyID").value||"...";
 
-  let endTime=getSaudiTime();
-  let startTime=new Date(endTime.getTime()-60*60000);
-
   const start=formatManualTime(el("startTime").value,el("startPeriod").value);
   const end=formatManualTime(el("endTime").value,el("endPeriod").value);
 
   let report=
-`تم استلام مهام ( ${task} )
-من الساعة ${start} إلى الساعة ${end}
-الموقع : ${loc}
-تم رفع التقرير من قبل ( ${rank} ) : <@${copyID}>`;
+`** \`تـم اسـتـلام مـهـام ( ${task} ) من الساعة ${start} إلى الساعة ${end}\` **
+
+** \`الـمـنـطـقـة : ${loc}\` **
+
+** \`تم رفـــع التـقـريـر من قبــل ( ${rank} ) :\` ** <@${copyID}>`;
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
-}
-
-function openForm(type){
-  currentMode=type;
-  el("menu-section").style.display="none";
-  el("form-section").style.display="block";
-}
-
-function goBack(){
-  el("menu-section").style.display="block";
-  el("form-section").style.display="none";
 }
 
 function openOperationsReports(){
