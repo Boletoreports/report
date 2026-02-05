@@ -305,8 +305,22 @@ function copyReport(){
     unitsText=unitsInput;
   }
 
-  let endTime=getSaudiTime();
-  let startTime=new Date(endTime.getTime()-60*60000);
+let endTime = getSaudiTime();
+let startTime;
+
+if(el("earlySelect").value === "yes"){
+  const manualTime = el("manualStartTime").value;
+  if(!manualTime){
+    alert("يرجى تحديد وقت بدء التقرير");
+    return;
+  }
+
+  const [h,m] = manualTime.split(":");
+  startTime = new Date(endTime);
+  startTime.setHours(parseInt(h), parseInt(m), 0, 0);
+}else{
+  startTime = new Date(endTime.getTime() - 60*60000);
+}
   function formatTime(d){ let h=d.getHours()%12||12; let m=d.getMinutes(); let p=d.getHours()>=12?"م":"ص"; return `${h<10?"0"+h:h}:${m<10?"0"+m:m} ${p}`; }
 
   let report="";
@@ -365,6 +379,7 @@ function openOperationsReports(){ window.open("https://1boletop.netlify.app/","_
 </script>
 </body>
 </html>
+
 
 
 
