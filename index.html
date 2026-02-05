@@ -69,7 +69,11 @@ body::after {
   box-shadow:0 20px 50px rgba(0,0,0,.5);
   margin-top:20px;
 }
-h2{ text-align:center; color:#00d4ff; margin-bottom:30px; }
+h2{
+  text-align:center;
+  color:#00d4ff;
+  margin-bottom:30px;
+}
 .main-menu{ display:grid; gap:15px; }
 .menu-card{
   background:rgba(255,255,255,.03);
@@ -98,8 +102,8 @@ input,select,textarea{
   font-family:'Cairo';
   border:1px solid rgba(255,255,255,.1);
 }
-textarea{height:100px;resize:vertical;}
-select{ color:#000; }
+textarea{height:100px;resize:vertical;overflow:auto;}
+select { color:#000; }
 
 .btn-copy{
   width:100%;
@@ -116,6 +120,7 @@ select{ color:#000; }
 .back-link{ margin-top:15px; text-align:center; font-size:13px; cursor:pointer; color:#b0b0b0; }
 #form-section{display:none}
 .footer{ text-align:center; margin-top:20px; font-size:12px; color:#b0b0b0; }
+datalist option { background:#1a1a1a; color:#fff; padding:5px; }
 </style>
 </head>
 
@@ -133,15 +138,19 @@ select{ color:#000; }
       <div class="menu-card" onclick="openForm('courses')">
         <i class="fas fa-graduation-cap"></i> <strong>تقارير الدورات</strong>
       </div>
+      <div class="menu-card" onclick="openOperationsReports()">
+        <i class="fas fa-clipboard-list"></i> <strong>تقارير العمليات</strong>
+      </div>
     </div>
   </div>
 
   <div id="form-section">
     <h2 id="title-text"></h2>
 
-    <div class="form-group">
-      <label>التوجيه</label>
-      <input type="text" id="taskName">
+    <div class="form-group" id="taskGroup">
+      <label>التوجيه (اكتب يدوي)</label>
+      <input type="text" id="taskName" list="taskSuggestions">
+      <datalist id="taskSuggestions"></datalist>
     </div>
 
     <div class="form-group">
@@ -150,7 +159,7 @@ select{ color:#000; }
     </div>
 
     <div class="form-group">
-      <label>الرتبة</label>
+      <label>اختر الرتبة</label>
       <select id="rank"></select>
     </div>
 
@@ -159,7 +168,7 @@ select{ color:#000; }
       <input type="text" id="copyID">
     </div>
 
-    <!-- ⏰ وقت التقرير (يدوي) -->
+    <!-- ⏰ إضافة الوقت اليدوي -->
     <div class="form-group">
       <label>وقت بداية التقرير</label>
       <div style="display:flex;gap:10px;">
@@ -182,6 +191,20 @@ select{ color:#000; }
       </div>
     </div>
 
+    <div class="form-group" id="unitGroup" style="display:none">
+      <label>الوحدات التابعة</label>
+      <textarea id="units"></textarea>
+    </div>
+
+    <div class="form-group" id="courseGroup" style="display:none">
+      <label>اسم الدورة</label>
+      <select id="courseName">
+        <option>شرطة عسكرية</option>
+        <option>الشؤون الادارية</option>
+        <option>نقل سجون</option>
+      </select>
+    </div>
+
     <button class="btn-copy" onclick="copyReport()">نسخ التقرير النهائي</button>
     <div class="back-link" onclick="goBack()">رجوع</div>
   </div>
@@ -191,35 +214,62 @@ select{ color:#000; }
 
 <script>
 function el(id){ return document.getElementById(id); }
+let currentMode="";
+const fixedUnits="الامــن الــعـام + امـن الـطـرق + المهام والواجبات الخاصه";
 
-function formatManual(time, period){
-  let [h,m] = time.split(":");
-  h = parseInt(h);
-  if(h === 0) h = 12;
-  if(h > 12) h -= 12;
-  return `${h < 10 ? "0"+h : h}:${m} ${period}`;
+const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
+const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
+const courseRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب","جندي اول"];
+
+const supervisionTasks=["سهم 1","سهم 2","سهم 3","سهم 4","سهم 5"];
+const zoneTasks=["سين 10","سين 20","باء 10","باء 20"];
+
+function updateLocation(task){
+  if(currentMode==="supervision"){
+    el("location").value="ساندي + بوليتو";
+  } else if(currentMode==="zone"){
+    el("location").value="ساندي";
+  }
+}
+
+function getSaudiTime(){
+  let now=new Date();
+  let utc=now.getTime()+now.getTimezoneOffset()*60000;
+  return new Date(utc+3*3600000);
+}
+
+function formatManualTime(time, period){
+  let [h,m]=time.split(":");
+  h=parseInt(h);
+  if(h===0)h=12;
+  if(h>12)h-=12;
+  return `${h<10?"0"+h:h}:${m} ${period}`;
 }
 
 function copyReport(){
-  const task = el("taskName").value || "...";
-  const loc  = el("location").value || "...";
-  const rank = el("rank").value || "...";
-  const id   = el("copyID").value || "...";
+  const task=el("taskName").value||"...";
+  const loc=el("location").value||"...";
+  const rank=el("rank").value||"...";
+  const copyID=el("copyID").value||"...";
 
-  const start = formatManual(el("startTime").value, el("startPeriod").value);
-  const end   = formatManual(el("endTime").value, el("endPeriod").value);
+  let endTime=getSaudiTime();
+  let startTime=new Date(endTime.getTime()-60*60000);
 
-  const report =
+  const start=formatManualTime(el("startTime").value,el("startPeriod").value);
+  const end=formatManualTime(el("endTime").value,el("endPeriod").value);
+
+  let report=
 `تم استلام مهام ( ${task} )
 من الساعة ${start} إلى الساعة ${end}
 الموقع : ${loc}
-تم رفع التقرير من قبل (${rank}) : <@${id}>`;
+تم رفع التقرير من قبل ( ${rank} ) : <@${copyID}>`;
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
 }
 
-function openForm(){
+function openForm(type){
+  currentMode=type;
   el("menu-section").style.display="none";
   el("form-section").style.display="block";
 }
@@ -227,6 +277,10 @@ function openForm(){
 function goBack(){
   el("menu-section").style.display="block";
   el("form-section").style.display="none";
+}
+
+function openOperationsReports(){
+  window.open("https://1boletop.netlify.app/","_blank");
 }
 </script>
 </body>
