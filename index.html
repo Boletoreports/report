@@ -361,7 +361,18 @@ ${securityLine}
   alert("تم نسخ التقرير ✅");
 }
 
-function openOperationsReports(){ window.open("https://1boletop.netlify.app/","_blank"); }
+// ⬅️ إضافة جديدة: ظهور وقت بدء التقرير اليدوي عند اختيار "نعم"
+el("earlySelect").addEventListener("change", function() {
+  if (this.value === "yes") {
+    el("manualStartGroup").style.display = "block";
+    el("earlyReasonGroup").style.display = "block";
+  } else {
+    el("manualStartGroup").style.display = "none";
+    el("manualStart").value = "";
+    el("earlyReasonGroup").style.display = "none";
+  }
+});
 </script>
 </body>
 </html>
+
