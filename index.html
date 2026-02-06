@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -7,18 +7,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-
-  select,
-select option{
-  background-color:#000 !important;
-  color:#fff !important;
-}
-
-select option:hover,
-select option:checked{
-  background-color:#111 !important;
-  color:#00d4ff !important;
-}
 
 body{
   margin:0;
@@ -250,20 +238,20 @@ function initTimeSelects(){
 
   for(let i=0;i<=12;i++){
     const val = i<10?"0"+i:i;
-    startH.innerHTML += `<option>${val}</option>`;
-    endH.innerHTML += `<option>${val}</option>`;
+    startH.innerHTML += <option>${val}</option>;
+    endH.innerHTML += <option>${val}</option>;
   }
   for(let i=0;i<60;i++){
     const val = i<10?"0"+i:i;
-    startM.innerHTML += `<option>${val}</option>`;
-    endM.innerHTML += `<option>${val}</option>`;
+    startM.innerHTML += <option>${val}</option>;
+    endM.innerHTML += <option>${val}</option>;
   }
 }
 
 function initRankOptions(ranks){
   const r=el("rank");
   r.innerHTML="<option disabled selected>اختر الرتبة</option>";
-  ranks.forEach(x=> r.innerHTML+=`<option>${x}</option>`);
+  ranks.forEach(x=> r.innerHTML+=<option>${x}</option>);
 }
 
 function openForm(type){
@@ -309,22 +297,22 @@ function copyReport(){
   const rank = el("rank").value||"...";
   const copyID = el("copyID").value||"1358333213965156392";
 
-  const startTime = `${el("startHour").value}:${el("startMinute").value} ${el("startPeriod").value}`;
-  const endTime = `${el("endHour").value}:${el("endMinute").value} ${el("endPeriod").value}`;
+  const startTime = ${el("startHour").value}:${el("startMinute").value} ${el("startPeriod").value};
+  const endTime = ${el("endHour").value}:${el("endMinute").value} ${el("endPeriod").value};
 
   let unitsText = "";
   if(currentMode==="zone") unitsText = el("units").value;
 
   const courseName = currentMode==="courses" ? el("courseName").value : "";
 
-  let report = `تم استلام مهام ${task}\nمن الساعة ${startTime}\nإلى الساعة ${endTime}\nالموقع: ${loc}\n`;
+  let report = تم استلام مهام ${task}\nمن الساعة ${startTime}\nإلى الساعة ${endTime}\nالموقع: ${loc}\n;
 
-  if(currentMode==="zone") report += `الوحدات التابعة: ${unitsText}\n`;
-  if(currentMode==="courses") report += `اسم الدورة: ${courseName}\n`;
+  if(currentMode==="zone") report += الوحدات التابعة: ${unitsText}\n;
+  if(currentMode==="courses") report += اسم الدورة: ${courseName}\n;
 
-  report += `الرتبة: ${rank}\nكوبي ايدي: ${copyID}`;
+  report += الرتبة: ${rank}\nكوبي ايدي: ${copyID};
 
-  if(el("earlySelect").value==="yes") report += `\nسبب نزول التقرير مبكر: ${el("earlyReason").value}`;
+  if(el("earlySelect").value==="yes") report += \nسبب نزول التقرير مبكر: ${el("earlyReason").value};
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
@@ -336,4 +324,3 @@ initTimeSelects();
 </script>
 </body>
 </html>
-
