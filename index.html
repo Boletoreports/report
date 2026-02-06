@@ -171,6 +171,7 @@ datalist option { background: #1a1a1a; color: #fff; padding:5px; }
       </select>
     </div>
 
+    <!-- الوقت اليدوي -->
     <div class="form-group">
       <label>وقت البداية</label>
       <div style="display:flex; gap:5px;">
@@ -300,7 +301,7 @@ function copyReport(){
   const endTime = `${el("endHour").value}:${el("endMinute").value} ${el("endPeriod").value}`;
 
   let unitsText = "";
-  if(currentMode==="zone" && el("units").value) unitsText = `\n\nالـوحدات التابعة : ${el("units").value}`;
+  if(currentMode==="zone") unitsText = el("units").value;
 
   const courseName = currentMode==="courses" ? el("courseName").value : "";
 
@@ -308,22 +309,14 @@ function copyReport(){
 
 ⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـمـنـطـقـة : ${loc} \`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
 
-  if(currentMode==="supervision") report += `
+  if(currentMode==="zone" && unitsText) report += `\n\n⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـجــهــات الامــنـيــة المـــتــواجــده :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n⁨⁨\`${unitsText}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
+  if(currentMode==="supervision") report += `\n\n⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـجــهــات الامــنـيــة المـــتــواجــده :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n⁨⁨\`امـن الطـرق + الامـن الـعـام + الـمـهـام و الـواجـبـات الـخـاصـة\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
 
-⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـجــهــات الامــنـيــة المـــتــواجــده :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩
+  if(currentMode==="courses" && courseName) report += `\n\n⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`اسم الدورة: ${courseName}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
 
-⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`امـن الطـرق + الامـن الـعـام + الـمـهـام و الـواجـبـات الـخـاصـة\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
+  report += `\n\n⁨⁨ <@${copyID}>   ⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم رفـع التـقـريـر مـن قبـل (${rank}) :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
 
-  if(currentMode==="zone") report += `${unitsText}`;
-  if(currentMode==="courses" && courseName) report += `\n\nاسم الدورة: ${courseName}`;
-
-  report += `
-
-⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الرّتبة: ${rank}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩
-
-⁨⁨⁨⁨ <@${copyID}>   ⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم رفـع التـقـريـر مـن قبـل (${rank}) :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩**`;
-
-  if(el("earlySelect").value==="yes") report += `\n\n⁨⁨سبب نزول التقرير مبكر: ${el("earlyReason").value}⁩`;
+  if(el("earlySelect").value==="yes") report += `\n\n⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`سبب نزول التقرير مبكر: ${el("earlyReason").value}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
