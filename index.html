@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>  
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -62,7 +62,7 @@ body::after {
 
 .container{
   width:90%;
-  max-width:500px;
+  max-width:600px;
   background:rgba(20,20,20,.8);
   border-radius:20px;
   padding:35px;
@@ -76,29 +76,36 @@ h2{
   margin-bottom:30px;
 }
 
-.main-menu{ display:grid; gap:15px; justify-items:center; }
+.main-menu{ 
+  display:grid; 
+  gap:20px; 
+  justify-items:center; 
+}
+
 .menu-card{
   background:rgba(255,255,255,.03);
   border-radius:15px;
   cursor:pointer;
   display:flex;
-  gap:15px;
+  gap:20px;
   align-items:center;
-  padding:20px;
+  padding:25px 30px;
+  width:100%;
+  max-width:400px;
   transition:.3s;
 }
 .menu-card:hover{
   background:rgba(0,212,255,.08);
   transform:translateX(-5px);
 }
-.menu-card i{color:#00d4ff;font-size:22px}
+.menu-card i{color:#00d4ff;font-size:28px}
 
 .form-group{ margin-bottom:20px; }
 label{ display:block; margin-bottom:8px; font-size:14px; color:#b0b0b0; font-weight:600; }
 input,select,textarea{ width:100%; padding:12px; background:rgba(255,255,255,.05); border-radius:10px; color:#fff; font-family:'Cairo'; border:1px solid rgba(255,255,255,.1); }
 textarea{height:100px;resize:vertical;overflow:auto;}
 select { color:#000; }
-.btn-copy{ width:100%; padding:15px; background:linear-gradient(135deg,#00829d,#00d4ff); border:none; border-radius:10px; color:#fff; font-size:16px; font-weight:700; cursor:pointer; margin-top:20px; }
+.btn-copy{ width:100%; padding:18px; background:linear-gradient(135deg,#00829d,#00d4ff); border:none; border-radius:10px; color:#fff; font-size:16px; font-weight:700; cursor:pointer; margin-top:20px; }
 .back-link{ margin-top:15px; text-align:center; font-size:13px; cursor:pointer; color:#b0b0b0; }
 #form-section{display:none}
 .footer{ text-align:center; margin-top:20px; font-size:12px; color:#b0b0b0; }
@@ -306,17 +313,17 @@ function copyReport(){
   const courseName = currentMode==="courses" ? el("courseName").value : "";
 
   let report = `**⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم اسـتـلام مـهـام (${task})  من السـاعة ${startTime} اٍلـى الـساعة ${endTime}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩
-
+  
 ⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـمـنـطـقـة : ${loc} \`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
 
-  if(currentMode==="zone" && unitsText) report += `\n\n⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـجــهــات الامــنـيــة المـــتــواجــده :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n⁨⁨\`${unitsText}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
-  if(currentMode==="supervision") report += `\n\n⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـجــهــات الامــنـيــة المـــتــواجــده :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n⁨⁨\`امـن الطـرق + الامـن الـعـام + الـمـهـام و الـواجـبـات الـخـاصـة\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
+  if(currentMode==="zone" && unitsText) report += `\n\n⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـجــهــات الامــنـيــة المـــتــواجــده :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n⁨⁨\`${unitsText}\`⁩⁩`;
+  if(currentMode==="supervision") report += `\n\n⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـجــهــات الامــنـيــة المـــتــواجــده :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n⁨⁨\`امـن الطـرق + الامـن الـعـام + الـمـهـام و الـواجـبـات الـخـاصـة\`⁩⁩`;
 
-  if(currentMode==="courses" && courseName) report += `\n\n⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`اسم الدورة: ${courseName}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
+  if(currentMode==="courses" && courseName) report += `\n\n⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`اسم الدورة: ${courseName}\`⁩⁩`;
 
-  report += `\n\n⁨⁨ <@${copyID}>   ⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم رفـع التـقـريـر مـن قبـل (${rank}) :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
+  report += `\n\n⁨⁨ <@${copyID}>   ⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم رفـع التـقـريـر مـن قبـل (${rank}) :\`⁩⁩`;
 
-  if(el("earlySelect").value==="yes") report += `\n\n⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`سبب نزول التقرير مبكر: ${el("earlyReason").value}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
+  if(el("earlySelect").value==="yes") report += `\n\n⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`سبب نزول التقرير مبكر: ${el("earlyReason").value}\`⁩⁩`;
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
