@@ -15,9 +15,10 @@ body{
   color:#fff;
   display:flex;
   justify-content:center;
-  align-items:flex-start;
+  align-items:center;
   min-height:100vh;
   padding-bottom:50px;
+  position:relative;
   overflow-x:hidden;
   overflow-y:auto;
 }
@@ -61,26 +62,30 @@ body::after {
 
 .container{
   width:90%;
-  max-width:550px;
-  background:rgba(20,20,20,.9);
+  max-width:500px;
+  background:rgba(20,20,20,.8);
   border-radius:20px;
   padding:35px;
-  box-shadow:0 25px 60px rgba(0,0,0,.6);
-  margin-top:20px;
-  backdrop-filter: blur(5px);
+  box-shadow:0 20px 50px rgba(0,0,0,.5);
+  margin:0 auto; /* تعديل: القائمة تكون في منتصف الصفحة */
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 }
 
 h2{
   text-align:center;
   color:#00d4ff;
   margin-bottom:30px;
-  font-weight:700;
-  text-shadow:0 0 5px #00d4ff;
 }
 
-.main-menu{ display:grid; gap:15px; }
+.main-menu{ 
+  display:grid; 
+  gap:15px; 
+}
+
 .menu-card{
-  background:rgba(255,255,255,.05);
+  background:rgba(255,255,255,.03);
   border-radius:15px;
   cursor:pointer;
   display:flex;
@@ -88,43 +93,29 @@ h2{
   align-items:center;
   padding:20px;
   transition:.3s;
-  box-shadow:0 5px 15px rgba(0,0,0,.3);
 }
 .menu-card:hover{
   background:rgba(0,212,255,.08);
   transform:translateX(-5px);
-  box-shadow:0 10px 25px rgba(0,212,255,.4);
 }
 .menu-card i{color:#00d4ff;font-size:22px}
 
 .form-group{ margin-bottom:20px; }
 label{ display:block; margin-bottom:8px; font-size:14px; color:#b0b0b0; font-weight:600; }
-input,select,textarea{ width:100%; padding:12px; background:rgba(255,255,255,.05); border-radius:10px; color:#fff; font-family:'Cairo'; border:1px solid rgba(255,255,255,.2); transition:.2s; }
-input:focus,select:focus,textarea:focus{ border-color:#00d4ff; outline:none; }
+input,select,textarea{ width:100%; padding:12px; background:rgba(255,255,255,.05); border-radius:10px; color:#fff; font-family:'Cairo'; border:1px solid rgba(255,255,255,.1); }
 textarea{height:100px;resize:vertical;overflow:auto;}
-select,input { background:rgba(0,0,0,.3); color:#fff; }
-select option{ background:#1a1a1a; color:#fff; }
-.btn-copy{
-  width:100%; padding:15px;
-  background:linear-gradient(135deg,#00829d,#00d4ff);
-  border:none; border-radius:12px; color:#fff; font-size:16px; font-weight:700; cursor:pointer;
-  margin-top:20px;
-  transition:.3s;
-}
-.btn-copy:hover{
-  background:linear-gradient(135deg,#00d4ff,#00829d);
-  transform:scale(1.03);
-  box-shadow:0 8px 20px rgba(0,212,255,.5);
-}
-.back-link{
-  margin-top:15px; text-align:center; font-size:13px; cursor:pointer; color:#b0b0b0;
-  transition:.3s;
-}
-.back-link:hover{ color:#00d4ff; }
+select { color:#000; }
+.btn-copy{ width:100%; padding:15px; background:linear-gradient(135deg,#00829d,#00d4ff); border:none; border-radius:10px; color:#fff; font-size:16px; font-weight:700; cursor:pointer; margin-top:20px; }
+.back-link{ margin-top:15px; text-align:center; font-size:13px; cursor:pointer; color:#b0b0b0; }
 #form-section{display:none}
 .footer{ text-align:center; margin-top:20px; font-size:12px; color:#b0b0b0; }
 datalist option { background: #1a1a1a; color: #fff; padding:5px; }
-.time-select{background:rgba(0,0,0,.5);color:#fff;border-radius:8px;padding:8px;}
+
+/* تحسين: إضافة مسافة بين كل سطر والتاني في التقرير */
+.report-line {
+  display:block;
+  margin-bottom:8px;
+}
 </style>
 </head>
 <body>
@@ -193,12 +184,13 @@ datalist option { background: #1a1a1a; color: #fff; padding:5px; }
       </select>
     </div>
 
+    <!-- الوقت اليدوي -->
     <div class="form-group">
       <label>وقت البداية</label>
       <div style="display:flex; gap:5px;">
-        <select id="startHour" class="time-select"></select> :
-        <select id="startMinute" class="time-select"></select>
-        <select id="startPeriod" class="time-select">
+        <select id="startHour"></select> :
+        <select id="startMinute"></select>
+        <select id="startPeriod">
           <option>ص</option>
           <option>م</option>
         </select>
@@ -208,9 +200,9 @@ datalist option { background: #1a1a1a; color: #fff; padding:5px; }
     <div class="form-group">
       <label>وقت النهاية</label>
       <div style="display:flex; gap:5px;">
-        <select id="endHour" class="time-select"></select> :
-        <select id="endMinute" class="time-select"></select>
-        <select id="endPeriod" class="time-select">
+        <select id="endHour"></select> :
+        <select id="endMinute"></select>
+        <select id="endPeriod">
           <option>ص</option>
           <option>م</option>
         </select>
@@ -313,31 +305,36 @@ function goBack(){
 }
 
 function copyReport(){
-  const task = el("taskName").value || "...";
-  const loc = el("location").value || "...";
-  const rank = el("rank").value || "...";
-  const copyID = el("copyID").value || "1358333213965156392";
+  const task = el("taskName").value||"...";
+  const loc = el("location").value||"...";
+  const rank = el("rank").value||"...";
+  const copyID = el("copyID").value||"1358333213965156392";
 
   const startTime = `${el("startHour").value}:${el("startMinute").value} ${el("startPeriod").value}`;
   const endTime = `${el("endHour").value}:${el("endMinute").value} ${el("endPeriod").value}`;
 
   let unitsText = "";
-  if(currentMode === "zone") unitsText = el("units").value;
+  if(currentMode==="zone") unitsText = el("units").value;
 
-  const courseName = currentMode === "courses" ? el("courseName").value : "";
+  const courseName = currentMode==="courses" ? el("courseName").value : "";
 
-  let report = `**U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`تـم اسـتـلام مـهـام (${task})  من السـاعة ${startTime} اٍلـى الـساعة ${endTime}\`\U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069\n\n`;
-  report += `U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`الـمـنـطـقـة : ${loc} \`\U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069\n\n`;
+  // تحسين: إضافة صفوف فارغة بين السطور والتأكد أن الوحدات التابعة تظهر في صف لوحدها
+  let report = `**⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم اسـتـلام مـهـام (${task})  من السـاعة ${startTime} اٍلـى الـساعة ${endTime}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
+  report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـمـنـطـقـة : ${loc}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
 
-  if(currentMode === "supervision"){
-    report += `U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`الـجــهــات الامــنـيــة المـــتــواجــده :\`\U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069\n`;
-    report += `U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`امـن الطـرق + الامـن الـعـام + الـمـهـام و الـواجـبـات الـخـاصـة\`\U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069\n\n`;
+  if(currentMode==="zone"){
+    report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـجــهــات الامــنـيــة المـــتــواجــده :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
+    report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`${unitsText}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
   }
 
-  if(currentMode === "zone") report += `U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`الوحدات التابعة:\`\U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069\n${unitsText}\n`;
-  if(currentMode === "courses") report += `U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`اسم الدورة: ${courseName}\`\U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069\n`;
+  if(currentMode==="courses") report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`اسم الدورة: ${courseName}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
 
-  report += `U+2068U+2068 <@${copyID}>   U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`تـم رفـع التـقـريـر مـن قبـل (${rank}) :\`\U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069**`;
+  report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الرّتبة: ${rank}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
+  report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`كوبي ايدي: ${copyID}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
+
+  if(el("earlySelect").value==="yes") report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`سبب نزول التقرير مبكر: ${el("earlyReason").value}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
+
+  report += `⁨⁨ <@${copyID}>   ⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم رفـع التـقـريـر مـن قبـل (${rank}) :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩**`;
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
