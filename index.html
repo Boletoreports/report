@@ -67,10 +67,7 @@ body::after {
   border-radius:20px;
   padding:35px;
   box-shadow:0 20px 50px rgba(0,0,0,.5);
-  margin:0 auto; /* تعديل: القائمة تكون في منتصف الصفحة */
-  display:flex;
-  flex-direction:column;
-  align-items:center;
+  margin-top:20px;
 }
 
 h2{
@@ -79,11 +76,7 @@ h2{
   margin-bottom:30px;
 }
 
-.main-menu{ 
-  display:grid; 
-  gap:15px; 
-}
-
+.main-menu{ display:grid; gap:15px; justify-items:center; }
 .menu-card{
   background:rgba(255,255,255,.03);
   border-radius:15px;
@@ -110,12 +103,6 @@ select { color:#000; }
 #form-section{display:none}
 .footer{ text-align:center; margin-top:20px; font-size:12px; color:#b0b0b0; }
 datalist option { background: #1a1a1a; color: #fff; padding:5px; }
-
-/* تحسين: إضافة مسافة بين كل سطر والتاني في التقرير */
-.report-line {
-  display:block;
-  margin-bottom:8px;
-}
 </style>
 </head>
 <body>
@@ -184,7 +171,6 @@ datalist option { background: #1a1a1a; color: #fff; padding:5px; }
       </select>
     </div>
 
-    <!-- الوقت اليدوي -->
     <div class="form-group">
       <label>وقت البداية</label>
       <div style="display:flex; gap:5px;">
@@ -314,27 +300,30 @@ function copyReport(){
   const endTime = `${el("endHour").value}:${el("endMinute").value} ${el("endPeriod").value}`;
 
   let unitsText = "";
-  if(currentMode==="zone") unitsText = el("units").value;
+  if(currentMode==="zone" && el("units").value) unitsText = `\n\nالـوحدات التابعة : ${el("units").value}`;
 
   const courseName = currentMode==="courses" ? el("courseName").value : "";
 
-  // تحسين: إضافة صفوف فارغة بين السطور والتأكد أن الوحدات التابعة تظهر في صف لوحدها
-  let report = `**⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم اسـتـلام مـهـام (${task})  من السـاعة ${startTime} اٍلـى الـساعة ${endTime}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
-  report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـمـنـطـقـة : ${loc}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
+  let report = `**⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم اسـتـلام مـهـام (${task})  من السـاعة ${startTime} اٍلـى الـساعة ${endTime}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩
 
-  if(currentMode==="zone"){
-    report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـجــهــات الامــنـيــة المـــتــواجــده :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
-    report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`${unitsText}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
-  }
+⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـمـنـطـقـة : ${loc} \`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
 
-  if(currentMode==="courses") report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`اسم الدورة: ${courseName}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
+  if(currentMode==="supervision") report += `
 
-  report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الرّتبة: ${rank}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
-  report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`كوبي ايدي: ${copyID}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
+⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـجــهــات الامــنـيــة المـــتــواجــده :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩
 
-  if(el("earlySelect").value==="yes") report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`سبب نزول التقرير مبكر: ${el("earlyReason").value}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
+⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`امـن الطـرق + الامـن الـعـام + الـمـهـام و الـواجـبـات الـخـاصـة\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
 
-  report += `⁨⁨ <@${copyID}>   ⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم رفـع التـقـريـر مـن قبـل (${rank}) :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩**`;
+  if(currentMode==="zone") report += `${unitsText}`;
+  if(currentMode==="courses" && courseName) report += `\n\nاسم الدورة: ${courseName}`;
+
+  report += `
+
+⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الرّتبة: ${rank}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩
+
+⁨⁨⁨⁨ <@${copyID}>   ⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم رفـع التـقـريـر مـن قبـل (${rank}) :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩**`;
+
+  if(el("earlySelect").value==="yes") report += `\n\n⁨⁨سبب نزول التقرير مبكر: ${el("earlyReason").value}⁩`;
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
