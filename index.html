@@ -97,7 +97,7 @@ h2{
 label{ display:block; margin-bottom:8px; font-size:14px; color:#b0b0b0; font-weight:600; }
 input,select,textarea{ width:100%; padding:12px; background:rgba(255,255,255,.05); border-radius:10px; color:#fff; font-family:'Cairo'; border:1px solid rgba(255,255,255,.1); }
 textarea{height:100px;resize:vertical;overflow:auto;}
-select { color:#fff; background:#000; } /* هنا خليت الاختيارات داكنة */
+select { color:#000; }
 .btn-copy{ width:100%; padding:15px; background:linear-gradient(135deg,#00829d,#00d4ff); border:none; border-radius:10px; color:#fff; font-size:16px; font-weight:700; cursor:pointer; margin-top:20px; }
 .back-link{ margin-top:15px; text-align:center; font-size:13px; cursor:pointer; color:#b0b0b0; }
 #form-section{display:none}
@@ -291,6 +291,7 @@ function goBack(){
   el("form-section").style.display="none";
 }
 
+// التعديل هنا فقط لتنسيق التقرير بالشكل المطلوب
 function copyReport(){
   const task = el("taskName").value||"...";
   const loc = el("location").value||"...";
@@ -301,18 +302,32 @@ function copyReport(){
   const endTime = `${el("endHour").value}:${el("endMinute").value} ${el("endPeriod").value}`;
 
   let unitsText = "";
-  if(currentMode==="zone") unitsText = el("units").value;
+  if(currentMode==="zone") unitsText = el("units").value || "...";
 
   const courseName = currentMode==="courses" ? el("courseName").value : "";
 
-  let report = `تم استلام مهام ${task}\nمن الساعة ${startTime}\nإلى الساعة ${endTime}\nالموقع: ${loc}\n`;
+  let report = 
+`⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم اسـتـلام مـهـام (${task})  من السـاعة ${startTime} اٍلـى الـساعة ${endTime}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩
 
-  if(currentMode==="zone") report += `الوحدات التابعة: ${unitsText}\n`;
-  if(currentMode==="courses") report += `اسم الدورة: ${courseName}\n`;
+⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـمـنـطـقـة : ${loc}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
 
-  report += `الرتبة: ${rank}\nكوبي ايدي: ${copyID}`;
+  if(currentMode==="zone"){
+    report += `
 
-  if(el("earlySelect").value==="yes") report += `\nسبب نزول التقرير مبكر: ${el("earlyReason").value}`;
+⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـجــهــات الامــنـيــة المـــتــواجــده :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩
+
+⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`${unitsText}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
+  }
+
+  if(currentMode==="courses"){
+    report += `
+
+⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`اسم الدورة : ${courseName}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
+  }
+
+  report += `
+
+⁨⁨ <@${copyID}>  ⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم رفـع التـقـريـر مـن قبـل (${rank}) :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
