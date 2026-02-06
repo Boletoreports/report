@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>نظام التقارير العسكرية الذكي</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
 
@@ -18,46 +19,6 @@ body{
   align-items:center;
   min-height:100vh;
   padding-bottom:50px;
-  position:relative;
-  overflow-x:hidden;
-  overflow-y:auto;
-}
-
-body::before, body::after{
-  content:'';
-  position:fixed;
-  width:100px;
-  height:100px;
-  background-size:contain;
-  background-repeat:no-repeat;
-  z-index:10;
-  pointer-events:none;
-}
-
-body::before {
-  top:20px;
-  left:20px;
-  background-image:url('https://raw.githubusercontent.com/Boletoreports/report/main/logo1.gif');
-  animation:move1 20s linear infinite;
-}
-
-body::after {
-  bottom:20px;
-  right:20px;
-  background-image:url('https://raw.githubusercontent.com/Boletoreports/report/main/logo2.gif');
-  animation:move2 25s linear infinite;
-}
-
-@keyframes move1 {
- 0%{transform:translate(0,0)}
- 50%{transform:translate(50px,50px)}
- 100%{transform:translate(0,0)}
-}
-
-@keyframes move2 {
- 0%{transform:translate(0,0)}
- 50%{transform:translate(-50px,-50px)}
- 100%{transform:translate(0,0)}
 }
 
 .container{
@@ -67,7 +28,6 @@ body::after {
   border-radius:20px;
   padding:35px;
   box-shadow:0 20px 50px rgba(0,0,0,.5);
-  margin-top:20px;
 }
 
 h2{
@@ -95,232 +55,146 @@ h2{
 
 .form-group{ margin-bottom:20px; }
 label{ display:block; margin-bottom:8px; font-size:14px; color:#b0b0b0; font-weight:600; }
-input,select,textarea{ width:100%; padding:12px; background:rgba(255,255,255,.05); border-radius:10px; color:#fff; font-family:'Cairo'; border:1px solid rgba(255,255,255,.1); }
-textarea{height:100px;resize:vertical;overflow:auto;}
-select { color:#000; }
-.btn-copy{ width:100%; padding:15px; background:linear-gradient(135deg,#00829d,#00d4ff); border:none; border-radius:10px; color:#fff; font-size:16px; font-weight:700; cursor:pointer; margin-top:20px; }
-.back-link{ margin-top:15px; text-align:center; font-size:13px; cursor:pointer; color:#b0b0b0; }
+
+input,select,textarea{
+  width:100%;
+  padding:12px;
+  background:rgba(255,255,255,.05);
+  border-radius:10px;
+  color:#fff;
+  font-family:'Cairo';
+  border:1px solid rgba(255,255,255,.1);
+}
+
+textarea{height:100px;resize:vertical;}
+select{color:#000;}
+
+.btn-copy{
+  width:100%;
+  padding:15px;
+  background:linear-gradient(135deg,#00829d,#00d4ff);
+  border:none;
+  border-radius:10px;
+  color:#fff;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.back-link{
+  margin-top:15px;
+  text-align:center;
+  font-size:13px;
+  cursor:pointer;
+  color:#b0b0b0;
+}
+
 #form-section{display:none}
-.footer{ text-align:center; margin-top:20px; font-size:12px; color:#b0b0b0; }
-datalist option { background: #1a1a1a; color: #fff; padding:5px; }
+.footer{text-align:center;margin-top:20px;font-size:12px;color:#b0b0b0;}
 </style>
 </head>
+
 <body>
 <div class="container">
-  <div id="menu-section">
-    <h2><i class="fas fa-shield-alt"></i> أنظمة - التقارير</h2>
-    <div class="main-menu">
-      <div class="menu-card" onclick="openForm('supervision')">
-        <i class="fas fa-user-shield"></i> <strong>تقارير الإشراف</strong>
-      </div>
-      <div class="menu-card" onclick="openForm('zone')">
-        <i class="fas fa-map-marker-alt"></i> <strong>تقارير ضابط منطقة</strong>
-      </div>
-      <div class="menu-card" onclick="openForm('courses')">
-        <i class="fas fa-graduation-cap"></i> <strong>تقارير الدورات</strong>
-      </div>
-      <div class="menu-card" onclick="openOperationsReports()">
-        <i class="fas fa-clipboard-list"></i> <strong>تقارير العمليات</strong>
-      </div>
+
+<div id="menu-section">
+  <h2><i class="fas fa-shield-alt"></i> أنظمة - التقارير</h2>
+  <div class="main-menu">
+    <div class="menu-card" onclick="openForm('supervision')">
+      <i class="fas fa-user-shield"></i> تقارير الإشراف
+    </div>
+    <div class="menu-card" onclick="openForm('zone')">
+      <i class="fas fa-map-marker-alt"></i> تقارير ضابط منطقة
+    </div>
+    <div class="menu-card" onclick="openForm('courses')">
+      <i class="fas fa-graduation-cap"></i> تقارير الدورات
     </div>
   </div>
+</div>
 
-  <div id="form-section">
-    <h2 id="title-text"></h2>
+<div id="form-section">
+  <h2 id="title-text"></h2>
 
-    <div class="form-group" id="taskGroup">
-      <label>التوجيه (اكتب يدوي)</label>
-      <input type="text" id="taskName" placeholder="اكتب التوجيه" list="taskSuggestions">
-      <datalist id="taskSuggestions"></datalist>
-    </div>
-
-    <div class="form-group">
-      <label>الموقع</label>
-      <input type="text" id="location" placeholder="الموقع">
-    </div>
-
-    <div class="form-group">
-      <label>اختر الرتبة</label>
-      <select id="rank"></select>
-    </div>
-
-    <div class="form-group">
-      <label>كوبي ايدي العسكري</label>
-      <input type="text" id="copyID" placeholder="ضع الكوبي ايدي هنا">
-    </div>
-
-    <div class="form-group" id="unitGroup" style="display:none">
-      <label>الوحدات التابعة (حد أقصى 400 كلمة)</label>
-      <textarea id="units" placeholder="اكتب الوحدات التابعة هنا"></textarea>
-    </div>
-
-    <div class="form-group" id="courseGroup" style="display:none">
-      <label>اسم الدورة</label>
-      <select id="courseName">
-        <option disabled selected>اختر اسم الدورة</option>
-        <option>شرطة عسكرية</option>
-        <option>الشؤون الادارية</option>
-        <option>نقل سجون</option>
-        <option>S.W.A.T</option>
-        <option>البحث الجنائي</option>
-        <option>المهام والواجبات الخاصة</option>
-        <option>مكافحة المخدرات</option>
-        <option>الدعم الجوي</option>
-        <option>شعبة المرور</option>
-        <option>خدمات الطرق</option>
-      </select>
-    </div>
-
-    <!-- الوقت اليدوي -->
-    <div class="form-group">
-      <label>وقت البداية</label>
-      <div style="display:flex; gap:5px;">
-        <select id="startHour"></select> :
-        <select id="startMinute"></select>
-        <select id="startPeriod">
-          <option>ص</option>
-          <option>م</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>وقت النهاية</label>
-      <div style="display:flex; gap:5px;">
-        <select id="endHour"></select> :
-        <select id="endMinute"></select>
-        <select id="endPeriod">
-          <option>ص</option>
-          <option>م</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>التقرير نازل مبكر؟</label>
-      <select id="earlySelect" onchange="toggleEarlyReason()">
-        <option value="no" selected>لا</option>
-        <option value="yes">نعم</option>
-      </select>
-    </div>
-
-    <div class="form-group" id="earlyReasonGroup" style="display:none">
-      <label>سبب التبكير</label>
-      <select id="earlyReason">
-        <option value="ريستارت">ريستارت</option>
-        <option value="صيانه">صيانه</option>
-        <option value="إعادة اصطفاف">إعادة اصطفاف</option>
-        <option value="كراش عمومي">كراش عمومي</option>
-      </select>
-    </div>
-
-    <button class="btn-copy" onclick="copyReport()">نسخ التقرير النهائي</button>
-    <div class="back-link" onclick="goBack()">رجوع</div>
+  <div class="form-group">
+    <label>التوجيه</label>
+    <input id="taskName">
   </div>
 
-  <div class="footer"> حقوق الملكية لقيادة قطاع الأمن العام بمقاطعة بوليتو © </div>
+  <div class="form-group">
+    <label>الموقع</label>
+    <input id="location">
+  </div>
+
+  <div class="form-group">
+    <label>اختر الرتبة</label>
+    <select id="rank"></select>
+  </div>
+
+  <div class="form-group">
+    <label>وقت البداية</label>
+    <select id="startHour"></select> :
+    <select id="startMinute"></select>
+    <select id="startPeriod"><option>ص</option><option>م</option></select>
+  </div>
+
+  <div class="form-group">
+    <label>وقت النهاية</label>
+    <select id="endHour"></select> :
+    <select id="endMinute"></select>
+    <select id="endPeriod"><option>ص</option><option>م</option></select>
+  </div>
+
+  <button class="btn-copy" onclick="copyReport()">نسخ التقرير</button>
+  <div class="back-link" onclick="goBack()">رجوع</div>
+</div>
+
+<div class="footer">© قيادة قطاع الأمن العام</div>
 </div>
 
 <script>
 function el(id){ return document.getElementById(id); }
 let currentMode="";
 
-const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
-const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
-const courseRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب","جندي اول","عريف","وكيل رقيب"];
+const supervisionRanks=["عميد","عقيد","مقدم","رائد","نقيب"];
 
-const supervisionTasks=["سهم 1","سهم 2","سهم 3","سهم 4","سهم 5"];
-const zoneTasks=["سين 10","سين 20","باء 10","باء 20"];
-
-function initTimeSelects(){
-  const startH = el("startHour"), startM = el("startMinute");
-  const endH = el("endHour"), endM = el("endMinute");
-
+function initTime(){
   for(let i=0;i<=12;i++){
-    const val = i<10?"0"+i:i;
-    startH.innerHTML += <option>${val}</option>;
-    endH.innerHTML += <option>${val}</option>;
+    let v=i<10?"0"+i:i;
+    startHour.innerHTML+=`<option>${v}</option>`;
+    endHour.innerHTML+=`<option>${v}</option>`;
   }
   for(let i=0;i<60;i++){
-    const val = i<10?"0"+i:i;
-    startM.innerHTML += <option>${val}</option>;
-    endM.innerHTML += <option>${val}</option>;
+    let v=i<10?"0"+i:i;
+    startMinute.innerHTML+=`<option>${v}</option>`;
+    endMinute.innerHTML+=`<option>${v}</option>`;
   }
-}
-
-function initRankOptions(ranks){
-  const r=el("rank");
-  r.innerHTML="<option disabled selected>اختر الرتبة</option>";
-  ranks.forEach(x=> r.innerHTML+=<option>${x}</option>);
 }
 
 function openForm(type){
   currentMode=type;
-  el("menu-section").style.display="none";
-  el("form-section").style.display="block";
-  el("title-text").textContent = type==="supervision"?"تقارير الإشراف":type==="zone"?"تقارير ضابط منطقة":"تقارير الدورات";
-
-  el("taskName").value="";
-  el("location").value="";
-  el("copyID").value="";
-  el("units").value="";
-  el("courseName").value="";
-  el("earlySelect").value="no";
-  toggleEarlyReason();
-  el("unitGroup").style.display = (currentMode==="zone") ? "block" : "none";
-  el("courseGroup").style.display = (currentMode==="courses") ? "block" : "none";
-
-  if(currentMode==="supervision") initRankOptions(supervisionRanks);
-  else if(currentMode==="zone") initRankOptions(zoneRanks);
-  else if(currentMode==="courses") initRankOptions(courseRanks);
-
-  const list = el("taskSuggestions");
-  list.innerHTML="";
-  const tasks = currentMode==="supervision"?supervisionTasks:currentMode==="zone"?zoneTasks:[];  
-  tasks.forEach(t=>{ const opt=document.createElement("option"); opt.value=t; list.appendChild(opt); });
-
-  el("taskName").oninput = function(){ el("location").value = ""; };
-}
-
-function toggleEarlyReason(){
-  el("earlyReasonGroup").style.display = el("earlySelect").value==="yes" ? "block":"none";
+  menu-section.style.display="none";
+  form-section.style.display="block";
+  title-text.textContent="تقرير جديد";
+  rank.innerHTML="";
+  supervisionRanks.forEach(r=>rank.innerHTML+=`<option>${r}</option>`);
 }
 
 function goBack(){
-  el("menu-section").style.display="block";
-  el("form-section").style.display="none";
+  menu-section.style.display="block";
+  form-section.style.display="none";
 }
 
 function copyReport(){
-  const task = el("taskName").value||"...";
-  const loc = el("location").value||"...";
-  const rank = el("rank").value||"...";
-  const copyID = el("copyID").value||"1358333213965156392";
-
-  const startTime = ${el("startHour").value}:${el("startMinute").value} ${el("startPeriod").value};
-  const endTime = ${el("endHour").value}:${el("endMinute").value} ${el("endPeriod").value};
-
-  let unitsText = "";
-  if(currentMode==="zone") unitsText = el("units").value;
-
-  const courseName = currentMode==="courses" ? el("courseName").value : "";
-
-  let report = تم استلام مهام ${task}\nمن الساعة ${startTime}\nإلى الساعة ${endTime}\nالموقع: ${loc}\n;
-
-  if(currentMode==="zone") report += الوحدات التابعة: ${unitsText}\n;
-  if(currentMode==="courses") report += اسم الدورة: ${courseName}\n;
-
-  report += الرتبة: ${rank}\nكوبي ايدي: ${copyID};
-
-  if(el("earlySelect").value==="yes") report += \nسبب نزول التقرير مبكر: ${el("earlyReason").value};
-
+  let report=`تم استلام مهام ${taskName.value}
+من ${startHour.value}:${startMinute.value} ${startPeriod.value}
+إلى ${endHour.value}:${endMinute.value} ${endPeriod.value}
+الموقع: ${location.value}
+الرتبة: ${rank.value}`;
   navigator.clipboard.writeText(report);
-  alert("تم نسخ التقرير ✅");
+  alert("تم النسخ ✅");
 }
 
-function openOperationsReports(){ window.open("https://1boletop.netlify.app/","_blank"); }
-
-initTimeSelects();
+initTime();
 </script>
 </body>
 </html>
