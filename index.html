@@ -15,10 +15,9 @@ body{
   color:#fff;
   display:flex;
   justify-content:center;
-  align-items:center;
+  align-items:flex-start;
   min-height:100vh;
   padding-bottom:50px;
-  position:relative;
   overflow-x:hidden;
   overflow-y:auto;
 }
@@ -103,7 +102,8 @@ label{ display:block; margin-bottom:8px; font-size:14px; color:#b0b0b0; font-wei
 input,select,textarea{ width:100%; padding:12px; background:rgba(255,255,255,.05); border-radius:10px; color:#fff; font-family:'Cairo'; border:1px solid rgba(255,255,255,.2); transition:.2s; }
 input:focus,select:focus,textarea:focus{ border-color:#00d4ff; outline:none; }
 textarea{height:100px;resize:vertical;overflow:auto;}
-select { color:#000; }
+select,input { background:rgba(0,0,0,.3); color:#fff; }
+select option{ background:#1a1a1a; color:#fff; }
 .btn-copy{
   width:100%; padding:15px;
   background:linear-gradient(135deg,#00829d,#00d4ff);
@@ -124,6 +124,7 @@ select { color:#000; }
 #form-section{display:none}
 .footer{ text-align:center; margin-top:20px; font-size:12px; color:#b0b0b0; }
 datalist option { background: #1a1a1a; color: #fff; padding:5px; }
+.time-select{background:rgba(0,0,0,.5);color:#fff;border-radius:8px;padding:8px;}
 </style>
 </head>
 <body>
@@ -192,13 +193,12 @@ datalist option { background: #1a1a1a; color: #fff; padding:5px; }
       </select>
     </div>
 
-    <!-- الوقت اليدوي -->
     <div class="form-group">
       <label>وقت البداية</label>
       <div style="display:flex; gap:5px;">
-        <select id="startHour"></select> :
-        <select id="startMinute"></select>
-        <select id="startPeriod">
+        <select id="startHour" class="time-select"></select> :
+        <select id="startMinute" class="time-select"></select>
+        <select id="startPeriod" class="time-select">
           <option>ص</option>
           <option>م</option>
         </select>
@@ -208,9 +208,9 @@ datalist option { background: #1a1a1a; color: #fff; padding:5px; }
     <div class="form-group">
       <label>وقت النهاية</label>
       <div style="display:flex; gap:5px;">
-        <select id="endHour"></select> :
-        <select id="endMinute"></select>
-        <select id="endPeriod">
+        <select id="endHour" class="time-select"></select> :
+        <select id="endMinute" class="time-select"></select>
+        <select id="endPeriod" class="time-select">
           <option>ص</option>
           <option>م</option>
         </select>
@@ -326,21 +326,18 @@ function copyReport(){
 
   const courseName = currentMode === "courses" ? el("courseName").value : "";
 
-  let report = `تـم اسـتـلام مـهـام (${task}) من السـاعة ${startTime} اٍلـى الـساعة ${endTime}\n\n`;
-  report += `الـمـنـطـقـة : ${loc}\n\n`;
+  let report = `**⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم اسـتـلام مـهـام (${task})  من السـاعة ${startTime} اٍلـى الـساعة ${endTime}\`\⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
+  report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـمـنـطـقـة : ${loc} \`\⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
 
   if(currentMode === "supervision"){
-    report += `الـجــهــات الامــنـيــة المـــتــواجــده :\n`;
-    report += `امـن الطـرق + الامـن الـعـام + الـمـهـام و الـواجـبـات الـخـاصـة\n\n`;
+    report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـجــهــات الامــنـيــة المـــتــواجــده :\`\⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n`;
+    report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`امـن الطـرق + الامـن الـعـام + الـمـهـام و الـواجـبـات الـخـاصـة\`\⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n`;
   }
 
-  if(currentMode === "zone") report += `الوحدات التابعة: ${unitsText}\n`;
-  if(currentMode === "courses") report += `اسم الدورة: ${courseName}\n`;
+  if(currentMode === "zone") report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الوحدات التابعة: ${unitsText}\`\⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n`;
+  if(currentMode === "courses") report += `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`اسم الدورة: ${courseName}\`\⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n`;
 
-  report += `تـم رفـع التـقـريـر مـن قبـل (${rank}) :\n`;
-  report += `<@${copyID}>`;
-
-  if(el("earlySelect").value==="yes") report += `\nسبب نزول التقرير مبكر: ${el("earlyReason").value}`;
+  report += `⁨⁨ <@${copyID}>   ⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم رفـع التـقـريـر مـن قبـل (${rank}) :\`\⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩**`;
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
