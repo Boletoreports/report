@@ -298,6 +298,7 @@ function goBack(){
   el("form-section").style.display="none";
 }
 
+// النسخة النهائية لدالة نسخ التقرير مع Unicode صحيح
 function copyReport(){
   const task = el("taskName").value||"...";
   const loc = el("location").value||"...";
@@ -312,18 +313,18 @@ function copyReport(){
 
   const courseName = currentMode==="courses" ? el("courseName").value : "";
 
-  let report = `**U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`تـم اسـتـلام مـهـام (${task})  من السـاعة ${startTime} اٍلـى الـساعة ${endTime}\`U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069
+  let report = `\u2068\`تـم اسـتـلام مـهـام (${task})  من السـاعة ${startTime} اٍلـى الـساعة ${endTime}\`\u2069
   
-U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`الـمـنـطـقـة : ${loc} \`U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069`;
+\u2068\`الـمـنـطـقـة : ${loc} \`\u2069`;
 
-  if(currentMode==="zone" && unitsText) report += `\n\nU+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`الـجــهــات الامــنـيــة المـــتــواجــده :\`U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069\n\nU+2068U+2068\`${unitsText}\`U+2069U+2069`;
-  if(currentMode==="supervision") report += `\n\nU+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`الـجــهــات الامــنـيــة المـــتــواجــده :\`U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069\n\nU+2068U+2068\`امـن الطـرق + الامـن الـعـام + الـمـهـام و الـواجـبـات الـخـاصـة\`U+2069U+2069`;
+  if(currentMode==="zone" && unitsText) report += `\n\n\u2068\`الـجــهــات الامــنـيــة المـــتــواجــده :\`\u2069\n\n\u2068\`${unitsText}\`\u2069`;
+  if(currentMode==="supervision") report += `\n\n\u2068\`الـجــهــات الامــنـيــة المـــتــواجــده :\`\u2069\n\n\u2068\`امـن الطـرق + الامـن الـعـام + الـمـهـام و الـواجـبـات الـخـاصـة\`\u2069`;
 
-  if(currentMode==="courses" && courseName) report += `\n\nU+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`اسم الدورة: ${courseName}\`U+2069U+2069`;
+  if(currentMode==="courses" && courseName) report += `\n\n\u2068\`اسم الدورة: ${courseName}\`\u2069`;
 
-  report += `\n\nU+2068U+2068 <@${copyID}>   U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`تـم رفـع التـقـريـر مـن قبـل (${rank}) :\`U+2069U+2069`;
+  report += `\n\n\u2068 <@${copyID}>   \u2068\`تـم رفـع التـقـريـر مـن قبـل (${rank}) :\`\u2069`;
 
-  if(el("earlySelect").value==="yes") report += `\n\nU+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`سبب نزول التقرير مبكر: ${el("earlyReason").value}\`U+2069U+2069`;
+  if(el("earlySelect").value==="yes") report += `\n\n\u2068\`سبب نزول التقرير مبكر: ${el("earlyReason").value}\`\u2069`;
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
