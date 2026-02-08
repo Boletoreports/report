@@ -232,11 +232,22 @@ datalist option { background: #1a1a1a; color: #fff; padding:5px; }
 function el(id){ return document.getElementById(id); }
 let currentMode="";
 
+// الرتب
 const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
 const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
 const courseRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب","جندي اول","عريف","وكيل رقيب"];
 
-const supervisionTasks=["سهم 1","سهم 2","سهم 3","سهم 4","سهم 5"];
+// التوجيهات
+const supervisionTasks=[
+  "سهم 1","سهم 2","سهم 3","سهم 4","سهم 5",
+  "درع 1","درع 2","درع 3","درع 4",
+  "جنوب 1","جنوب 2","جنوب 3","جنوب 4",
+  "غرب 1","غرب 2","غرب 3","غرب 4",
+  "سيف 1","سيف 2","سيف 3","سيف 4",
+  "رصد 1","رصد 2","رصد 3","رصد 4",
+  "ساهر 1","ساهر 2","ساهر 3","ساهر 4",
+  "امان 1","امان 2","امان 3","امان 4"
+];
 const zoneTasks=["سين 10","سين 20","باء 10","باء 20"];
 
 function initTimeSelects(){
@@ -259,6 +270,21 @@ function initRankOptions(ranks){
   const r=el("rank");
   r.innerHTML="<option disabled selected>اختر الرتبة</option>";
   ranks.forEach(x=> r.innerHTML+=`<option>${x}</option>`);
+}
+
+// الدالة الجديدة لتعبئة الموقع تلقائيًا
+function autoFillLocation() {
+  const task = el("taskName").value.trim();
+  let location = "";
+
+  if(/^درع [1-4]$/.test(task) || /^سهم [1-5]$/.test(task)) location = "ساندي + بوليتو";
+  else if(/^جنوب [1-4]$/.test(task)) location = "ساندي";
+  else if(/^غرب [1-4]$/.test(task)) location = "بوليتو";
+  else if(/^سيف [1-4]$/.test(task) || /^رصد [1-4]$/.test(task)) location = "جيم + لام + دال";
+  else if(/^ساهر [1-2]$/.test(task) || /^امان [1-2]$/.test(task)) location = "جيم + لام";
+  else if(/^ساهر [3-4]$/.test(task) || /^امان [3-4]$/.test(task)) location = "دال";
+
+  el("location").value = location;
 }
 
 function openForm(type){
@@ -286,7 +312,10 @@ function openForm(type){
   const tasks = currentMode==="supervision"?supervisionTasks:currentMode==="zone"?zoneTasks:[];  
   tasks.forEach(t=>{ const opt=document.createElement("option"); opt.value=t; list.appendChild(opt); });
 
-  el("taskName").oninput = function(){ el("location").value = ""; };
+  // تعيين الدالة الجديدة عند الكتابة في التوجيه
+  el("taskName").oninput = function(){ 
+    autoFillLocation(); 
+  };
 }
 
 function toggleEarlyReason(){
@@ -298,7 +327,6 @@ function goBack(){
   el("form-section").style.display="none";
 }
 
-// النسخة النهائية لدالة نسخ التقرير مع Unicode صحيح
 function copyReport(){
   const task = el("taskName").value||"...";
   const loc = el("location").value||"...";
@@ -313,24 +341,23 @@ function copyReport(){
 
   const courseName = currentMode==="courses" ? el("courseName").value : "";
 
-  let report = `\u2068\`تـم اسـتـلام مـهـام (${task})  من السـاعة ${startTime} اٍلـى الـساعة ${endTime}\`\u2069
-  
-\u2068\`الـمـنـطـقـة : ${loc} \`\u2069`;
+  let report = `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم اسـتـلام مـهـام (${task})  من السـاعة ${startTime} اٍلـى الـساعة ${endTime}\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n` +
+               `⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـمـنـطـقـة : ${loc} \`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
 
-  if(currentMode==="zone" && unitsText) report += `\n\n\u2068\`الـجــهــات الامــنـيــة المـــتــواجــده :\`\u2069\n\n\u2068\`${unitsText}\`\u2069`;
-  if(currentMode==="supervision") report += `\n\n\u2068\`الـجــهــات الامــنـيــة المـــتــواجــده :\`\u2069\n\n\u2068\`امـن الطـرق + الامـن الـعـام + الـمـهـام و الـواجـبـات الـخـاصـة\`\u2069`;
+  if(currentMode==="zone" && unitsText) report += `\n\n⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـجــهــات الامــنـيــة المـــتــواجــده :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n⁨⁨\`${unitsText}\`⁩⁩`;
+  if(currentMode==="supervision") report += `\n\n⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`الـجــهــات الامــنـيــة المـــتــواجــده :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩\n\n⁨⁨\`امـن الطـرق + الامـن الـعـام + الـمـهـام و الـواجـبـات الـخـاصـة\`⁩⁩`;
 
-  if(currentMode==="courses" && courseName) report += `\n\n\u2068\`اسم الدورة: ${courseName}\`\u2069`;
+  if(currentMode==="courses" && courseName) report += `\n\n⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`اسم الدورة: ${courseName}\`⁩⁩`;
 
-  report += `\n\n\u2068 <@${copyID}>   \u2068\`تـم رفـع التـقـريـر مـن قبـل (${rank}) :\`\u2069`;
+  report += `\n\n⁨⁨ <@${copyID}>  ⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`تـم رفـع التـقـريـر مـن قبـل (${rank}) :\`⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩⁩`;
 
-  if(el("earlySelect").value==="yes") report += `\n\n\u2068\`سبب نزول التقرير مبكر: ${el("earlyReason").value}\`\u2069`;
+  if(el("earlySelect").value==="yes") report += `\n\n⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨⁨\`سبب نزول التقرير مبكر: ${el("earlyReason").value}\`⁩⁩`;
 
   navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
 }
 
-function openOperationsReports(){ window.open("https://1boletop.netlify.app/","_blank"); }
+function openOperationsReports(){ alert("قسم تقارير العمليات تحت التطوير"); }
 
 initTimeSelects();
 </script>
