@@ -112,7 +112,6 @@ select { color:#000; }
 datalist option { background: #1a1a1a; color: #fff; padding:5px; }
 </style>
 </head>
-
 <body>
 <div class="container">
   <div id="menu-section">
@@ -136,15 +135,15 @@ datalist option { background: #1a1a1a; color: #fff; padding:5px; }
   <div id="form-section">
     <h2 id="title-text"></h2>
 
-    <div class="form-group">
-      <label>التوجيه</label>
-      <input type="text" id="taskName" list="taskSuggestions">
+    <div class="form-group" id="taskGroup">
+      <label>التوجيه (اكتب يدوي)</label>
+      <input type="text" id="taskName" placeholder="اكتب التوجيه" list="taskSuggestions">
       <datalist id="taskSuggestions"></datalist>
     </div>
 
     <div class="form-group">
       <label>الموقع</label>
-      <input type="text" id="location">
+      <input type="text" id="location" placeholder="الموقع">
     </div>
 
     <div class="form-group">
@@ -154,7 +153,72 @@ datalist option { background: #1a1a1a; color: #fff; padding:5px; }
 
     <div class="form-group">
       <label>كوبي ايدي العسكري</label>
-      <input type="text" id="copyID">
+      <input type="text" id="copyID" placeholder="ضع الكوبي ايدي هنا">
+    </div>
+
+    <div class="form-group" id="unitGroup" style="display:none">
+      <label>الوحدات التابعة (حد أقصى 400 كلمة)</label>
+      <textarea id="units" placeholder="اكتب الوحدات التابعة هنا"></textarea>
+    </div>
+
+    <div class="form-group" id="courseGroup" style="display:none">
+      <label>اسم الدورة</label>
+      <select id="courseName">
+        <option disabled selected>اختر اسم الدورة</option>
+        <option>شرطة عسكرية</option>
+        <option>الشؤون الادارية</option>
+        <option>نقل سجون</option>
+        <option>S.W.A.T</option>
+        <option>البحث الجنائي</option>
+        <option>المهام والواجبات الخاصة</option>
+        <option>مكافحة المخدرات</option>
+        <option>الدعم الجوي</option>
+        <option>شعبة المرور</option>
+        <option>خدمات الطرق</option>
+      </select>
+    </div>
+
+    <!-- الوقت اليدوي -->
+    <div class="form-group">
+      <label>وقت البداية</label>
+      <div style="display:flex; gap:5px;">
+        <select id="startHour"></select> :
+        <select id="startMinute"></select>
+        <select id="startPeriod">
+          <option>ص</option>
+          <option>م</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>وقت النهاية</label>
+      <div style="display:flex; gap:5px;">
+        <select id="endHour"></select> :
+        <select id="endMinute"></select>
+        <select id="endPeriod">
+          <option>ص</option>
+          <option>م</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>التقرير نازل مبكر؟</label>
+      <select id="earlySelect" onchange="toggleEarlyReason()">
+        <option value="no" selected>لا</option>
+        <option value="yes">نعم</option>
+      </select>
+    </div>
+
+    <div class="form-group" id="earlyReasonGroup" style="display:none">
+      <label>سبب التبكير</label>
+      <select id="earlyReason">
+        <option value="ريستارت">ريستارت</option>
+        <option value="صيانه">صيانه</option>
+        <option value="إعادة اصطفاف">إعادة اصطفاف</option>
+        <option value="كراش عمومي">كراش عمومي</option>
+      </select>
     </div>
 
     <button class="btn-copy" onclick="copyReport()">نسخ التقرير النهائي</button>
@@ -169,47 +233,64 @@ function el(id){ return document.getElementById(id); }
 let currentMode="";
 
 const supervisionRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم"];
+const zoneRanks=["رئيس رقباء","رقيب اول","رقيب"];
+const courseRanks=["عميد ركن","عقيد ركن","مقدم ركن","رائد","نقيب","ملازم اول","ملازم","رئيس رقباء","رقيب اول","رقيب","جندي اول","عريف","وكيل رقيب"];
 
-const supervisionTasks=[
-  "درع 1","درع 2","درع 3","درع 4",
-  "سهم 1","سهم 2","سهم 3","سهم 4","سهم 5",
-  "جنوب 1","جنوب 2","جنوب 3","جنوب 4",
-  "غرب 1","غرب 2","غرب 3","غرب 4",
-  "سيف 1","سيف 2","سيف 3","سيف 4",
-  "رصد 1","رصد 2","رصد 3","رصد 4",
-  "ساهر 1","ساهر 2","ساهر 3","ساهر 4",
-  "امان 1","امان 2","امان 3","امان 4"
-];
+const supervisionTasks=["سهم 1","سهم 2","سهم 3","سهم 4","سهم 5"];
+const zoneTasks=["سين 10","سين 20","باء 10","باء 20"];
 
-const supervisionLocationMap={
-  "درع 1":"ساندي + بوليتو","درع 2":"ساندي + بوليتو","درع 3":"ساندي + بوليتو","درع 4":"ساندي + بوليتو",
-  "سهم 1":"ساندي + بوليتو","سهم 2":"ساندي + بوليتو","سهم 3":"ساندي + بوليتو","سهم 4":"ساندي + بوليتو","سهم 5":"ساندي + بوليتو",
-  "جنوب 1":"ساندي","جنوب 2":"ساندي","جنوب 3":"ساندي","جنوب 4":"ساندي",
-  "غرب 1":"بوليتو","غرب 2":"بوليتو","غرب 3":"بوليتو","غرب 4":"بوليتو",
-  "سيف 1":"جيم + لام + دال","سيف 2":"جيم + لام + دال","سيف 3":"جيم + لام + دال","سيف 4":"جيم + لام + دال",
-  "رصد 1":"جيم + لام + دال","رصد 2":"جيم + لام + دال","رصد 3":"جيم + لام + دال","رصد 4":"جيم + لام + دال",
-  "ساهر 1":"جيم + لام","ساهر 2":"جيم + لام","امان 1":"جيم + لام","امان 2":"جيم + لام",
-  "ساهر 3":"دال","ساهر 4":"دال","امان 3":"دال","امان 4":"دال"
-};
+function initTimeSelects(){
+  const startH = el("startHour"), startM = el("startMinute");
+  const endH = el("endHour"), endM = el("endMinute");
+
+  for(let i=0;i<=12;i++){
+    const val = i<10?"0"+i:i;
+    startH.innerHTML += `<option>${val}</option>`;
+    endH.innerHTML += `<option>${val}</option>`;
+  }
+  for(let i=0;i<60;i++){
+    const val = i<10?"0"+i:i;
+    startM.innerHTML += `<option>${val}</option>`;
+    endM.innerHTML += `<option>${val}</option>`;
+  }
+}
+
+function initRankOptions(ranks){
+  const r=el("rank");
+  r.innerHTML="<option disabled selected>اختر الرتبة</option>";
+  ranks.forEach(x=> r.innerHTML+=`<option>${x}</option>`);
+}
 
 function openForm(type){
   currentMode=type;
   el("menu-section").style.display="none";
   el("form-section").style.display="block";
-  el("title-text").textContent="تقارير الإشراف";
+  el("title-text").textContent = type==="supervision"?"تقارير الإشراف":type==="zone"?"تقارير ضابط منطقة":"تقارير الدورات";
 
-  el("rank").innerHTML="";
-  supervisionRanks.forEach(r=>el("rank").innerHTML+=`<option>${r}</option>`);
+  el("taskName").value="";
+  el("location").value="";
+  el("copyID").value="";
+  el("units").value="";
+  el("courseName").value="";
+  el("earlySelect").value="no";
+  toggleEarlyReason();
+  el("unitGroup").style.display = (currentMode==="zone") ? "block" : "none";
+  el("courseGroup").style.display = (currentMode==="courses") ? "block" : "none";
 
-  const list=el("taskSuggestions");
+  if(currentMode==="supervision") initRankOptions(supervisionRanks);
+  else if(currentMode==="zone") initRankOptions(zoneRanks);
+  else if(currentMode==="courses") initRankOptions(courseRanks);
+
+  const list = el("taskSuggestions");
   list.innerHTML="";
-  supervisionTasks.forEach(t=>list.innerHTML+=`<option value="${t}">`);
+  const tasks = currentMode==="supervision"?supervisionTasks:currentMode==="zone"?zoneTasks:[];  
+  tasks.forEach(t=>{ const opt=document.createElement("option"); opt.value=t; list.appendChild(opt); });
 
-  el("taskName").oninput=function(){
-    if(currentMode==="supervision"){
-      el("location").value=supervisionLocationMap[this.value]||"";
-    }
-  };
+  el("taskName").oninput = function(){ el("location").value = ""; };
+}
+
+function toggleEarlyReason(){
+  el("earlyReasonGroup").style.display = el("earlySelect").value==="yes" ? "block":"none";
 }
 
 function goBack(){
@@ -218,12 +299,39 @@ function goBack(){
 }
 
 function copyReport(){
+  const task = el("taskName").value||"...";
+  const loc = el("location").value||"...";
+  const rank = el("rank").value||"...";
+  const copyID = el("copyID").value||"1358333213965156392";
+
+  const startTime = `${el("startHour").value}:${el("startMinute").value} ${el("startPeriod").value}`;
+  const endTime = `${el("endHour").value}:${el("endMinute").value} ${el("endPeriod").value}`;
+
+  let unitsText = "";
+  if(currentMode==="zone") unitsText = el("units").value;
+
+  const courseName = currentMode==="courses" ? el("courseName").value : "";
+
+  let report = `**U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`تـم اسـتـلام مـهـام (${task})  من السـاعة ${startTime} اٍلـى الـساعة ${endTime}\`U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069
+  
+U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`الـمـنـطـقـة : ${loc} \`U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069`;
+
+  if(currentMode==="zone" && unitsText) report += `\n\nU+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`الـجــهــات الامــنـيــة المـــتــواجــده :\`U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069\n\nU+2068U+2068\`${unitsText}\`U+2069U+2069`;
+  if(currentMode==="supervision") report += `\n\nU+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`الـجــهــات الامــنـيــة المـــتــواجــده :\`U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069U+2069\n\nU+2068U+2068\`امـن الطـرق + الامـن الـعـام + الـمـهـام و الـواجـبـات الـخـاصـة\`U+2069U+2069`;
+
+  if(currentMode==="courses" && courseName) report += `\n\nU+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`اسم الدورة: ${courseName}\`U+2069U+2069`;
+
+  report += `\n\nU+2068U+2068 <@${copyID}>   U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`تـم رفـع التـقـريـر مـن قبـل (${rank}) :\`U+2069U+2069`;
+
+  if(el("earlySelect").value==="yes") report += `\n\nU+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068U+2068\`سبب نزول التقرير مبكر: ${el("earlyReason").value}\`U+2069U+2069`;
+
+  navigator.clipboard.writeText(report);
   alert("تم نسخ التقرير ✅");
 }
 
-function openOperationsReports(){
-  window.open("https://1boletop.netlify.app/","_blank");
-}
+function openOperationsReports(){ window.open("https://1boletop.netlify.app/","_blank"); }
+
+initTimeSelects();
 </script>
 </body>
 </html>
